@@ -457,6 +457,12 @@ function stopRuntimeProfiler(){
  const characterNav460=isBetaProfile?(window.v460CharacterNavDiagnostics?.()||null):null;
  const characterNav526=isBetaProfile?(window.v526CharacterNavDiagnostics?.()||null):null;
  const characterNav7124=isBetaProfile?(window.v7124CharacterNavDiagnostics?.()||null):null;
+ const characterNav6339=isBetaProfile?(window.v6339CharacterNavDiagnostics?.()||null):null;
+ const characterNav275=isBetaProfile?(window.v275CharacterNavDiagnostics?.()||null):null;
+ const characterNav537=isBetaProfile?(window.v537CharacterNavDiagnostics?.()||null):null;
+ const characterNav444=isBetaProfile?(window.v444CharacterNavDiagnostics?.()||null):null;
+ /* Existing boot owner, only its phase and task durations; no identity is copied. */
+ const bootState=isBetaProfile?(window.v4147BootDiagnostics?.()||null):null;
  const characterNav4156=isBetaProfile?(window.v4156CharacterNavDiagnostics?.()||null):null;
  const characterNav6117=isBetaProfile?(window.v6117CharacterNavDiagnostics?.()||null):null;
  const nav510Same=navFresh&&characterNav510&&Math.abs(Number(characterNav510.at||0)-Number(characterNavEvent.at||0))<3000;
@@ -465,9 +471,13 @@ function stopRuntimeProfiler(){
  const nav460Same=navFresh&&characterNav460&&Math.abs(Number(characterNav460.at||0)-Number(characterNavEvent.at||0))<3000;
  const nav526Same=navFresh&&characterNav526&&Math.abs(Number(characterNav526.at||0)-Number(characterNavEvent.at||0))<3000;
  const nav7124Same=navFresh&&characterNav7124&&Math.abs(Number(characterNav7124.at||0)-Number(characterNavEvent.at||0))<3000;
+ const nav6339Same=navFresh&&characterNav6339&&Math.abs(Number(characterNav6339.at||0)-Number(characterNavEvent.at||0))<3000;
+ const nav275Same=navFresh&&characterNav275&&Math.abs(Number(characterNav275.at||0)-Number(characterNavEvent.at||0))<3000;
+ const nav537Same=navFresh&&characterNav537&&Math.abs(Number(characterNav537.at||0)-Number(characterNavEvent.at||0))<3000;
+ const nav444Same=navFresh&&characterNav444&&Math.abs(Number(characterNav444.at||0)-Number(characterNavEvent.at||0))<3000;
  const nav4156Same=navFresh&&characterNav4156&&Math.abs(Number(characterNav4156.at||0)-Number(characterNavEvent.at||0))<3000;
  const nav6117Same=navFresh&&characterNav6117&&Math.abs(Number(characterNav6117.at||0)-Number(characterNavEvent.at||0))<3000;
- const navMeasuredComplete=!!(hubSame&&frostSame&&nav510Same&&nav514Same&&nav7157Same&&nav4156Same&&nav6117Same&&nav460Same&&nav526Same&&nav7124Same);
+ const navMeasuredComplete=!!(hubSame&&frostSame&&nav510Same&&nav514Same&&nav7157Same&&nav4156Same&&nav6117Same&&nav460Same&&nav526Same&&nav7124Same&&nav6339Same&&nav275Same&&nav537Same&&nav444Same);
  const consistencyIssues=(consistencyAfter?.issues||[]).filter(x=>Number(x.at||0)>=runtimeProfile.startEpoch);
  const progressBefore=runtimeProfile.progressBefore||{};
  const progressAfter=isBetaProfile?(window.v7077ProgressDiagnostics?.()||{}):{};
@@ -538,6 +548,16 @@ function stopRuntimeProfiler(){
    ...(queueOwners.length?queueOwners.slice(0,12).map(x=>
      'CALLBACK '+x.ms.toFixed(1)+' ms | Aufrufe '+x.calls+' | max '+x.maxMs.toFixed(1)+' ms | '+x.script
    ):['Keine nachträglich ausgeführten Account-ready-Callbacks im Messfenster.']),
+   'V8.347 POST-LOGIN BOOT/EXTRAS (bestehender V4147-Owner, Snapshot zum Profilende):',
+   bootState
+     ?'Phase '+String(bootState.phase||'n/v').slice(0,45)+
+       ' | Extras gesamt '+Number(bootState.extrasMs||0)+' ms'+
+       ' | Login bis bespielbar '+Number(bootState.accountToPlayableMs||0)+' ms'+
+       ' | Ruhezeit noch '+Number(bootState.quietRemaining||0)+' ms'
+     :'Keine Boot-Diagnose vorhanden.',
+   ...(bootState?Object.entries(bootState.tasks||{}).slice(0,8).map(([name,v])=>
+     'EXTRA '+String(name).slice(0,40)+' | Status '+String(v.state||'n/v').slice(0,20)+
+     ' | Dauer '+Number(v.ms||0)+' ms'):[]),
    'SERVER-AUTHORITY HYDRATION (V7133, nur Zähler-Delta):',
    'Nachlade-Aufrufe '+Math.max(0,Number(authorityAfter.rehydrates||0)-Number(authorityBefore.rehydrates||0))+
    ' | Home-Login-Nachladungen unterdrückt '+
@@ -607,7 +627,11 @@ function stopRuntimeProfiler(){
           (nav6117Same?Number(characterNav6117.cpuMs||0):0)-
           (nav460Same?Number(characterNav460.cpuMs||0):0)-
           (nav526Same?Number(characterNav526.cpuMs||0):0)-
-          (nav7124Same?Number(characterNav7124.cpuMs||0):0))+
+          (nav7124Same?Number(characterNav7124.cpuMs||0):0)-
+          (nav6339Same?Number(characterNav6339.cpuMs||0):0)-
+          (nav275Same?Number(characterNav275.cpuMs||0):0)-
+          (nav537Same?Number(characterNav537.cpuMs||0):0)-
+          (nav444Same?Number(characterNav444.cpuMs||0):0))+
           ' ms ('+(navMeasuredComplete?'andere Listener/Dispatch':'nicht alle Owner erfasst')+')'
         :'nicht bestimmt')
     :'Kein Charakter-Navigations-Event im Messfenster vollständig erfasst.',
@@ -621,6 +645,10 @@ function stopRuntimeProfiler(){
        ' ms | zusätzliches Hub/Inventar '+Number(characterNavFrost.hubMs||0)+
        ' ms | redundanter Hub-Durchlauf vermieden '+!!characterNavFrost.skippedDuplicateHub
    ]:[]),
+   'V8.347 TITEL/NAME/ORDNUNG: v6339 '+(nav6339Same?Number(characterNav6339.cpuMs||0)+' ms':'nicht erfasst')+
+     ' | v275 '+(nav275Same?Number(characterNav275.cpuMs||0)+' ms':'nicht erfasst')+
+     ' | v537 '+(nav537Same?Number(characterNav537.cpuMs||0)+' ms':'nicht erfasst')+
+     ' | v444 '+(nav444Same?Number(characterNav444.cpuMs||0)+' ms':'nicht erfasst'),
    'V8.346 WEITERE NAV-OWNER: v460 '+(nav460Same?Number(characterNav460.cpuMs||0)+' ms':'nicht erfasst')+
      ' | v526 '+(nav526Same?Number(characterNav526.cpuMs||0)+' ms':'nicht erfasst')+
      ' | v7124 '+(nav7124Same?Number(characterNav7124.cpuMs||0)+' ms':'nicht erfasst'),
@@ -634,7 +662,8 @@ function stopRuntimeProfiler(){
    ...(nav7157Same?[
      'V7157: Equipment '+Number(characterNav7157.equipmentMs||0)+' ms'+
      ' | zweite v510-Ausführung vermieden '+!!characterNav7157.skipped510+
-     ' | zweite v514-Ausführung vermieden '+!!characterNav7157.skipped514
+     ' | zweite v514-Ausführung vermieden '+!!characterNav7157.skipped514+
+     ' | Heldenquartier fehlte beim Event '+!!characterNav7157.missingRoot
    ]:[]),
    '',
    'KAMPFKRAFT REPAINT (V8.333, Beta):',
