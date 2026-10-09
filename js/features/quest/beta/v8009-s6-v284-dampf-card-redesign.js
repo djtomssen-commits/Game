@@ -37,10 +37,9 @@ v271PaintDampf=function(){
 
   let current=Math.max(0,Math.floor(Number(s.energy)||0));
 
-  /* Event guarantees 300 max, normal mode 100 max.
-     Existing over-cap values are normalized visually and in save state. */
-  if(current>cap)current=cap;
-  if(Number(s.energy)!==current)s.energy=current;
+  /* V8.304: paint cannot change a signed-in player's server-owned energy. */
+  if(current>cap&&!(typeof v073User!=='undefined'&&v073User?.id))current=cap;
+  if(!(typeof v073User!=='undefined'&&v073User?.id)&&Number(s.energy)!==current)s.energy=current;
 
   const energyEl=card.querySelector('#energy');
   if(energyEl){
