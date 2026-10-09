@@ -2,7 +2,8 @@
 const V026_DAILY_DAMPF=100;
 const V026_MAX_DAMPF=300;
 const V026_REFILL=20;
-function v026ServerOwned(){try{return !!(typeof v073User!=='undefined'&&v073User?.id&&window.v7081UseAuthority?.('quest'))}catch(_){return false}}
+/* V8.304: login ownership is sufficient; do not locally reset Dampf while capability RPCs hydrate. */
+function v026ServerOwned(){try{return !!(typeof v073User!=='undefined'&&v073User?.id)}catch(_){return false}}
 window.__V7173_LEGACY_LOCAL_GUARD__=window.__V7173_LEGACY_LOCAL_GUARD__||{dampfResetBlocks:0,midnightResetBlocks:0,worldbossTimerBlocks:0,retiredTimers:0,v026TimerActive:false,v127TimerActive:false,v112TimerActive:false,lastBlockAt:0};
 function v7173LegacyBlock(kind){const g=window.__V7173_LEGACY_LOCAL_GUARD__;if(!g)return;g[kind]=(Number(g[kind])||0)+1;g.lastBlockAt=Date.now()}
 
