@@ -4,9 +4,12 @@
 
   function n(v){return Math.max(0,Math.floor(Number(v)||0))}
   function cap(){
-    try{if(typeof v271DampfCap==='function')return Math.max(100,n(v271DampfCap()))}catch(e){}
-    try{if(typeof v284DampfCap==='function')return Math.max(100,n(v284DampfCap()))}catch(e){}
-    return 100;
+    /* V8.305: the local event flag can arrive after the confirmed server balance.
+       Never show an already-confirmed >100 Dampf as 100/100. */
+    const minimum=n(s?.energy)>100?300:100;
+    try{if(typeof v271DampfCap==='function')return Math.max(minimum,n(v271DampfCap()))}catch(e){}
+    try{if(typeof v284DampfCap==='function')return Math.max(minimum,n(v284DampfCap()))}catch(e){}
+    return minimum;
   }
   function setText(el,text){if(el && el.textContent!==text)el.textContent=text}
 
