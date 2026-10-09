@@ -85,7 +85,16 @@
 
   /* Character navigation/stability lifecycles own structural re-parenting.
      Data renders update the already-moved nodes in place. */
-  window.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')==='character')build()});
+  /* V8.344 Beta: expose the synchronous hero rebuild's isolated time. */
+  let navTime={at:0,cpuMs:0};
+  window.v510CharacterNavDiagnostics=()=>({...navTime});
+  window.addEventListener('growlegends:navigation-open-v7119',e=>{
+    if(String(e?.detail?.id||'')!=='character')return;
+    const start=performance.now?.()||Date.now();
+    build();
+    if(String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta')
+      navTime={at:Date.now(),cpuMs:Math.round((performance.now?.()||Date.now())-start)};
+  });
   window.__v510GoWrapped='v7119-event';
 
   build();
