@@ -133,9 +133,54 @@ async function run(channel){
   scenarios.push({channel,...values});
   await page.close();
 }
+async function checkDungeonObserverScope(channel){
+  const page=await browser.newPage();
+  await page.setContent('<!doctype html><html><body><div id="world" class="active"></div><section id="dungeon"></section></body></html>');
+  await page.evaluate(channel=>{
+    window.GROW_RELEASE_CHANNEL=channel;
+    window.s={dungeon:{selected:6,view:'map'}};
+    window.qaDungeonLiveObservers=new Set();
+    const baseObserve=MutationObserver.prototype.observe;
+    const baseDisconnect=MutationObserver.prototype.disconnect;
+    MutationObserver.prototype.observe=function(root,options){
+      const result=baseObserve.call(this,root,options);
+      if(root.id==='dungeon')window.qaDungeonLiveObservers.add(this);
+      return result;
+    };
+    MutationObserver.prototype.disconnect=function(){
+      window.qaDungeonLiveObservers.delete(this);
+      return baseDisconnect.call(this);
+    };
+  },channel);
+  await page.addScriptTag({path:file('js/features/legacy-extracted/beta/v434-d7-clean-boss-script.js')});
+  await page.addScriptTag({path:file('js/features/dungeon/beta/v8009-d5-final-detail-seal.js')});
+  await page.waitForTimeout(70);
+  const initial=await page.evaluate(()=>qaDungeonLiveObservers.size);
+  await page.evaluate(()=>{
+    document.getElementById('world').classList.remove('active');
+    document.getElementById('dungeon').classList.add('active');
+    window.dispatchEvent(new CustomEvent('growlegends:navigation-open-v7119',{detail:{id:'dungeon'}}));
+  });
+  await page.waitForTimeout(140);
+  const active=await page.evaluate(()=>qaDungeonLiveObservers.size);
+  await page.evaluate(()=>{
+    document.getElementById('dungeon').classList.remove('active');
+    document.getElementById('world').classList.add('active');
+    window.dispatchEvent(new CustomEvent('growlegends:navigation-open-v7119',{detail:{id:'world'}}));
+  });
+  await page.waitForTimeout(70);
+  const after=await page.evaluate(()=>qaDungeonLiveObservers.size);
+  assert.equal(initial,channel==='beta'?0:2,channel+' inactive Dungeon observers at boot');
+  assert.equal(active,2,channel+' Dungeon requires both image guardians while open');
+  assert.equal(after,channel==='beta'?0:2,channel+' after navigating back to Home');
+  scenarios.push({channel,dungeonObservers:{initial,active,after}});
+  await page.close();
+}
 try{
   await run('beta');
   await run('server1');
+  await checkDungeonObserverScope('beta');
+  await checkDungeonObserverScope('server1');
   assert.deepEqual(failures,[],'uncaught browser errors');
   console.log(JSON.stringify({ok:true,scenarios},null,2));
 }catch(e){
