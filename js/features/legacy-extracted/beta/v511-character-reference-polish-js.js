@@ -16,7 +16,12 @@
       for(let i=ordered.length-1;i>=0;i--){
         const next=ordered[i+1]||null,el=ordered[i];
         if(el.parentElement!==center||el.nextElementSibling!==next)
-          center.insertBefore(el,next);
+          {center.insertBefore(el,next);
+            if(el===xp){
+              const v=window.__V8348_VISUAL_METRICS__||(window.__V8348_VISUAL_METRICS__={});
+              v.xpNodeMoves=(Number(v.xpNodeMoves)||0)+1;
+            }
+          }
       }
     }else ordered.forEach(n=>center.appendChild(n));
   }
