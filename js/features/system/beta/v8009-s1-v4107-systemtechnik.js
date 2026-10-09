@@ -412,6 +412,7 @@ function stopRuntimeProfiler(){
  const authorityBefore=runtimeProfile.authorityBefore||{};
  const authorityAfter=isBetaProfile?(window.v7133AuthorityDiagnostics?.()||{}):{};
  const consistencyAfter=isBetaProfile?(window.v8330DataConsistencyReport?.()||null):null;
+ const eventTopDebug=isBetaProfile?(window.v8334HomeEventTopDiagnostics?.()||null):null;
  const consistencyIssues=(consistencyAfter?.issues||[]).filter(x=>Number(x.at||0)>=runtimeProfile.startEpoch);
  const progressBefore=runtimeProfile.progressBefore||{};
  const progressAfter=isBetaProfile?(window.v7077ProgressDiagnostics?.()||{}):{};
@@ -502,6 +503,17 @@ function stopRuntimeProfiler(){
       'SYNC-SLOW '+x.kind+' '+x.ms.toFixed(1)+' ms | t+'+x.t+' ms | '+x.screen
    ):['Keine einzeln messbare JSON/Storage-Operation über 25 ms.']),
    'Hinweis: JSON-Aufrufzahl vollständig, CPU nur aus 1:256-Stichproben (keine Gesamt-CPU); Aufrufer sind gesampelte JS-Stackframes, keine Payloads. Storage 1:1. Native Response.json() nicht abgedeckt.',
+   'HOME-EVENT ÜBERLAGERUNG (V8.334, Geometrie/Hit-Test, keine DOM-Eingriffe):',
+   eventTopDebug
+    ?'Events oben '+eventTopDebug.eventTop+' px | World oben '+eventTopDebug.worldTop+
+       ' px | Zwischenraum '+eventTopDebug.gapPx+' px'
+    :'Nicht verfügbar (Startseite muss während des Profilendes geöffnet sein).',
+   ...(eventTopDebug?[
+     'ELEMENTE ÜBER EVENTS: '+(eventTopDebug.above||[]).join(' > '),
+     'ELEMENTE IM EVENTS-RAND: '+(eventTopDebug.inside||[]).join(' > '),
+     'WORLD-KINDER / GRID-REIHENFOLGE: '+(eventTopDebug.childOrder||[]).join(' | ')
+   ]:[]),
+   '',
    'KAMPFKRAFT REPAINT (V8.333, Beta):',
    'Aufrufe '+powerDelta.attempts+' | DOM-Schreibvorgänge '+powerDelta.writes+
       ' | zusammengefasste Repaints '+powerDelta.coalesced+
