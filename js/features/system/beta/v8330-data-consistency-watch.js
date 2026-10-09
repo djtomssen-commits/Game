@@ -1,11 +1,11 @@
-/* Grow Legends V8.330 - passive, Beta-only, server-confirmed consistency watch.
+/* Grow Legends V8.332 - passive, Beta-only, server-confirmed consistency watch.
    No RPC, no persist/write, no automatic repair, no account/token disclosure.
    Canonical owners submit values only after a successful server response. */
 (()=>{
 'use strict';
 if(String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()!=='beta'||window.__V8330_DATA_CONSISTENCY_WATCH__)return;
 window.__V8330_DATA_CONSISTENCY_WATCH__=true;
-const S={version:'V8.330',seen:0,checks:0,accountSwitches:0,issues:[],history:[],lastError:'',latest:{},pending:new Map(),owner:'',generation:0};
+const S={version:'V8.332',seen:0,checks:0,accountSwitches:0,issues:[],history:[],lastError:'',latest:{},pending:new Map(),owner:'',generation:0};
 let firstTimer=0,secondTimer=0,paintTimer=0,observer=null,observed=[],lastPower=null;
 const currentUid=()=>{try{return String((typeof v073User!=='undefined'&&v073User?.id)||'')}catch(_){return ''}};
 const state=()=>{try{return typeof s==='undefined'?null:s}catch(_){return null}};
@@ -70,12 +70,20 @@ function classifyItemDelta(expected,actual,kind){
  const missing=[...a.keys()].filter(k=>!b.has(k));
  const added=[...b.keys()].filter(k=>!a.has(k));
  const changed=new Set(),fields=new Set();
+ const enchantDirection={missing:0,added:0,changed:0};
  for(const [k,old] of a){
   const fresh=b.get(k);if(!fresh)continue;
   if(kind==='equipment'&&old.identity!==fresh.identity){changed.add(k);fields.add('Belegung');continue}
   for(const attr of ['level','dropLevel','upgradeLevel','bonus','gem','enchant']){
    if(old.fields?.[attr]!==fresh.fields?.[attr]){
     changed.add(k);
+    if(attr==='enchant'){
+     const serverEmpty=old.fields?.enchant==='null';
+     const localEmpty=fresh.fields?.enchant==='null';
+     if(serverEmpty&&!localEmpty)enchantDirection.added++;
+     else if(!serverEmpty&&localEmpty)enchantDirection.missing++;
+     else enchantDirection.changed++;
+    }
     fields.add(({level:'Item-Level',dropLevel:'Fund-Level',upgradeLevel:'Upgrade-Stufe',
        bonus:'Bonuswerte',gem:'Edelstein',enchant:'Verzauberung'})[attr]);
    }
@@ -90,7 +98,10 @@ function classifyItemDelta(expected,actual,kind){
   detail:(kind==='inventory'?'Inventar':'Ausrüstung')+': '+
     (parts.length?parts.join(', '):'abweichende Item-Daten')+
     ' · betroffene Positionen: '+count+
-    (missing.length||added.length?' · fehlend: '+missing.length+' · neu: '+added.length:'')};
+    (missing.length||added.length?' · fehlend: '+missing.length+' · neu: '+added.length:'')+
+    (fields.has('Verzauberung')?' · Verzauberung fehlt lokal: '+enchantDirection.missing+
+     ', nur lokal vorhanden: '+enchantDirection.added+
+     ', anderer Inhalt: '+enchantDirection.changed:'')};
 }
 const trim=(x,n)=>{if(x.length>n)x.splice(0,x.length-n)};
 function notify(){try{window.dispatchEvent(new Event('growlegends:consistency-report'))}catch(_){}}
