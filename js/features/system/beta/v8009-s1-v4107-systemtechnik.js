@@ -160,7 +160,7 @@ const tech=()=>window.__V4106_TECH__||{intervals:new Map(),timeouts:new Map(),li
    Only opt-in measurement installs observers; no renderer or gameplay hooks. */
 const runtimeProfile={running:false,startEpoch:0,startPerf:0,timeout:0,before:null,report:'',
   longObserver:null,loafObserver:null,longTasks:[],loafFrames:[],longSupported:false,loafSupported:false,
-  splashObserver:null,splashEvents:[],splashState:'',splashListeners:[],accountQueueBefore:null,authorityBefore:null,progressBefore:null,powerBefore:null,cpuProbe:null};
+  splashObserver:null,splashEvents:[],splashState:'',splashListeners:[],accountQueueBefore:null,authorityBefore:null,progressBefore:null,powerBefore:null,cpuProbe:null,visualBefore:null};
 function runtimeCounterSnapshot(since=0){
  let raw=null,kind='nicht verfügbar';
  try{
@@ -441,6 +441,9 @@ function stopRuntimeProfiler(){
  const consistencyAfter=isBetaProfile?(window.v8330DataConsistencyReport?.()||null):null;
  const eventTopDebug=isBetaProfile?(window.v8334HomeEventTopDiagnostics?.()||null):null;
  const characterRender=isBetaProfile?(window.v7207CharacterRenderDiagnostics?.()||null):null;
+ const visualNow=isBetaProfile?(window.__V8348_VISUAL_METRICS__||{}):{};
+ const visualBefore=runtimeProfile.visualBefore||{};
+ const visualCount=k=>Math.max(0,Number(visualNow[k]||0)-Number(visualBefore[k]||0));
  const freshCharacterRender=characterRender&&Number(characterRender.at||0)>=runtimeProfile.startEpoch&&
    Number(characterRender.at||0)<=Date.now();
  const characterNavEvent=isBetaProfile?(window.v7119CharacterNavEventDiagnostics?.()||null):null;
@@ -601,6 +604,12 @@ function stopRuntimeProfiler(){
      'WORLD-KINDER / GRID-REIHENFOLGE: '+(eventTopDebug.childOrder||[]).join(' | ')
    ]:[]),
    '',
+   'V8.348 XP / RING DOM-CHURN (Delta seit Profiler-Start; echte Änderungen, nicht alle CSS-Paints):',
+   'XP-Text-Schreibvorgänge '+visualCount('xpTextWrites')+
+     ' | XP-Balken-Breitenänderungen '+visualCount('xpBarWrites')+
+     ' | XP-Layout-Verschiebungen '+visualCount('xpNodeMoves')+
+     ' | Ring-Slot-Neuaufbauten '+visualCount('ringRebuilds')+
+     ' | Ring-Bild-Ersetzungen '+visualCount('ringImageReplaces'),
    'CHARAKTER RENDER-STUFEN (V8.342, nur letzter vollständiger Charakter-Render im Messfenster):',
    freshCharacterRender
     ?'CPU synchron: Avatar '+Number(characterRender.avatar||0)+' ms | Set '+Number(characterRender.set||0)+
@@ -697,6 +706,8 @@ function startRuntimeProfiler(){
  if(runtimeProfile.running)return false;
  runtimeProfile.report='';
  runtimeProfile.startEpoch=Date.now();runtimeProfile.startPerf=performance.now();
+ runtimeProfile.visualBefore=String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta'
+   ?{...(window.__V8348_VISUAL_METRICS__||{})}:null;
  runtimeProfile.before=runtimeCounterSnapshot(runtimeProfile.startEpoch);
  runtimeProfile.before.screen=currentScreenId();
  if(String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta'){
