@@ -13,17 +13,19 @@
 #hall .v6145-podium-card.v6145-own{box-shadow:0 0 0 2px #72cf57 inset,0 0 18px rgba(114,207,87,.28),0 8px 20px #0008}
 #hall .v6145-podium-top{height:28px;display:flex;align-items:center;justify-content:space-between;padding:5px 7px;border-bottom:1px solid #5b4125;background:#211308}
 #hall .v6145-medal{font-size:15px;line-height:1}.v6145-pos{font-size:7px;font-weight:1000;color:#d7c892}
-#hall .v6145-podium-body{padding:0 0 7px;text-align:center}
-#hall .v6145-podium-avatar{position:relative;width:100%;aspect-ratio:1/1;min-height:92px;height:auto;display:grid;place-items:center;margin:0 0 7px;overflow:hidden;isolation:isolate;background:#1a0f08}
+#hall .v6145-podium-body{padding:0 0 7px;text-align:center;position:relative;isolation:isolate}
+#hall .v6145-podium-avatar{position:relative;z-index:1;width:100%;aspect-ratio:1/1;min-height:92px;height:auto;display:grid;place-items:center;margin:0;overflow:hidden;isolation:isolate;background:#1a0f08}
 #hall .v6145-podium-portrait{position:absolute;inset:0;z-index:1;display:block;background-repeat:no-repeat;background-size:cover;background-position:center 18%;filter:drop-shadow(0 5px 5px #0008)}
 #hall .v6145-podium-fallback{position:absolute;inset:0;z-index:1;display:grid;place-items:center;font-size:38px;line-height:1}
 #hall .v6145-podium-avatar>.v7139-frame-art{position:absolute!important;left:-21%!important;top:-21%!important;z-index:4!important;display:block!important;width:142%!important;height:142%!important;max-width:none!important;max-height:none!important;object-fit:fill!important;object-position:center!important;transform:none!important;filter:none!important;border-radius:0!important;pointer-events:none!important}
 #hall .v6145-podium-avatar[data-v7137-frame="vip_crown"]>.v7139-frame-art{left:-25%!important;top:-29%!important;width:150%!important;height:158%!important}
 #hall .v6145-podium-avatar[data-v7137-frame="referral_legend"]>.v7139-frame-art{left:-21%!important;top:-21%!important;width:142%!important;height:142%!important}
 #hall .v6145-podium-avatar>span:not(.v6145-podium-portrait){font-size:38px;line-height:1}
-#hall .v6145-podium-name{padding:0 6px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#f2f5ee;font-size:8px;font-weight:1000}
-#hall .v6145-podium-meta{padding:0 6px;margin-top:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#879489;font-size:5.5px}
-#hall .v6145-podium-power{padding:0 6px;margin-top:6px;color:#d8bd69;font-size:6px;font-weight:900}
+/* V8.297: caption is a separate opaque top layer; oversized VIP/referral frames
+   cannot paint over either the character name or the VIP badge. */
+#hall .v6145-podium-name{position:relative;z-index:8;display:flex;align-items:center;justify-content:center;flex-wrap:wrap;column-gap:4px;min-height:25px;padding:6px 5px 4px;overflow-wrap:anywhere;white-space:normal;background:linear-gradient(180deg,#21150dfc,#29190ffc);border-top:1px solid #5c4125;color:#f2f5ee;font-size:8px;font-weight:1000;line-height:1.28}
+#hall .v6145-podium-meta{position:relative;z-index:8;padding:3px 6px 0;margin:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;background:#29190ff9;color:#9dac9d;font-size:5.5px}
+#hall .v6145-podium-power{position:relative;z-index:8;padding:6px 6px 3px;margin:0;background:#29190ff9;color:#d8bd69;font-size:6px;font-weight:900}
 #hall .v6145-modebar{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;padding:7px;border:1px solid #604522;border-radius:12px;background:#211308}
 #hall .v6145-mode-btn{min-width:0;min-height:34px;border:1px solid #73532d;border-radius:9px;background:linear-gradient(180deg,#3f2814,#211308);color:#c9d5c8;padding:5px 4px;font:900 7px/1.15 system-ui;cursor:pointer}
 #hall .v6145-mode-btn.active{border-color:#6eb856;background:linear-gradient(180deg,#244125,#142817);color:#c6f3ae;box-shadow:0 0 12px rgba(109,193,83,.13)}
