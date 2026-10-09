@@ -31,31 +31,33 @@
  #world .v8310-cup-results-arrow{font-size:26px;flex-basis:13px}
 }
 /* V8.308: compact result card inside the existing lower home-card grid on Beta and Server 1. */
+/* V8.310: the slot now also has .v366-panel, so the canonical World CSS
+   assigns it exactly the same 190px / small-screen 174px tile height. */
 #world .v366-lower > .v8310-cup-results-slot{
- /* V8.309: participate in the same auto-height grid row as the other home tiles.
-    height:100% on both levels previously made the inner button overflow its row. */
  box-sizing:border-box;display:flex;align-self:stretch;
- margin:0;min-width:0;min-height:0;height:auto
+ margin:0;min-width:0;max-width:100%;
 }
 #world .v366-lower > .v8310-cup-results-slot > .v8310-cup-results-trigger{
- box-sizing:border-box;flex:1 1 auto;width:100%;height:auto;min-height:205px;
- flex-direction:column;align-items:center;justify-content:space-between;
- gap:6px;padding:9px 6px;text-align:center;border-radius:10px
+ box-sizing:border-box;flex:1 1 auto;width:100%;height:auto;min-height:0;
+ flex-direction:column;align-items:center;justify-content:center;
+ gap:5px;padding:6px 5px;text-align:center;border-radius:8px;overflow:hidden;
 }
 #world .v366-lower > .v8310-cup-results-slot .v8310-cup-results-art{
- flex:0 0 73px;width:min(100%,94px);height:73px;border-radius:8px
+ flex:0 0 58px;width:min(100%,78px);height:58px;border-radius:8px;
 }
 #world .v366-lower > .v8310-cup-results-slot .v8310-cup-results-copy{
- flex:0 1 auto;min-width:0;width:100%;gap:4px;align-items:center;overflow-wrap:anywhere
+ flex:0 1 auto;min-height:0;min-width:0;width:100%;gap:3px;
+ align-items:center;justify-content:center;overflow-wrap:anywhere;
 }
 #world .v366-lower > .v8310-cup-results-slot .v8310-cup-results-copy small{
- font-size:9px;line-height:1.15;letter-spacing:.2px
+ font-size:8px;line-height:1.1;letter-spacing:.1px;
 }
 #world .v366-lower > .v8310-cup-results-slot .v8310-cup-results-copy strong{
- font-size:clamp(11px,2.7vw,15px);line-height:1.1
+ font-size:clamp(10px,2.35vw,13px);line-height:1.1;
 }
 #world .v366-lower > .v8310-cup-results-slot .v8310-cup-results-copy [data-growcup-results-status]{
- font-size:9px;line-height:1.2
+ font-size:8px;line-height:1.15;display:-webkit-box;
+ -webkit-box-orient:vertical;-webkit-line-clamp:3;overflow:hidden;
 }
 #world .v366-lower > .v8310-cup-results-slot .v8310-cup-results-arrow{display:none}
 .v8310-cup-reward-layer[hidden]{display:none!important}
