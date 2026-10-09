@@ -166,9 +166,12 @@ function completed(run){
  '</section>';
 }
 function ranking(){
- const d=S.ranking||{},rows=Array.isArray(d.rows)?d.rows:[];
+ const d=S.ranking||{},rows=Array.isArray(d.rows)?d.rows:[],run=S.state?.run;
+ const mine=run?.status==='completed'&&String(run.event_key||'')===String(d.event_key||'');
+ const personal=mine?'<div class="v8210-rank-now"><small>DEIN ERGEBNIS · '+esc(String(run.event_key||''))+'</small><b>'+ (Number(run.rank)>0?'Platz #'+Number(run.rank):'Platz wird ermittelt')+'</b><span>'+Math.round(Number(run.final_score)||0)+' / 600 Punkte · '+(run.rank_reward_claimed?'Rangbelohnung bereits abgeholt':d.final===true?'Rangbelohnung bereit':'Rangliste noch nicht abgeschlossen')+'</span></div>'+
+  (d.final===true&&!run.rank_reward_claimed?'<button class="v8210-claim" data-cup-claim>Rangbelohnung abholen</button>':''):''; 
  return '<section class="v8210-scene v8210-ranking"><div class="v8210-ranking-head"><div><small>SERVERWEITE RANGLISTE</small><h2>🏆 GROW CUP RANGLISTE</h2><p>Maximal 600 Punkte. Je näher die sechs Einstellungen an ihren Sweet Spots lagen, desto höher der Rang.</p></div><button data-cup-refresh '+(S.busy?'disabled':'')+'>↻ Aktualisieren</button></div>'+
- rewardTable()+
+ personal+rewardTable()+
  '<div class="v8210-ranking-list">'+(rows.length?rows.map(x=>{const t=TIER[String(x.tier||'bronze')]||TIER.bronze;return '<div class="v8210-rank-row rank-'+Number(x.rank||0)+'"><strong>#'+Number(x.rank||0)+'</strong><i>'+t[0]+'</i><div><b>'+esc(x.player||'Legende')+'</b><small>'+esc(x.cup_seed||'')+' · '+esc(t[1])+'</small></div><em>'+Math.round(Number(x.final_score)||0)+' P</em></div>'}).join(''):'<div class="v8210-empty">Noch keine abgeschlossenen 6-Stunden-Runs.</div>')+'</div>'+
  '</section>';
 }
