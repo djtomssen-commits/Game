@@ -104,9 +104,12 @@
   }
   function growCupEventActive(){
     try{
-      const serverState=window.v8210GrowCupSnapshot?.();
-      if(serverState&&(serverState.active===true||serverState.run?.status==='active'))return true;
-      return typeof window.v8210GrowCupEventActive==='function'&&window.v8210GrowCupEventActive();
+      /* V8.301: A player's unfinished Thursday run may remain 'active' after
+         midnight. Only the live Berlin event schedule controls the home badge;
+         the personal run status is not proof that the Cup is open. */
+      const current=window.v6251AutomaticWeekendSchedule?.();
+      if(typeof current?.growCupActive==='boolean')return current.growCupActive;
+      return window.v8210GrowCupEventActive?.()===true;
     }catch(e){return false}
   }
 
