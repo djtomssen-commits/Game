@@ -461,7 +461,12 @@
   return true;
  }
  function authorityDomains(){
-  try{return window.v7133AuthorityDiagnostics?.()?.domains||window.v7040AuthorityDiagnostics?.()?.domains||{}}catch(_){return{}}
+  /* V8.339 Beta: v7133AuthorityDiagnostics includes v4139LoginAuthorityDiagnostics,
+     which calls allAuthorityEnforced -> authorityDomains. Calling v7133 here
+     recursively expands the diagnostics graph until stack exhaustion.
+     v7133.currentDomains itself reads v7040, so use that exact canonical
+     domain snapshot directly; preserve fail-closed {} when unavailable. */
+  try{return window.v7040AuthorityDiagnostics?.()?.domains||{}}catch(_){return{}}
  }
  function allAuthorityEnforced(){const d=authorityDomains();return AUTH_DOMAINS.every(x=>String(d?.[x]||'')==='enforce')}
  async function warmAuthority(){
