@@ -160,7 +160,7 @@ const tech=()=>window.__V4106_TECH__||{intervals:new Map(),timeouts:new Map(),li
    Only opt-in measurement installs observers; no renderer or gameplay hooks. */
 const runtimeProfile={running:false,startEpoch:0,startPerf:0,timeout:0,before:null,report:'',
   longObserver:null,loafObserver:null,longTasks:[],loafFrames:[],longSupported:false,loafSupported:false,
-  splashObserver:null,splashEvents:[],splashState:'',splashListeners:[]};
+  splashObserver:null,splashEvents:[],splashState:'',splashListeners:[],accountQueueBefore:null,authorityBefore:null};
 function runtimeCounterSnapshot(since=0){
  let raw=null,kind='nicht verfügbar';
  try{
@@ -331,6 +331,19 @@ function stopRuntimeProfiler(){
   }catch(_){}
  }
  const loaf=runtimeProfile.loafFrames;
+ /* V8.328 Beta: identify synchronous costs of deferred login listeners, and
+    measure whether duplicate Home hydration requests are suppressed.
+    These diagnostics are aggregate script-owner timings, not player data. */
+ const isBetaProfile=String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta';
+ const queueBefore=runtimeProfile.accountQueueBefore||{};
+ const queueAfter=isBetaProfile?(window.v7214AccountReadyQueueDiagnostics?.()||{}):{};
+ const authorityBefore=runtimeProfile.authorityBefore||{};
+ const authorityAfter=isBetaProfile?(window.v7133AuthorityDiagnostics?.()||{}):{};
+ const oldOwners=new Map((queueBefore.callbackOwners||[]).map(x=>[x.script,x]));
+ const queueOwners=(queueAfter.callbackOwners||[]).map(x=>{
+  const old=oldOwners.get(x.script)||{cpuMs:0,calls:0};
+  return {script:x.script,ms:Math.max(0,Number(x.cpuMs||0)-Number(old.cpuMs||0)),calls:Math.max(0,Number(x.calls||0)-Number(old.calls||0)),maxMs:Number(x.maxMs||0)};
+ }).filter(x=>x.calls>0).sort((a,b)=>b.ms-a.ms);
  /* V8.323 Beta: correlate the existing fetch timings with long tasks without
     intercepting Supabase/auth methods or recording request credentials. */
  const recentNetwork=String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta'
@@ -374,6 +387,17 @@ function stopRuntimeProfiler(){
    'BOOT/SPLASH-SICHTBARKEIT (Overlay-Klassen + Account-Events, nur diese Messung):',
    ...runtimeProfile.splashEvents,
    '',
+   'LOGIN-LISTENER CPU (V7214, nur synchrone Callback-Laufzeit im Messfenster):',
+   'Callbacks '+Math.max(0,Number(queueAfter.drained||0)-Number(queueBefore.drained||0))+
+     ' | CPU '+Math.max(0,Number(queueAfter.callbackCpuMs||0)-Number(queueBefore.callbackCpuMs||0)).toFixed(1)+' ms',
+   ...(queueOwners.length?queueOwners.slice(0,12).map(x=>
+     'CALLBACK '+x.ms.toFixed(1)+' ms | Aufrufe '+x.calls+' | max '+x.maxMs.toFixed(1)+' ms | '+x.script
+   ):['Keine nachträglich ausgeführten Account-ready-Callbacks im Messfenster.']),
+   'SERVER-AUTHORITY HYDRATION (V7133, nur Zähler-Delta):',
+   'Nachlade-Aufrufe '+Math.max(0,Number(authorityAfter.rehydrates||0)-Number(authorityBefore.rehydrates||0))+
+   ' | doppelte Home-Login-Nachladungen unterdrückt '+
+     Math.max(0,Number(authorityAfter.homePostLoginHydratesSuppressed||0)-Number(authorityBefore.homePostLoginHydratesSuppressed||0)),
+   '',
    'NETZWERK/RPC-ZEITLINIE (existierender Fetch-Monitor, kein JS-CPU-Profil): '+recentNetwork.length,
    ...recentNetwork.slice(-35).map(x=>'FETCH t+'+x.at+' ms | Dauer '+x.ms+' ms | HTTP '+x.status+' | '+x.endpoint),
    'Hinweis: zeitliche Naehe von FETCH und LONGTASK beweist keine Ursache.',
@@ -392,6 +416,10 @@ function startRuntimeProfiler(){
  runtimeProfile.startEpoch=Date.now();runtimeProfile.startPerf=performance.now();
  runtimeProfile.before=runtimeCounterSnapshot(runtimeProfile.startEpoch);
  runtimeProfile.before.screen=currentScreenId();
+ if(String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta'){
+  try{runtimeProfile.accountQueueBefore=window.v7214AccountReadyQueueDiagnostics?.()||null}catch(_){runtimeProfile.accountQueueBefore=null}
+  try{runtimeProfile.authorityBefore=window.v7133AuthorityDiagnostics?.()||null}catch(_){runtimeProfile.authorityBefore=null}
+ }else{runtimeProfile.accountQueueBefore=null;runtimeProfile.authorityBefore=null}
  runtimeProfile.longTasks=[];runtimeProfile.loafFrames=[];
  runtimeProfile.splashEvents=[];runtimeProfile.splashState='';runtimeProfile.splashListeners=[];
  runtimeProfile.longSupported=false;runtimeProfile.loafSupported=false;
