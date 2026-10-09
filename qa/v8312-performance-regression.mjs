@@ -60,6 +60,7 @@ for(const file of [...cssFiles].sort()){
 }
 check(missing.length===0,'Missing assets: '+missing.slice(0,8).join(', '));
 check(badSyntax.length===0,'JS syntax failures: '+badSyntax.slice(0,8).join('; '));
+const beta=read('beta.html');
 const home=read('js/features/home/beta/v8009-home-renderer.js');
 const homeFit=read('js/system/performance/v7288-home-adaptive-fit-script.js');
 const boss=read('v8009-extracted-v6118-event-x2-worldboss-design-css.css');
@@ -106,8 +107,13 @@ check(domainsBody.includes('try{return window.v7040AuthorityDiagnostics?.()?.dom
   'V8.339 account domain gate must read v7040 directly, not recursive v7133');
 check(beta.includes('v8009-s1-v4139-account-switch-authority.js?v=8339-break-diag-cycle-beta'),
   'V8.339 account diagnostic fix missing cache bust');
+/* V8.341: v4149 and v7119 must not dispatch duplicate CHARACTER events. */
+const navOwner=read('js/features/system/beta/v8009-s8-v4149-final-navigation-render-authority.js');
+check(navOwner.includes("if(!(id==='character'&&window.__V7119_CHARACTER_NAV_CONSOLIDATION__===true))"),
+  'V8.341 character navigation deduplication was removed');
+check(beta.includes('v8009-s8-v4149-final-navigation-render-authority.js?v=8341-single-character-nav-beta'),
+  'V8.341 final navigation owner cache key missing');
 
-const beta=read('beta.html');
 check(beta.includes('v8009-s12-v7081-account-capability-gate.js?v=8337-flat-diag-beta'),'Beta capability hotpath cache not updated');
 check(beta.includes('v8009-s1-v7042-unified-authority-bridge.js?v=8337-memo-diag-beta'),'Beta bridge hotpath cache not updated');
 check(beta.includes('v8009-extracted-v372-authoritative-header-css.css?v=8337-legacy-flow-beta'),'Beta retired header CSS cache not updated');
