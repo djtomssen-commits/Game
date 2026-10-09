@@ -438,6 +438,13 @@ function stopRuntimeProfiler(){
  const characterRender=isBetaProfile?(window.v7207CharacterRenderDiagnostics?.()||null):null;
  const freshCharacterRender=characterRender&&Number(characterRender.at||0)>=runtimeProfile.startEpoch&&
    Number(characterRender.at||0)<=Date.now();
+ const characterNavEvent=isBetaProfile?(window.v7119CharacterNavEventDiagnostics?.()||null):null;
+ const characterNavHub=isBetaProfile?(window.v459CharacterNavDiagnostics?.()||null):null;
+ const characterNavFrost=isBetaProfile?(window.v4153CharacterNavDiagnostics?.()||null):null;
+ const navFresh=characterNavEvent&&Number(characterNavEvent.at||0)>=runtimeProfile.startEpoch&&
+   Number(characterNavEvent.at||0)<=Date.now();
+ const hubSame=navFresh&&characterNavHub&&Math.abs(Number(characterNavHub.at||0)-Number(characterNavEvent.at||0))<3000;
+ const frostSame=navFresh&&characterNavFrost&&Math.abs(Number(characterNavFrost.at||0)-Number(characterNavEvent.at||0))<3000;
  const consistencyIssues=(consistencyAfter?.issues||[]).filter(x=>Number(x.at||0)>=runtimeProfile.startEpoch);
  const progressBefore=runtimeProfile.progressBefore||{};
  const progressAfter=isBetaProfile?(window.v7077ProgressDiagnostics?.()||{}):{};
@@ -554,6 +561,27 @@ function stopRuntimeProfiler(){
       ' ms | Inventar '+Number(characterRender.inventory||0)+' ms | Verlauf bis fertig '+Number(characterRender.total||0)+
       ' ms (enthält Wartezeit zwischen Frames)'
     :'Kein vollständig protokollierter Charakter-Render im Messfenster.',
+   '',
+   'CHARAKTER-NAVIGATION LISTENER (V8.343, letzter Event im Messfenster):',
+   navFresh
+    ?'Event gesamt '+Number(characterNavEvent.listenersMs||0)+' ms (v7119 synchronous dispatch)'+
+      ' | v459 Charakter-Hub '+(hubSame?Number(characterNavHub.totalMs||0)+' ms':'nicht erfasst')+
+      ' | v4153 Frost/Avatar '+(frostSame?Number(characterNavFrost.totalMs||0)+' ms':'nicht erfasst')+
+      ' | Rest '+(hubSame&&frostSame
+        ?Math.max(0,Number(characterNavEvent.listenersMs||0)-Number(characterNavHub.totalMs||0)-
+          Number(characterNavFrost.totalMs||0))+' ms (andere Listener/Dispatch)'
+        :'nicht bestimmt')
+    :'Kein Charakter-Navigations-Event im Messfenster vollständig erfasst.',
+   ...(hubSame?[
+     'V459-HUB: Layout '+Number(characterNavHub.layoutMs||0)+' ms | Fallback '+Number(characterNavHub.fallbackMs||0)+
+       ' ms | Layout erfolgreich '+!!characterNavHub.hubReady
+   ]:[]),
+   ...(frostSame?[
+     'V4153: Basis/Avatare '+Number(characterNavFrost.coreMs||0)+' ms | Equipment '+Number(characterNavFrost.equipmentMs||0)+
+       ' ms | Item-Dekoration '+Number(characterNavFrost.decorationsMs||0)+
+       ' ms | zusätzliches Hub/Inventar '+Number(characterNavFrost.hubMs||0)+
+       ' ms | redundanter Hub-Durchlauf vermieden '+!!characterNavFrost.skippedDuplicateHub
+   ]:[]),
    '',
    'KAMPFKRAFT REPAINT (V8.333, Beta):',
    'Aufrufe '+powerDelta.attempts+' | DOM-Schreibvorgänge '+powerDelta.writes+
