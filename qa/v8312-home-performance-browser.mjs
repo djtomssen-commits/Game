@@ -499,7 +499,16 @@ async function checkCharacterNavigationHubSinglePass(){
       extraLayouts,extraInventory,
       equipment:window.qaEquipment,decorations:window.qaDecoration};
     window.v4153RefreshFrostUi('equip');
-    return {onNav,equip:{extraLayouts,extraInventory,equipment:window.qaEquipment,decorations:window.qaDecoration}};
+    const equip={extraLayouts,extraInventory,equipment:window.qaEquipment,decorations:window.qaDecoration};
+    /* No Hub shell: v459 cannot finish the presentation refresh, so Frost
+       must retain its legacy fallback instead of silently skipping it. */
+    document.getElementById('v459CharacterShell')?.remove();
+    window.__V504_CHARACTER_OWNER__=true;
+    const missingShell=new CustomEvent('growlegends:navigation-open-v7119',{detail:{id:'character'}});
+    window.dispatchEvent(missingShell);
+    return {onNav,equip,noShell:{marked:missingShell.__v8343CharacterHubRefreshed,
+      extraLayouts,extraInventory,frost:window.v4153CharacterNavDiagnostics?.()}};
+  
   });
   assert.deepEqual(errors,[],'V8.343 real character owners must not throw');
   assert.equal(result.onNav.marked,true,'V8.343 canonical hub marks its completed pass');
@@ -510,6 +519,11 @@ async function checkCharacterNavigationHubSinglePass(){
     'V8.343 equipment and item-decorations must still render on navigation');
   assert.equal(result.equip.extraLayouts,1,'V8.343 explicit equipment refresh must keep full hub');
   assert.equal(result.equip.extraInventory,1,'V8.343 explicit equipment refresh must keep full inventory');
+  assert.equal(result.noShell.marked,false,'V8.343 must not mark a missing hub as refreshed');
+  assert.equal(result.noShell.frost?.skippedDuplicateHub,false,
+    'V8.343 fallback Frost listener must run if no hub is available');
+  assert.equal(result.noShell.extraLayouts,2,'V8.343 missing shell must retain extra layout fallback');
+  assert.equal(result.noShell.extraInventory,2,'V8.343 missing shell must retain inventory fallback');
   scenarios.push({channel:'beta',characterNavigationHub:result});
   await page.close();
 }
