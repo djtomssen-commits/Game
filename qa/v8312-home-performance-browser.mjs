@@ -61,8 +61,13 @@ async function run(channel){
   })).catch(()=>null);
   assert.ok(baseline,channel+' must render the home');
   const eventLayers=await page.evaluate(()=>window.v8334HomeEventTopDiagnostics?.()||null);
-  if(channel==='beta')assert.ok(eventLayers?.childOrder?.some(x=>x.includes('v690-events-card')),
-    'Beta should expose bounded event top hit-test without modifying the world');
+  if(channel==='beta'){
+    assert.ok(eventLayers?.childOrder?.some(x=>x.includes('v690-events-card')),
+      'Beta should expose bounded event top hit-test without modifying the world');
+    assert.equal(eventLayers?.hitBands?.length,4,'V8.335 samples actual 8px band above Events');
+    assert.ok(eventLayers?.paintCandidates?.some(x=>x.startsWith('events:')),
+      'V8.335 reports the Events paint owner, including CSS shadows');
+  }
   else assert.equal(eventLayers,null,'Event layer diagnostics must stay Beta-only');
   const values=await page.evaluate(()=>{
     const world=document.getElementById('world');
@@ -453,7 +458,7 @@ async function checkSampledJsonProfile(){
   await page.addScriptTag({content:source+';window.qaStartSampledProbe=startRuntimeCpuProbe;window.qaStopSampledProbe=stopRuntimeCpuProbe;'});
   const out=await page.evaluate(()=>{
     runtimeProfile.cpuProbe=qaStartSampledProbe();
-    for(let i=0;i<512;i++){JSON.parse('{"ok":1}');JSON.stringify({ok:1})}
+    for(let i=0;i<8192;i++){JSON.parse('{"ok":1}');JSON.stringify({ok:1})}
     localStorage.setItem('v8334-qa-probe','yes');
     const result=qaStopSampledProbe();
     return {parseRestored:JSON.parse===qaOriginalParse,
@@ -465,9 +470,12 @@ async function checkSampledJsonProfile(){
   });
   assert.ok(out.parseRestored&&out.stringifyRestored&&out.storageRestored,
     'All native methods must restore when profiler stops');
-  assert.ok(out.parse.calls>=512&&out.stringify.calls>=512,'Sampler must count all JSON calls');
+  assert.ok(out.parse.calls>=8192&&out.stringify.calls>=8192,'Sampler must count all JSON calls');
   assert.ok(out.parse.samples>=2&&out.stringify.samples>=2,'Sampler only times 1 in 256 calls');
   assert.ok(out.parse.samples<out.parse.calls/100,'Hot path should avoid timing every JSON call');
+  assert.ok(out.parse.ownerSamples>=2&&out.stringify.ownerSamples>=2,
+    'V8.335 caller sampling must continue at 4096 and 8192 calls, not stop at first 100 timing probes');
+  assert.ok(Object.keys(out.parse.buckets||{}).length>=1,'V8.335 approximate call buckets available');
   assert.ok(out.storage.calls>=1,'Storage setter remains observable');
   scenarios.push({channel:'beta',jsonSampling:{calls:out.parse.calls,samples:out.parse.samples,
     restored:true,storageWrites:out.storage.calls}});
