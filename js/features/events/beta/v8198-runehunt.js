@@ -4,7 +4,7 @@ if(!['beta','server1'].includes(String(window.GROW_RELEASE_CHANNEL||'stable').to
 if(window.__V8210_GROW_CUP__)return;
 window.__V8210_GROW_CUP__=true;
 
-const VERSION='V8.220';
+const VERSION='V8.306';
 const PLANTS={
  seedling:'assets/v7198-base64/49aed1d1c8035f5d2123.webp',
  growth:'assets/v7198-base64/c9ec3c217b81f805555c.webp',
@@ -25,7 +25,7 @@ const METRICS=[
 const TIER={
  bronze:['🥉','BRONZE'],silver:['🥈','SILBER'],gold:['🥇','GOLD'],master:['💎','MEISTER'],champion:['👑','GROW CHAMPION']
 };
-const S={state:null,ranking:null,busy:false,opened:false,view:'cup',lastError:'',refreshes:0,starts:0,submits:0,timer:null,clockOffset:0,boundaryKey:'',boundaryRetryAt:0,refreshInFlight:null,draftKey:'',draft:null};
+const S={state:null,ranking:null,rankingLoadedAt:0,rankingInFlight:null,busy:false,opened:false,view:'cup',lastError:'',refreshes:0,starts:0,submits:0,timer:null,clockOffset:0,boundaryKey:'',boundaryRetryAt:0,refreshInFlight:null,draftKey:'',draft:null};
 const db=()=>{try{return (typeof v073Db!=='undefined'&&v073Db)||null}catch(_){return null}};
 const uid=()=>{try{return String((typeof v073User!=='undefined'&&v073User?.id)||'')}catch(_){return ''}};
 const one=v=>Array.isArray(v)?v[0]:v;
@@ -51,7 +51,7 @@ function v8230RestoreMenuHost(){
   if(panel&&host&&panel.parentElement!==host)host.appendChild(panel);
  }catch(_){}
 }
-function close(){stopClock();overlay().classList.remove('show');document.body.classList.remove('v8210-growcup-open');document.querySelector('#v032MenuPanel')?.classList.remove('open','show');v8230RestoreMenuHost();S.opened=false}
+function close(){closeRankReward();stopClock();overlay().classList.remove('show');document.body.classList.remove('v8210-growcup-open');document.querySelector('#v032MenuPanel')?.classList.remove('open','show');v8230RestoreMenuHost();S.opened=false}
 function wallet(){
  const st=S.state||{};
  return '<div class="v8210-wallet"><span><i>ᚱ</i><b>'+Math.max(0,Number(st.runes)||0)+'</b><small>Runen</small></span><span><i>✦</i><b>'+Math.max(0,Number(st.rune_shards)||0)+'</b><small>Fragmente</small></span></div>';
@@ -235,6 +235,7 @@ function applyState(r){
  const serverNow=next?.server_now||next?.run?.server_now;if(serverNow)S.clockOffset=new Date(serverNow).getTime()-Date.now();
  if(prevKey!==nextKey){S.boundaryKey='';S.boundaryRetryAt=0;S.draftKey='';S.draft=null}
  window.dispatchEvent(new CustomEvent('growlegends:growcup-state',{detail:{...next}}));
+ paintHomeResults();
  if(changed&&document.getElementById('world')?.classList.contains('active')){try{window.v085InstallWorld?.(true)}catch(_){}}
  return true;
 }
@@ -248,11 +249,63 @@ async function refresh({paintNow=true}={}){
  })();
  return S.refreshInFlight;
 }
-async function loadRanking(force=false){
- if(S.busy&&!force)return null;
- try{const r=await rpc('v8210_growcup_leaderboard',{p_limit:100});if(r?.ok){S.ranking=r;if(S.opened)paint()}return r}
- catch(e){S.lastError=String(e?.message||e);console.warn('[V8.219 Grow Cup] ranking',e);return null}
+/* V8.306: show home results only for a final server leaderboard, never local date. */
+function paintHomeResults(){
+ const active=typeof window.v8210GrowCupEventActive==='function'
+   ?window.v8210GrowCupEventActive()===true:!!S.state?.active;
+ const d=S.ranking;
+ const show=!!(d?.ok&&d.final===true&&d.event_key&&Array.isArray(d.rows)&&d.rows.length&&!active);
+ document.querySelectorAll('#world .v8310-cup-results-slot').forEach(slot=>{
+  slot.hidden=!show;
+  if(!show)return;
+  const label=slot.querySelector('[data-growcup-results-status]');
+  if(!label)return;
+  const run=S.state?.run;
+  const mine=run?.status==='completed'&&String(run.event_key||'')===String(d.event_key||'');
+  const suffix=mine?(run.rank_reward_claimed?'Belohnung abgeholt':'Rangbelohnung prüfen'):'Alle Platzierungen ansehen';
+  label.textContent='Cup vom '+String(d.event_key).split('-').reverse().join('.')+' · '+suffix;
+ });
 }
+function closeRankReward(){
+ const el=document.getElementById('v8310CupRewardLayer');
+ if(el){el.hidden=true;el.replaceChildren()}
+}
+function showRankReward(result){
+ const rank=Math.max(0,Math.floor(Number(result?.rank)||0));
+ const runes=Math.max(0,Math.floor(Number(result?.runes_awarded)||0));
+ const shards=Math.max(0,Math.floor(Number(result?.shards_awarded)||0));
+ const medal=rank===1?'🥇':rank===2?'🥈':rank===3?'🥉':'🏆';
+ let layer=document.getElementById('v8310CupRewardLayer');
+ if(!layer){layer=document.createElement('div');layer.id='v8310CupRewardLayer';document.body.appendChild(layer)}
+ layer.className='v8310-cup-reward-layer';layer.hidden=false;
+ layer.setAttribute('role','presentation');
+ layer.innerHTML='<div class="v8310-cup-reward-panel" role="dialog" aria-modal="true" aria-label="Grow Cup Rangbelohnung">'+
+ '<small class="v8310-cup-reward-kicker">GROW CUP · RANGBELOHNUNG</small>'+
+ '<div class="v8310-cup-reward-medal" aria-hidden="true">'+medal+'</div>'+
+ '<h2>Platz '+rank+'!</h2><p>Deine Rangbelohnung wurde erfolgreich auf deinem Serverkonto gutgeschrieben.</p>'+
+ '<div class="v8310-cup-reward-items">'+
+ '<div class="v8310-cup-reward-item"><i aria-hidden="true">ᚱ</i><b>+'+runes+'</b><small>Verzauberungsrunen</small></div>'+
+ '<div class="v8310-cup-reward-item"><i aria-hidden="true">✦</i><b>+'+shards+'</b><small>Runenfragmente</small></div>'+
+ '</div><button type="button" class="v8310-cup-reward-confirm" data-cup-reward-close>Belohnung ansehen ✓</button></div>';
+ layer.querySelector('[data-cup-reward-close]')?.addEventListener('click',closeRankReward);
+ layer.querySelector('[data-cup-reward-close]')?.focus?.();
+}
+
+async function loadRanking(force=false){
+ if(S.rankingInFlight)return S.rankingInFlight;
+ if(S.busy&&!force)return null;
+ if(!force&&S.ranking&&Date.now()-S.rankingLoadedAt<45000){paintHomeResults();return S.ranking}
+ S.rankingInFlight=(async()=>{
+  try{
+   const r=await rpc('v8210_growcup_leaderboard',{p_limit:100});
+   if(r?.ok){S.ranking=r;S.rankingLoadedAt=Date.now();paintHomeResults();if(S.opened)paint()}
+   return r;
+  }catch(e){S.lastError=String(e?.message||e);console.warn('[V8.306 Grow Cup] ranking',e);return null}
+  finally{S.rankingInFlight=null}
+ })();
+ return S.rankingInFlight;
+}
+
 function v8229ToggleGlobalMenu(){
  try{
   window.v4148BuildCompleteMenu?.();
@@ -294,8 +347,8 @@ if(!window.__V8229_GROWCUP_GLOBAL_MENU_GUARD__){
   v8229ToggleGlobalMenu();
  },true);
 }
-async function open(){
- S.opened=true;S.view='cup';
+async function open(view='cup'){
+ S.opened=true;S.view=view==='ranking'?'ranking':'cup';
  document.body.classList.add('v8210-growcup-open');
  const panel=document.getElementById('v032MenuPanel'),topbar=document.getElementById('v372TopbarShell');
  if(panel&&topbar&&panel.parentElement!==topbar)topbar.appendChild(panel);
@@ -338,12 +391,14 @@ async function claimRank(){
   const m=String(e?.message||e);toast('Rangbelohnung','info',m.includes('RANKING_NOT_FINAL')?'Noch laufende 6-Stunden-Runs – die Rangliste ist noch nicht final.':m);
  }finally{S.busy=false;paint()}
 }
-function key(e){if(e.key==='Escape'&&S.opened){e.preventDefault();close()}}
+function key(e){if(e.key!=='Escape')return;if(document.getElementById('v8310CupRewardLayer')?.hidden===false){e.preventDefault();closeRankReward();return}if(S.opened){e.preventDefault();close()}}
 window.v8210OpenGrowCup=open;
+window.v8210OpenGrowCupResults=()=>open('ranking');
 window.v8210GrowCupRefresh=refresh;
 window.v8210GrowCupSnapshot=()=>S.state?JSON.parse(JSON.stringify(S.state)):null;
 window.v8210GrowCupClose=close;
 window.v8210GrowCupLeaderboard=loadRanking;
+window.v8310GrowCupResultsPaint=paintHomeResults;
 window.v8210GrowCupDiagnostics=()=>({version:VERSION,busy:S.busy,opened:S.opened,view:S.view,refreshes:S.refreshes,starts:S.starts,submits:S.submits,lastError:S.lastError,state:S.state,ranking:S.ranking});
 window.addEventListener('keydown',key);
 window.addEventListener('growlegends:account-ready',()=>{stopClock();S.state=null;S.ranking=null;S.draft=null;S.draftKey='';S.boundaryKey='';S.boundaryRetryAt=0;void refresh({paintNow:false})},{passive:true});
