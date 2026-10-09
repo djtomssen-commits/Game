@@ -445,6 +445,17 @@ function stopRuntimeProfiler(){
    Number(characterNavEvent.at||0)<=Date.now();
  const hubSame=navFresh&&characterNavHub&&Math.abs(Number(characterNavHub.at||0)-Number(characterNavEvent.at||0))<3000;
  const frostSame=navFresh&&characterNavFrost&&Math.abs(Number(characterNavFrost.at||0)-Number(characterNavEvent.at||0))<3000;
+ /* V8.344: only in-window, temporally matching numeric listener timings. */
+ const characterNav510=isBetaProfile?(window.v510CharacterNavDiagnostics?.()||null):null;
+ const characterNav514=isBetaProfile?(window.v514CharacterNavDiagnostics?.()||null):null;
+ const characterNav7157=isBetaProfile?(window.v7157CharacterNavDiagnostics?.()||null):null;
+ const nav510Same=navFresh&&characterNav510&&Math.abs(Number(characterNav510.at||0)-Number(characterNavEvent.at||0))<3000;
+ const nav514Same=navFresh&&characterNav514&&Math.abs(Number(characterNav514.at||0)-Number(characterNavEvent.at||0))<3000;
+ const nav7157Same=navFresh&&characterNav7157&&Math.abs(Number(characterNav7157.at||0)-Number(characterNavEvent.at||0))<3000;
+ const navOwnerMeasured=[hubSame&&Number(characterNavHub.totalMs||0),
+   frostSame&&Number(characterNavFrost.totalMs||0),nav510Same&&Number(characterNav510.cpuMs||0),
+   nav514Same&&Number(characterNav514.cpuMs||0),nav7157Same&&Number(characterNav7157.totalMs||0)];
+ const navMeasuredComplete=navOwnerMeasured.every(x=>x!==false);
  const consistencyIssues=(consistencyAfter?.issues||[]).filter(x=>Number(x.at||0)>=runtimeProfile.startEpoch);
  const progressBefore=runtimeProfile.progressBefore||{};
  const progressAfter=isBetaProfile?(window.v7077ProgressDiagnostics?.()||{}):{};
@@ -569,7 +580,11 @@ function stopRuntimeProfiler(){
       ' | v4153 Frost/Avatar '+(frostSame?Number(characterNavFrost.totalMs||0)+' ms':'nicht erfasst')+
       ' | Rest '+(hubSame&&frostSame
         ?Math.max(0,Number(characterNavEvent.listenersMs||0)-Number(characterNavHub.totalMs||0)-
-          Number(characterNavFrost.totalMs||0))+' ms (andere Listener/Dispatch)'
+          Number(characterNavFrost.totalMs||0)-
+          (nav510Same?Number(characterNav510.cpuMs||0):0)-
+          (nav514Same?Number(characterNav514.cpuMs||0):0)-
+          (nav7157Same?Number(characterNav7157.totalMs||0):0))+
+          ' ms ('+(navMeasuredComplete?'andere Listener/Dispatch':'nicht alle Owner erfasst')+')'
         :'nicht bestimmt')
     :'Kein Charakter-Navigations-Event im Messfenster vollständig erfasst.',
    ...(hubSame?[
@@ -581,6 +596,14 @@ function stopRuntimeProfiler(){
        ' ms | Item-Dekoration '+Number(characterNavFrost.decorationsMs||0)+
        ' ms | zusätzliches Hub/Inventar '+Number(characterNavFrost.hubMs||0)+
        ' ms | redundanter Hub-Durchlauf vermieden '+!!characterNavFrost.skippedDuplicateHub
+   ]:[]),
+   'V8.344 HELDENQUARTIER: v510 Aufbau '+(nav510Same?Number(characterNav510.cpuMs||0)+' ms':'nicht erfasst')+
+     ' | v514 Referenz-Hero '+(nav514Same?Number(characterNav514.cpuMs||0)+' ms':'nicht erfasst')+
+     ' | v7157 Stabilität '+(nav7157Same?Number(characterNav7157.totalMs||0)+' ms':'nicht erfasst'),
+   ...(nav7157Same?[
+     'V7157: Equipment '+Number(characterNav7157.equipmentMs||0)+' ms'+
+     ' | zweite v510-Ausführung vermieden '+!!characterNav7157.skipped510+
+     ' | zweite v514-Ausführung vermieden '+!!characterNav7157.skipped514
    ]:[]),
    '',
    'KAMPFKRAFT REPAINT (V8.333, Beta):',
