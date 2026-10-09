@@ -13807,3 +13807,10 @@ Aktueller Release-Status:
 - Vorhandener CSS-Owner `css/features/events/beta/v8306-growcup-home-results.css`: Kartenformat unten auf beide Server angewendet, Result-RPC und Claim-Popup nicht verändert.
 - `beta.html` und `server1.html` laden kanonische Home-JS und Cup-Ergebnis-CSS jetzt gezielt mit `?v=8308-cup-lower-both`; keine Änderungen an Server-Daten, Klassenbalance oder Reward-Logik.
 - Manuelle Android-/Cloudflare-Sichtprüfung auf Beta und Server 1 sowie Klickprüfung Rangliste/Claim noch offen.
+
+### 2026-10-09 – V8.309 – Grow-Cup-Ergebnis-Slot: gleiche Kachelhöhe wie „Aktuelles“ (Beta + Server 1)
+- Nutzer-Screenshot bestätigt: Grow-Cup-Ergebniskachel stand deutlich unter den Nachbarkacheln heraus; Wunsch **gleiche Slotgröße** wie Weltboss, Illegales Buch und weitere „Aktuelles“-Kacheln.
+- Ursache im bestehenden CSS-Owner `css/features/events/beta/v8306-growcup-home-results.css`: `.v8310-cup-results-slot` und sein Button hatten beide `height:100%`, wobei der Button dadurch aus dem automatischen Grid-Zeilenmaß hinausragen konnte.
+- Kanonischer CSS-Fix: äußere Kachel als `display:flex;align-self:stretch;height:auto;min-height:0;box-sizing:border-box` im `.v366-lower`-Grid; innen `flex:1 1 auto;height:auto;box-sizing:border-box;min-height:205px`. Bild, Text und Claim-Logik unverändert; Belohnungs-Popup-CSS unverändert.
+- **Beide Server freigegeben:** `beta.html` und `server1.html` aktualisieren gezielt ausschließlich die betroffene CSS-URL auf `?v=8309-cup-equal-size`. Kein SQL-, Belohnungs-, Klassenbalance- oder Währungsänderung.
+- Android/WebView-Sichttest im echten Spiel auf beiden Servern noch ausstehend.
