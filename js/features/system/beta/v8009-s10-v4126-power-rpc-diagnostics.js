@@ -2,6 +2,26 @@
  'use strict';
  const VERSION=window.GROW_LEGENDS_VERSION?.label||'V4.159 Stable',SHORT=window.GROW_LEGENDS_VERSION?.short||'V4.159';
  let calculating=false;
+ const BETA=String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta';
+ const paintStats={attempts:0,writes:0,coalesced:0,totalMs:0,maxMs:0};
+ let powerFrame=0;
+ /* V8.333 Beta: legacy renderer stacks can ask to repaint power 3-4 times
+    within one frame. A single animation frame paints the latest live value.
+    Direct v4125PaintStablePower calls remain synchronous. */
+ function schedulePower(){
+  if(!BETA){repaintPower();return}
+  if(powerFrame){paintStats.coalesced++;return}
+  powerFrame=requestAnimationFrame(()=>{powerFrame=0;repaintPower()});
+ }
+ function paintValue(el,val){
+  if(!el)return;
+  const next=String(val);
+  if(BETA&&el.textContent===next)return;
+  el.textContent=next;
+  if(BETA)paintStats.writes++;
+ }
+ window.v4125PowerPaintDiagnostics=()=>({...paintStats,queued:!!powerFrame});
+
 
  /* Public/character Kampfkraft must never depend on which screen is open.
     Grow buffs may still be context-dampened inside combat, but the displayed/synced
@@ -27,15 +47,17 @@
  window.v4125StableCombatPower=stablePower;
 
  function repaintPower(){
+  const begin=BETA?performance.now():0;
+  if(BETA)paintStats.attempts++;
   const cp=stablePower();
-  ['#power','#charPower','#v358Power','#v110Cp'].forEach(sel=>{const el=document.querySelector(sel);if(el)el.textContent=cp});
+  ['#power','#charPower','#v358Power','#v110Cp'].forEach(sel=>paintValue(document.querySelector(sel),cp));
   try{
    /* V8.325: canonical home V366 formats power with de-DE grouping.
       Keep Server 1's current presentation until separate approval. */
-   document.querySelectorAll('.v349-power b').forEach(el=>{if(el.textContent!==String(cp))el.textContent=cp});
+   document.querySelectorAll('.v349-power b').forEach(el=>paintValue(el,cp));
    const homePower=String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta'
     ?cp.toLocaleString('de-DE'):String(cp);
-   document.querySelectorAll('.v366-power b').forEach(el=>{if(el.textContent!==homePower)el.textContent=homePower});
+   document.querySelectorAll('.v366-power b').forEach(el=>paintValue(el,homePower));
    const own=typeof v073User!=='undefined'&&v073User?.id?String(v073User.id):'';
    if(own){
     document.querySelectorAll('.v072-player-row[data-profile-id]').forEach(row=>{
@@ -45,34 +67,35 @@
       const walker=document.createTreeWalker(sub,NodeFilter.SHOW_TEXT);
       while(walker.nextNode()){
        const n=walker.currentNode;
-       if(/Kampfkraft\s+\d+/i.test(n.nodeValue||'')){n.nodeValue=(n.nodeValue||'').replace(/Kampfkraft\s+\d+/i,`Kampfkraft ${cp}`);break}
+       if(/Kampfkraft\s+\d+/i.test(n.nodeValue||'')){const next=(n.nodeValue||'').replace(/Kampfkraft\s+\d+/i,`Kampfkraft ${cp}`);if(n.nodeValue!==next){n.nodeValue=next;if(BETA)paintStats.writes++}break}
       }
      }
     });
     document.querySelectorAll('#v072OwnProfile .v072-profile-stat').forEach(box=>{
-     if(/Kampf(?:kraft|wert)/i.test(box.textContent||'')){const b=box.querySelector('b');if(b)b.textContent=cp}
+     if(/Kampf(?:kraft|wert)/i.test(box.textContent||'')){const b=box.querySelector('b');paintValue(b,cp)}
     });
     const openProfile=document.querySelector('#v074ProfileContent');
     if(openProfile&&String(openProfile.dataset.profileId||'')===own){
      openProfile.querySelectorAll('.v326-profile-stat,.v072-profile-stat').forEach(box=>{
-      if(/Kampf(?:kraft|wert)/i.test(box.textContent||'')){const b=box.querySelector('b');if(b)b.textContent=cp}
+      if(/Kampf(?:kraft|wert)/i.test(box.textContent||'')){const b=box.querySelector('b');paintValue(b,cp)}
      });
     }
    }
   }catch(e){}
+  finally{if(BETA){const ms=performance.now()-begin;paintStats.totalMs+=ms;paintStats.maxMs=Math.max(paintStats.maxMs,ms)}}
  }
  window.v4125PaintStablePower=repaintPower;
 
  /* Repaint after the existing render/navigation stack without replacing gameplay renderers. */
  try{
   if(typeof render==='function'&&!window.__v4125RenderPower){
-   const base=render;render=function(){const r=base.apply(this,arguments);repaintPower();requestAnimationFrame(repaintPower);return r};
+   const base=render;render=function(){const r=base.apply(this,arguments);if(BETA)schedulePower();else{repaintPower();requestAnimationFrame(repaintPower)}return r};
    try{window.render=render}catch(e){}window.__v4125RenderPower=true;
   }
  }catch(e){}
  try{
   if(typeof v032Go==='function'&&!window.__v4125GoPower){
-   const base=v032Go;v032Go=function(id){const r=base.apply(this,arguments);repaintPower();requestAnimationFrame(repaintPower);setTimeout(repaintPower,90);return r};
+   const base=v032Go;v032Go=function(id){const r=base.apply(this,arguments);if(BETA)schedulePower();else{repaintPower();requestAnimationFrame(repaintPower);setTimeout(repaintPower,90)}return r};
    try{window.v032Go=v032Go}catch(e){}window.__v4125GoPower=true;
   }
  }catch(e){}
