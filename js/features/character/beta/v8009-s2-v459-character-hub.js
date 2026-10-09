@@ -365,12 +365,29 @@
   /* Talent/material renderers keep their mechanics; v459 owns when their visible UI is refreshed. */
   /* V8.009: global render hook retired.
      renderInventory/renderSkillTree/materials + character navigation already own this UI. */
+  /* V8.343 Beta: the hub is the character layout/tab owner. Signal on the
+     current event that it already completed the presentation pass, allowing
+     the later Frost/dual-weapon owner to refresh weapons and avatars without
+     repeating the same layout + inventory traversal. No global sticky flag. */
+  let lastNav={at:0,totalMs:0,layoutMs:0,fallbackMs:0,hubReady:false};
+  window.v459CharacterNavDiagnostics=()=>({...lastNav});
   window.addEventListener('growlegends:navigation-open-v7119',e=>{
-    if(String(e?.detail?.id||'')==='character'){
-      /* layout succeeds with its own tab activation, otherwise V504 owns it. */
-      if(!layout()){activate(activeTab(),false);updateHero()}
-      stamp();
+    if(String(e?.detail?.id||'')!=='character')return;
+    const begin=performance.now?.()||Date.now();
+    const lBegin=begin;
+    const hubReady=layout();
+    const layoutMs=(performance.now?.()||Date.now())-lBegin;
+    let fallbackMs=0;
+    if(!hubReady){
+      const fBegin=performance.now?.()||Date.now();
+      activate(activeTab(),false);updateHero();
+      fallbackMs=(performance.now?.()||Date.now())-fBegin;
     }
+    stamp();
+    /* e belongs to this single synchronous dispatch, never persisted. */
+    e.__v8343CharacterHubRefreshed=true;
+    lastNav={at:Date.now(),totalMs:Math.round((performance.now?.()||Date.now())-begin),
+      layoutMs:Math.round(layoutMs),fallbackMs:Math.round(fallbackMs),hubReady};
   });window.__v459GoWrapped='v7119-event';
 
   layout();activate(activeTab(),false);stamp();
