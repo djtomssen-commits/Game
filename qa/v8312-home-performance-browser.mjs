@@ -266,6 +266,97 @@ async function checkAccountReadyCpuAttribution(channel){
   scenarios.push({channel,accountReady:{drained:d.drained,cpuMs:d.callbackCpuMs,owners:d.callbackOwners}});
   await page.close();
 }
+async function checkReadOnlyConsistencyWatch(channel){
+  const page=await browser.newPage();
+  const origin='https://guard-test.invalid/';
+  await page.route(origin,route=>route.fulfill({status:200,contentType:'text/html',body:
+   '<!doctype html><html><body><div id="v372Gold">1.997</div><div id="v372Harz">8</div><div id="v372Dampf">100/100</div><div id="charPower">1.997</div></body></html>'}));
+  await page.goto(origin);
+  await page.evaluate(channel=>{
+    window.GROW_RELEASE_CHANNEL=channel;
+    window.KEY='gl-v8330-qa';
+    window.v073User={id:'qa-consistency'};
+    window.s={gold:1997,harzTaler:8,energy:100,level:5,xp:50,
+      inventory:[{id:'item-1',bonus:{strength:2}}],equipment:{weapon:null},social:{playerId:'qa-consistency'}};
+    window.localStorage.setItem(window.KEY,JSON.stringify(window.s));
+    window.v073Db={rpc:()=>{window.qaRpcCalls++;throw Error('Watch must not issue an RPC')}};
+    window.qaRpcCalls=0;
+  },channel);
+  await page.addScriptTag({path:file('js/features/system/beta/v8330-data-consistency-watch.js')});
+  if(channel==='server1'){
+    const guardAbsent=await page.evaluate(()=>typeof window.v8330ObserveCanonical==='undefined');
+    assert.equal(guardAbsent,true,'Server1 must have no V8.330 watcher even if module is loaded');
+    scenarios.push({channel,consistencyWatch:'not-installed'});
+    await page.close();return;
+  }
+  await page.evaluate(()=>{
+    window.v8330ObserveCanonical('progress',{gold:1997,harz:8,level:5,xp:50});
+    window.v8330ObserveCanonical('quest',{energy:100});
+    window.v8330ObserveCanonical('items',{inventory:window.s.inventory,equipment:window.s.equipment});
+  });
+  await page.waitForTimeout(1540);
+  const clean=await page.evaluate(()=>window.v8330DataConsistencyReport());
+  assert.equal(clean.issues.length,0,'Formatted 1.997 and canonical item/energy should not false-alarm');
+  assert.equal(clean.observations,3,'Three canonical owners should be counted');
+
+  await page.evaluate(()=>{
+    window.s.energy=100;
+    document.getElementById('v372Dampf').textContent='100/100';
+    window.v8330ObserveCanonical('refill',{energy:100,harz:8});
+    // Simulate a stale local painter overwriting an already confirmed refill.
+    window.s.energy=0;
+    document.getElementById('v372Dampf').textContent='0/100';
+    window.localStorage.setItem(window.KEY,JSON.stringify(window.s));
+  });
+  await page.waitForTimeout(1550);
+  const mismatch=await page.evaluate(()=>window.v8330DataConsistencyReport());
+  assert.ok(mismatch.issues.some(x=>x.key==='energy:runtime'&&x.expected===100&&x.actual===0),
+    'Persistent Dampf mismatch must be recorded');
+  assert.ok(mismatch.issues.some(x=>x.key==='energy:topbar'),
+    'Confirmed Dampf vs visible Topbar mismatch must be recorded');
+
+  await page.evaluate(()=>{
+    window.s.energy=100;
+    document.getElementById('v372Dampf').textContent='100/100';
+    window.v8330ObserveCanonical('items',{inventory:[{id:'item-1',bonus:{strength:2}}],equipment:{weapon:null}});
+    window.s.inventory=[{id:'item-1',bonus:{strength:55}}];
+    window.localStorage.setItem(window.KEY,JSON.stringify(window.s));
+  });
+  await page.waitForTimeout(1550);
+  const items=await page.evaluate(()=>window.v8330DataConsistencyReport());
+  assert.ok(items.issues.some(x=>x.key==='inventory:runtime'),
+    'Silent item-stat overwrite without new canonical server item response must be flagged');
+
+  await page.evaluate(()=>{
+    window.v073User={id:'qa-second'};
+    window.s={gold:25,harzTaler:4,energy:50,inventory:[],equipment:{},social:{playerId:'qa-second'}};
+    document.getElementById('v372Gold').textContent='25';
+    document.getElementById('v372Harz').textContent='4';
+    document.getElementById('v372Dampf').textContent='50/100';
+    window.localStorage.setItem(window.KEY,JSON.stringify(window.s));
+    window.v8330ObserveCanonical('progress',{gold:25,harz:4});
+    window.v8330ObserveCanonical('quest',{energy:50});
+  });
+  await page.waitForTimeout(1540);
+  const switched=await page.evaluate(()=>({
+    report:window.v8330DataConsistencyReport(),rpc:window.qaRpcCalls,
+    text:window.v8330DataConsistencyText()
+  }));
+  assert.ok(switched.report.accountSwitches>=1,'Account switch must invalidate previous comparison baselines');
+  assert.equal(switched.report.lastConfirmed.energy.value,50,'Second account must own new canonical energy snapshot');
+  assert.equal(switched.rpc,0,'Read-only watcher must perform zero server RPCs');
+  assert.equal(switched.text.includes('qa-second'),false,'Report must not disclose user IDs');
+  assert.equal(switched.text.includes('item-1'),false,'Report must not disclose item IDs');
+  scenarios.push({channel,consistencyWatch:{
+    observations:switched.report.observations,
+    initialIssues:clean.issues.length,
+    energyDetected:mismatch.issues.some(x=>x.key==='energy:runtime'),
+    itemDetected:items.issues.some(x=>x.key==='inventory:runtime'),
+    accountSwitches:switched.report.accountSwitches,
+    rpc:switched.rpc
+  }});
+  await page.close();
+}
 try{
   await run('beta');
   await run('server1');
@@ -275,6 +366,8 @@ try{
   await checkPostLoginHomeHydration('server1');
   await checkAccountReadyCpuAttribution('beta');
   await checkAccountReadyCpuAttribution('server1');
+  await checkReadOnlyConsistencyWatch('beta');
+  await checkReadOnlyConsistencyWatch('server1');
   assert.deepEqual(failures,[],'uncaught browser errors');
   console.log(JSON.stringify({ok:true,scenarios},null,2));
 }catch(e){
