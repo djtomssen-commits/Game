@@ -5,9 +5,9 @@
 
   let syncing=true;
   let settleTimer=0;
-  /* V8.320: Beta-only retirement once account hydration has settled.
-     Keep server1 runtime behavior unchanged until Beta mobile validation. */
-  const betaScopedLevelGuard=String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta';
+  /* V8.322: Beta-validated observer retirement now approved on Server 1.
+     Account hydration still reinstalls the observer during each new sync. */
+  const releaseScopedLevelGuard=['beta','server1'].includes(String(window.GROW_RELEASE_CHANNEL||'').toLowerCase());
   let v6101LevelObserver=null;
   const root=document.documentElement;
 
@@ -33,7 +33,7 @@
   function beginSync(){
     syncing=true;
     clearTimeout(settleTimer);
-    if(betaScopedLevelGuard)v6101StartLevelObserver();
+    if(releaseScopedLevelGuard)v6101StartLevelObserver();
     root.classList.add('v495-level-syncing');
     removeLegacyLevelUi();
     syncLevelObservers();
@@ -48,7 +48,7 @@
       root.classList.remove('v495-level-syncing');
       /* Global DOM monitoring is only needed while restoring an account.
          Reinstall on the next beginSync/account switch. */
-      if(betaScopedLevelGuard)v6101StopLevelObserver();
+      if(releaseScopedLevelGuard)v6101StopLevelObserver();
     },650);
   }
 
