@@ -5,6 +5,8 @@ on:
     branches: [main]
     paths:
       - 'qa/v8315-page-audit-browser.mjs'
+      - 'qa/v8317-growcup-results-browser.mjs'
+      - 'js/features/events/beta/v8198-runehunt.js'
       - 'js/system/performance/v8315-page-trace.js'
       - 'js/features/system/beta/v8009-s1-v4106-qa2-performance.js'
       - 'js/features/home/beta/v8009-home-renderer.js'
@@ -28,12 +30,16 @@ jobs:
           node --check js/features/system/beta/v8009-s1-v4106-qa2-performance.js
           node --check js/features/home/beta/v8009-home-renderer.js
           node --check qa/v8315-page-audit-browser.mjs
+          node --check qa/v8317-growcup-results-browser.mjs
+          node --check js/features/events/beta/v8198-runehunt.js
       - name: Install headless Chromium
         run: |
           npm install --no-save playwright@1.55.0
           npx playwright install --with-deps chromium --only-shell
       - name: Verify page trace and synthetic 17-screen navigation
         run: node qa/v8315-page-audit-browser.mjs
+      - name: Verify Grow Cup results visibility and no redundant hidden mutations
+        run: node qa/v8317-growcup-results-browser.mjs
       - name: Upload measured report and screenshot
         if: always()
         uses: actions/upload-artifact@v4
