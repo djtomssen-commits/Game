@@ -5,6 +5,7 @@ window.__V8009_DUNGEON_D5_FINAL_DETAIL_SEAL__=true;
 /* Workflow-triggered install: keep this file as the final post-legacy owner. */
 
 const ALIASES=['v251RenderDetail','v244RenderSelectedDungeonMap','v064RenderMap','v260RenderDetail'];
+const BETA=String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta';
 let observer=null;
 let raf=0;
 let repairs=0;
@@ -75,7 +76,11 @@ function connect(){
   try{observer?.disconnect()}catch(_){}
   const root=document.getElementById('dungeon');
   if(!root)return;
-  observer=new MutationObserver(()=>{
+  /* V8.327 Beta: the Dungeon seal must not process thousands of DOM
+     mutations while the player is on Home, Systemtechnik or another page.
+     Reuse the same observer when returning to the Dungeon. */
+  if(BETA&&!root.classList.contains('active'))return;
+  if(!observer||!BETA)observer=new MutationObserver(()=>{
     if(!visibleDetail())return;
     if(canonicalDomHealthy())return;
     schedule('mutation');
@@ -84,7 +89,10 @@ function connect(){
 }
 function seal(reason='manual'){
   lastReason=reason;
-  if(!visibleDetail()){enforceAliases();return false}
+  if(!visibleDetail()){
+    if(BETA&&!document.getElementById('dungeon')?.classList.contains('active'))try{observer?.disconnect()}catch(_){}
+    enforceAliases();return false
+  }
   repairs++;
   try{observer?.disconnect()}catch(_){}
   enforceAliases();
@@ -129,7 +137,12 @@ document.addEventListener('click',e=>{
 },true);
 window.addEventListener('growlegends:navigation-open-v7119',e=>{
   const id=String(e?.detail?.id||e?.detail?.screen||'');
-  if(id==='dungeon')schedule('navigation');
+  if(id==='dungeon'){
+    schedule('navigation');
+    if(BETA)setTimeout(()=>schedule('navigation-settled'),50);
+  }else if(BETA&&id){
+    try{observer?.disconnect()}catch(_){}
+  }
 },{passive:true});
 window.addEventListener('growlegends:foreground-ready',()=>schedule('foreground'),{passive:true});
 window.addEventListener('pageshow',()=>schedule('pageshow'),{passive:true});
