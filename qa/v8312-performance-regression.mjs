@@ -85,11 +85,15 @@ check(capabilities.includes('caps:{...C.caps}')&&!capabilities.includes('JSON.pa
 check(bridge.includes('diagnosticRowSnapshot')&&bridge.includes('freezeDiagnosticValue'),'Authority diagnostics still deep-clone every read');
 check(hudCss.includes('html body.v8011-beta-unified-headers.v371-game-ui .app > header,'),'Beta legacy header still reserves layout space');
 check(hudJs.includes("panel.classList.remove('open','show')")&&hudJs.includes("panel.style.removeProperty(prop)"),'Navigation does not clear ghost menu inline display');
+check(hudJs.includes("legacy.style.setProperty('display','none','important')"),'V8.338 must eliminate old header inline-important layout footprint');
+const tech=read('js/features/system/beta/v8009-s1-v4107-systemtechnik.js');
+check(tech.includes("const basename=match[1].split('/').pop().split(/[?#]/)[0]"),'V8.338 must resolve JSON caller cache-query URLs and SDK bundles');
+check(beta.includes('v8009-s1-v4107-systemtechnik.js?v=8338-sdk-callsite-beta'),'V8.338 profiler caller cache not updated');
 const beta=read('beta.html');
 check(beta.includes('v8009-s12-v7081-account-capability-gate.js?v=8337-flat-diag-beta'),'Beta capability hotpath cache not updated');
 check(beta.includes('v8009-s1-v7042-unified-authority-bridge.js?v=8337-memo-diag-beta'),'Beta bridge hotpath cache not updated');
 check(beta.includes('v8009-extracted-v372-authoritative-header-css.css?v=8337-legacy-flow-beta'),'Beta retired header CSS cache not updated');
-check(beta.includes('v8009-s7-v372-authoritative-header.js?v=8337-close-stale-menu-beta'),'Beta menu owner cache not updated');
+check(beta.includes('v8009-s7-v372-authoritative-header.js?v=8338-retire-header-flow-beta'),'Beta menu owner cache not updated');
 
 const largest=[...areas].map(([area,v])=>({area,...v})).sort((a,b)=>b.bytes-a.bytes).slice(0,12);
 const report={version:'V8.312',time:new Date().toISOString(),entryMetrics,
