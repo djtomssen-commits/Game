@@ -113,6 +113,17 @@ check(navOwner.includes("if(!(id==='character'&&window.__V7119_CHARACTER_NAV_CON
   'V8.341 character navigation deduplication was removed');
 check(beta.includes('v8009-s8-v4149-final-navigation-render-authority.js?v=8341-single-character-nav-beta'),
   'V8.341 final navigation owner cache key missing');
+/* V8.342: canonical character hub must keep unchanged item/icon DOM intact,
+   avoid the duplicate tab refresh within renderInventory and character nav. */
+const characterHub=read('js/features/character/beta/v8009-s2-v459-character-hub.js');
+check(characterHub.includes('if(name.childElementCount!==2||!existingText||existingText.textContent!==display||!correctArt)')&&
+  characterHub.includes('if(lv.textContent!==levelText)lv.textContent=levelText'),
+  'V8.342 inventory still destroys unchanged art/name DOM nodes');
+check(characterHub.includes("if(!layout()){")&&
+  !characterHub.includes("layout();\n      if(activeTab()==='inventory')refreshTab('inventory');"),
+  'V8.342 renderInventory is still refreshing the tab twice');
+check(beta.includes('v8009-s2-v459-character-hub.js?v=8342-inventory-dom-stability-beta'),
+  'V8.342 character hub cache key missing');
 
 check(beta.includes('v8009-s12-v7081-account-capability-gate.js?v=8337-flat-diag-beta'),'Beta capability hotpath cache not updated');
 check(beta.includes('v8009-s1-v7042-unified-authority-bridge.js?v=8337-memo-diag-beta'),'Beta bridge hotpath cache not updated');
