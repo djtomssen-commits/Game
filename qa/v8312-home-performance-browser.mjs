@@ -60,13 +60,29 @@ async function run(channel){
     full:window.v8009HomeEventDiagnostics().fullRenders
   })).catch(()=>null);
   assert.ok(baseline,channel+' must render the home');
-  const eventLayers=await page.evaluate(()=>window.v8334HomeEventTopDiagnostics?.()||null);
+  const eventLayers=await page.evaluate(()=>{
+    /* V8.336: include the genuine body-level HUD DOM shape in the fixture,
+       rather than testing only the hidden legacy .app > header. */
+    const shell=document.createElement('div');
+    shell.id='v372TopbarShell';
+    shell.innerHTML='<div class="v372-topbar">QA HUD</div>';
+    document.body.insertBefore(shell,document.body.firstChild);
+    const result=window.v8334HomeEventTopDiagnostics?.()||null;
+    shell.remove();
+    return result;
+  });
   if(channel==='beta'){
     assert.ok(eventLayers?.childOrder?.some(x=>x.includes('v690-events-card')),
       'Beta should expose bounded event top hit-test without modifying the world');
     assert.equal(eventLayers?.hitBands?.length,4,'V8.335 samples actual 8px band above Events');
     assert.ok(eventLayers?.paintCandidates?.some(x=>x.startsWith('events:')),
       'V8.335 reports the Events paint owner, including CSS shadows');
+    assert.ok(eventLayers?.paintCandidates?.some(x=>x.startsWith('hud-shell:')),
+      'V8.336 identifies the actual body-level v372 header owner');
+    assert.ok(eventLayers?.paintCandidates?.some(x=>x.startsWith('hud-topbar:')),
+      'V8.336 distinguishes the visible HUD from legacy header markup');
+    assert.ok(eventLayers?.paintCandidates?.some(x=>x.includes('/display=')),
+      'V8.336 includes computed display/visibility to avoid false overlap attribution');
   }
   else assert.equal(eventLayers,null,'Event layer diagnostics must stay Beta-only');
   const values=await page.evaluate(()=>{
@@ -443,6 +459,8 @@ async function checkSampledJsonProfile(){
   const from=full.indexOf('function startRuntimeCpuProbe(){');
   const to=full.indexOf('function stopRuntimeProfiler(){',from);
   assert.ok(from>0&&to>from,'Current sampled JSON profiler functions exist');
+  assert.ok(source.includes('match[1]')&&source.includes("':'+match[2]"),
+    'V8.336 returns caller filename+line without URL or payload');
   const source=full.slice(from,to);
   const page=await browser.newPage();
   await page.route('https://sampled-profile-test.invalid/',route=>route.fulfill({status:200,contentType:'text/html',body:'<!doctype html><html><body></body></html>'}));
