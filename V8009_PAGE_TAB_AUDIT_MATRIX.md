@@ -165,3 +165,8 @@ V8.287 – Aktive tägliche Verlustwache
 
 ### 09.10.2026 – V8.311: Weltboss-Button auf Startseiten-Slot
 - World / Startseite / „Aktuelles“ (Beta + Server 1): redundante Weltboss-Namens-/Versuchsinfo im kanonischen Home-Owner entfernt; bestehenden Weltboss-CSS-Owner für feste 190px/174px-Kartenhöhe kompakt gemacht (Grafik 70/62px, Status flexibel, Button 32px nicht schrumpfbar). Weltboss öffnet weiterhin über den existierenden Button. Gezielt neue Cacheversion `8311-boss-button-fit`. JS-Syntax/Struktur/Caches geprüft; Android-Ansicht noch nicht manuell bestätigt.
+
+### 09.10.2026 – V8.312 / V8.313: Performance/DOM-Nachprüfung (Beta + Server 1)
+- Über alle Entry-Includes verifizierte Syntax-/Asset-Regression: 646 JS + 712 CSS je Server, keine fehlenden/duplizierten Includes, Node-Syntax 648 verschiedener JS-Dateien PASS. Struktur- und Browser-Regressions-CI: GitHub Actions Lauf 37889874994 PASS.
+- World/Home: Guthabenänderungen lösen keinen Full-Repaint mehr aus, isolierte Dampfänderungen aktualisieren nur Home-Quest-Zahl; XP bleibt voll gerendert. Weltboss große Boxshadow-Pulsanimation retired, Live-Punkt bleibt. Cup- und Boss-Slot haben nach V8.313 im Chromium-Test bei 390px gleiche Außenhöhe 178px und Bossbutton ist vollständig innerhalb.
+- Nicht als erledigt werten: End-to-End-Android-Profiling aller Tabs; lange Main-Thread-Tasks in Quest/Dungeon/Forge/Charakter/Turm, Asset- und Boot-Monolith (646 JS + 712 CSS je Einstieg), Account-Ready-Queue mit 206 Events. Performance-Budget erst nach Vorher/Nachher-Live-Messung auf realem Gerät bestätigen. Keine Wirtschaft/Balance/Server-Writes durch diesen Durchgang.
