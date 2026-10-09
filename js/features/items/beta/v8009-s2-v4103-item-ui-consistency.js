@@ -38,7 +38,14 @@
  if(typeof v240ItemRewardHtml==='function'&&!window.__v4103RewardRenderer){v240ItemRewardHtml=function(it){return renderItem(it,{slot:it?.slot,context:'reward',extraClass:'v240-loot-item'});};try{window.v240ItemRewardHtml=v240ItemRewardHtml}catch(e){}window.__v4103RewardRenderer=true}
 
  function markCard(card,it,ctx){if(!card||!it)return;card.dataset.v4103ItemCurrent='1';card.dataset.v4103ItemKey=registerItem(it);card.dataset.v4103ItemContext=ctx;card.dataset.v4103Quality=qkey(it)}
- function putArt(box,it,forge=false){if(!box||!it)return;let u='';try{u=window.v466ItemArtUri?.(it)||''}catch(e){}if(!u)return;let img=box.querySelector(':scope > img.v466-item-art');if(!img){img=document.createElement('img');img.className='v466-item-art';box.replaceChildren(img)}img.src=u;img.alt=clean(it.name);if(forge)box.classList.add('v4103-forge-art')}
+ function putArt(box,it,forge=false){if(!box||!it)return;let u='';try{u=window.v466ItemArtUri?.(it)||''}catch(e){}if(!u)return;let img=box.querySelector(':scope > img.v466-item-art');if(!img){img=document.createElement('img');img.className='v466-item-art';box.replaceChildren(img)}
+   /* V8.348 Beta: repeated decorate() is not an image change. Do not
+      reassign src/alt if already identical (Android image repaint/flicker). */
+   const beta=String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta';
+   if(!beta||img.getAttribute('src')!==u)img.src=u;
+   const name=clean(it.name);if(!beta||img.alt!==name)img.alt=name;
+   if(forge)box.classList.add('v4103-forge-art')
+ }
  function decorate(){
   const relevant=!!document.querySelector('#character.active,#shop.active,#forge.active,#harzForge.active,#v488Forge.active,#v074ProfileContent:not(:empty)');if(!relevant)return;
   try{document.querySelectorAll('#character #inventory .inventory-grid > .inv-item').forEach((c,i)=>{const it=s.inventory?.[i];if(it){markCard(c,it,'inventory');putArt(c.querySelector('.v459-inv-icon'),it)}})}catch(e){}
