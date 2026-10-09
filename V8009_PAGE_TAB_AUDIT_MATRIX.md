@@ -145,3 +145,11 @@ V8.287 – Aktive tägliche Verlustwache
 - **Kanonische Änderungen:** Refill-Owner `v8009-s8-v294-dampf-canonical.js` invalidiert nach bestätigtem Server-RPC den Quest-Cache, zeichnet Ressourcen/HUD, rendert nur auf aktuell offener Questseite einmal `renderQuests` und zeichnet Dampf-Karte. `v7045-atomic-quest-receipt-client.js` stellt dafür den bereits vorhandenen internen Cache-Invalidator kontrolliert bereit. `v441-resource-live-authority.js` und `v443-quest-dampf-live-fix.js` zeigen >100 serverbestätigten Dampf nicht als 100/100, wenn Event-Cache verspätet eintrifft.
 - Beide Welten verwenden dieselben korrigierten JS-Owner; `beta.html` und `server1.html`: 4× `?v=8305-instant-dampf`. Kein SQL, keine Klassen-/Questbelohnungsänderungen.
 - **PASS:** JS-Syntax 4/4; bestätigte+abgelehnte Kauf-Handler-Tests (4 Fälle); beide HTMLs referenzieren alle 4 Updates. Reale WebView-Interaktion folgt.
+
+
+### V8.306 – Grow Cup nach Event: Startseiten-Kachel statt Navigation (Beta + Server 1; 09.10.2026)
+- Hamburger-Menü Grow Cup entfernt aus `v4149-final-navigation-render-authority.js`. Laufende Donnerstags-Cups bleiben über vorhandene Startseiten-Live-Karte erreichbar.
+- Direkt nach Event-Panel auf `world`: `v8310-cup-results-slot`, sichtbar ausschließlich bei `v8210_growcup_leaderboard.ok&&final&&event_key&&rows.length` und inaktivem Cup. Während neues Cup-Event aktiv ist, bleibt der historische Slot ausgeblendet.
+- Klick: Cup-Overlay auf Tab **Rangliste**, bestehender serverbestätigter Platz/Score/Claimstatus. Rangbelohnung ausschließlich über vorhandenes `v8210_growcup_claim_rank_reward`, danach eigenes großes Medaillen-/Runen-/Fragment-Belohnungs-Popup; kein Toast als Erfolg, keine lokale Auszahlung.
+- Neue Datei `css/features/events/beta/v8306-growcup-home-results.css`; `beta.html` und `server1.html` laden 3 betroffene JS-Dateien cachebusted und CSS. Keine Backend-/Klassenänderung.
+- Verifiziert **PASS**: JS-Syntax 3/3, HTML-Referenzen 2/2, 8x Verhalten des tatsächlich geänderten Archiv-/Popup-Codes in Simulation. Live-WebView-Runde steht noch aus.
