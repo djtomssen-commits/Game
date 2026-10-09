@@ -162,3 +162,6 @@ V8.287 – Aktive tägliche Verlustwache
 
 ### 09.10.2026 – V8.310: Grow-Cup-Ergebnis-Slot mit identischer Kartenhöhe
 - World / Startseite / „Aktuelles“: Die Grow-Cup-Ergebniskachel besitzt jetzt dieselbe direkte `v366-panel`-Klasse wie Weltboss/Buch, wodurch die bereits vorhandene kanonische Kartenhöhe 190px (bis 390px Viewport: 174px) tatsächlich auf Cup angewendet wird. Inneren Button-`min-height:205px` entfernt, Grafik/Text verkleinert und Hidden-Kaskade abgesichert. Beta + Server 1 Cache `8310-cup-panel-size`, JS-/DOM-Prüfung PASS; Android-Test offen.
+
+### 09.10.2026 – V8.311: Weltboss-Button auf Startseiten-Slot
+- World / Startseite / „Aktuelles“ (Beta + Server 1): redundante Weltboss-Namens-/Versuchsinfo im kanonischen Home-Owner entfernt; bestehenden Weltboss-CSS-Owner für feste 190px/174px-Kartenhöhe kompakt gemacht (Grafik 70/62px, Status flexibel, Button 32px nicht schrumpfbar). Weltboss öffnet weiterhin über den existierenden Button. Gezielt neue Cacheversion `8311-boss-button-fit`. JS-Syntax/Struktur/Caches geprüft; Android-Ansicht noch nicht manuell bestätigt.
