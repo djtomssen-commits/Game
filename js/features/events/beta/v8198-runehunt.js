@@ -385,7 +385,7 @@ async function claimRank(){
  try{
   const r=await rpc('v8210_growcup_claim_rank_reward',{p_request_id:rid('v8214_rank')});
   if(r?.ok===false)throw new Error(String(r.reason||'CLAIM_REJECTED'));
-  toast('Cup-Rangbelohnung','success','Platz '+Number(r.rank||0)+' · +'+Number(r.runes_awarded||0)+' Runen · +'+Number(r.shards_awarded||0)+' Fragmente');
+  showRankReward(r);
   await refresh({paintNow:false});await loadRanking(true);
  }catch(e){
   const m=String(e?.message||e);toast('Rangbelohnung','info',m.includes('RANKING_NOT_FINAL')?'Noch laufende 6-Stunden-Runs – die Rangliste ist noch nicht final.':m);
@@ -401,8 +401,27 @@ window.v8210GrowCupLeaderboard=loadRanking;
 window.v8310GrowCupResultsPaint=paintHomeResults;
 window.v8210GrowCupDiagnostics=()=>({version:VERSION,busy:S.busy,opened:S.opened,view:S.view,refreshes:S.refreshes,starts:S.starts,submits:S.submits,lastError:S.lastError,state:S.state,ranking:S.ranking});
 window.addEventListener('keydown',key);
-window.addEventListener('growlegends:account-ready',()=>{stopClock();S.state=null;S.ranking=null;S.draft=null;S.draftKey='';S.boundaryKey='';S.boundaryRetryAt=0;void refresh({paintNow:false})},{passive:true});
-window.addEventListener('pageshow',()=>{if(S.opened)resyncClock();else void refresh({paintNow:false})},{passive:true});
+window.addEventListener('growlegends:account-ready',()=>{
+ stopClock();closeRankReward();S.state=null;S.ranking=null;S.rankingLoadedAt=0;
+ S.draft=null;S.draftKey='';S.boundaryKey='';S.boundaryRetryAt=0;
+ paintHomeResults();void refresh({paintNow:false}).then(()=>void loadRanking(true));
+},{passive:true});
+window.addEventListener('growlegends:home-rendered-v8009',()=>{
+ paintHomeResults();
+ if(uid()&&db())void loadRanking(false);
+},{passive:true});
+window.addEventListener('growlegends:navigation-open-v7119',e=>{
+ if(String(e?.detail?.id||'')==='world'&&uid()&&db())void loadRanking(false);
+},{passive:true});
+document.addEventListener('click',e=>{
+ const button=e.target?.closest?.('#world [data-growcup-results]');
+ if(!button)return;
+ const slot=button.closest('.v8310-cup-results-slot');
+ if(!slot||slot.hidden)return;
+ e.preventDefault();e.stopPropagation();
+ void open('ranking');
+});
+window.addEventListener('pageshow',()=>{if(S.opened)resyncClock();else void refresh({paintNow:false}).then(()=>void loadRanking(true))},{passive:true});
 window.addEventListener('focus',()=>{if(S.opened)resyncClock()},{passive:true});
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&S.opened)resyncClock()},{passive:true});
 window.addEventListener('growlegends:navigation-open-v7119',()=>{if(S.opened)close()},{passive:true});
