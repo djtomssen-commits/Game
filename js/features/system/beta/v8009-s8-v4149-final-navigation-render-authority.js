@@ -34,6 +34,7 @@
  function sep(){const x=document.createElement('div');x.className='v4149-menu-separator v086-menu-separator';return x}
  function go(id){
   try{
+   if(id==='growcup')return window.v8210OpenGrowCup?.();
    if(id==='systemtech')return admin()?window.v4107OpenSystemtechnik?.():false;
    if(id==='admin'){
     if(!admin())return false;
