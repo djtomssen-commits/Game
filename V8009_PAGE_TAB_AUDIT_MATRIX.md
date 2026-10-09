@@ -117,3 +117,11 @@ V8.287 – Aktive tägliche Verlustwache
 - Frontend-Befund: Renderer `js/features/home/beta/v8009-home-renderer.js` hatte `growCupEventActive()` via `v8210GrowCupSnapshot().run.status==='active'` irrtümlich von einem **individuellen unvollendeten** Donnerstags-Cup abhängig gemacht, selbst am Freitag bei Backend `active:false`.
 - Kanonischer Fix: Ausschließlich berechneter Berlin-Event-Zeitplan steuert Status-Kachel und Startseiten-Spezialkarte; Donnerstag sichtbar, Freitag/Samstag ausgeblendet. Nicht auf Cup-Daten, Spieler-Saves, Belohnungen oder Balance zugegriffen.
 - Beta/Server1: HTML-Cache-Bust jeweils `?v=8301cup-active-schedule`. Regression im vorhandenen Home-Events-Browser-QA-Skript ergänzt; isolierter JS-Funktionstest und HTML-Referenzen geprüft (PASS), echter Android/Playwright-Lauf ausstehend.
+
+
+### V8.302 – Grow-Cup-Historie / Menü / Ranking-Claim (09.10.2026)
+- Nach dem Donnerstags-Event war die Cup-Kachel inaktiv (korrekt), aber es fehlte ein permanenter Eingang. Backend `v8210_growcup_state` suchte bei Nicht-Cup-Tagen nur noch eine `active` Runde, nicht mehr `completed`; Ergebnis/Claim-Fenster nicht erreichbar.
+- Kanonische Owner geändert: `js/features/system/beta/v8009-s8-v4149-final-navigation-render-authority.js` (neuer, nur bei geladener Feature-Funktion sichtbarer Grow-Cup-Menüpunkt), `js/features/events/beta/v8198-runehunt.js` (im Ranking-Tab persönlicher Platz, Punkte, abgeschlossener Claimstatus, Claimbutton).
+- Beide HTML-Skript-Cache-URLs gezielt aktualisiert: `8302cup-nav` und `8302cup-history`.
+- Backend-Migration `v8302_growcup_history_state_both_worlds` für `public` / `server1` ist angewendet. Historien-Fallback beider Funktionen überprüft; Donnerstag-Neustart-Lobby bleibt erhalten; die Prämien-SQL-Funktion ist unverändert.
+- Tests: JS Syntax für Menü/Cup **PASS**; HTML Pfade **PASS**; isolierter Claim-Button-State-Test **PASS** (final offen, final abgeholt, nicht final, Nichtteilnehmer). Echter Android-End-to-End-Claim bleibt zu testen. Keine Daten-/Reward-Veränderung.
