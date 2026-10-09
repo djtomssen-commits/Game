@@ -249,21 +249,30 @@ async function refresh({paintNow=true}={}){
  })();
  return S.refreshInFlight;
 }
-/* V8.306: show home results only for a final server leaderboard, never local date. */
+/* V8.317: The Android trace caught repeated [hidden] writes to the Cup tile
+   after account hydration. Rendering the same visibility state again triggered
+   observer work and obscured which event actually changed the grid. The
+   leaderboard stays server-authoritative; visibility changes are idempotent. */
 function paintHomeResults(){
  const active=typeof window.v8210GrowCupEventActive==='function'
    ?window.v8210GrowCupEventActive()===true:!!S.state?.active;
  const d=S.ranking;
  const show=!!(d?.ok&&d.final===true&&d.event_key&&Array.isArray(d.rows)&&d.rows.length&&!active);
  document.querySelectorAll('#world .v8310-cup-results-slot').forEach(slot=>{
-  slot.hidden=!show;
+  /* Never emit a redundant hidden-attribute mutation. An actual show/hide
+     still occurs only after the authoritative leaderboard confirms the result. */
+  if(slot.hidden!==!show){
+   slot.hidden=!show;
+   try{window.GL_PAGE_AUDIT?.renderMark?.('world',show?'cup_show':'cup_hide',{owner:'growcup'})}catch(_){}
+  }
   if(!show)return;
   const label=slot.querySelector('[data-growcup-results-status]');
   if(!label)return;
   const run=S.state?.run;
   const mine=run?.status==='completed'&&String(run.event_key||'')===String(d.event_key||'');
   const suffix=mine?(run.rank_reward_claimed?'Belohnung abgeholt':'Rangbelohnung prüfen'):'Alle Platzierungen ansehen';
-  label.textContent='Cup vom '+String(d.event_key).split('-').reverse().join('.')+' · '+suffix;
+  const expected='Cup vom '+String(d.event_key).split('-').reverse().join('.')+' · '+suffix;
+  if(label.textContent!==expected)label.textContent=expected;
  });
 }
 function closeRankReward(){
