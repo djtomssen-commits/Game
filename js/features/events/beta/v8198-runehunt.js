@@ -4,7 +4,7 @@ if(!['beta','server1'].includes(String(window.GROW_RELEASE_CHANNEL||'stable').to
 if(window.__V8210_GROW_CUP__)return;
 window.__V8210_GROW_CUP__=true;
 
-const VERSION='V8.306';
+const VERSION='V8.317';
 const PLANTS={
  seedling:'assets/v7198-base64/49aed1d1c8035f5d2123.webp',
  growth:'assets/v7198-base64/c9ec3c217b81f805555c.webp',
@@ -25,7 +25,7 @@ const METRICS=[
 const TIER={
  bronze:['🥉','BRONZE'],silver:['🥈','SILBER'],gold:['🥇','GOLD'],master:['💎','MEISTER'],champion:['👑','GROW CHAMPION']
 };
-const S={state:null,ranking:null,rankingLoadedAt:0,rankingInFlight:null,busy:false,opened:false,view:'cup',lastError:'',refreshes:0,starts:0,submits:0,timer:null,clockOffset:0,boundaryKey:'',boundaryRetryAt:0,refreshInFlight:null,draftKey:'',draft:null};
+const S={state:null,ranking:null,rankingLoadedAt:0,rankingInFlight:null,busy:false,opened:false,view:'cup',lastError:'',refreshes:0,starts:0,submits:0,timer:null,clockOffset:0,boundaryKey:'',boundaryRetryAt:0,refreshInFlight:null,draftKey:'',draft:null,accountKey:'',accountEpoch:0};
 const db=()=>{try{return (typeof v073Db!=='undefined'&&v073Db)||null}catch(_){return null}};
 const uid=()=>{try{return String((typeof v073User!=='undefined'&&v073User?.id)||'')}catch(_){return ''}};
 const one=v=>Array.isArray(v)?v[0]:v;
@@ -240,14 +240,21 @@ function applyState(r){
  return true;
 }
 async function refresh({paintNow=true}={}){
- if(!uid()||!db())return null;
+ const currentId=uid();
+ if(!currentId||!db())return null;
  if(S.refreshInFlight)return S.refreshInFlight;
- S.refreshInFlight=(async()=>{
-  try{const r=await rpc('v8210_growcup_state');applyState(r);if(paintNow&&S.opened)paint();return r}
-  catch(e){S.lastError=String(e?.message||e);console.warn('[V8.219 Grow Cup] state',e);return null}
-  finally{S.refreshInFlight=null}
+ const epoch=S.accountEpoch;
+ const request=(async()=>{
+  try{
+   const r=await rpc('v8210_growcup_state');
+   /* Never commit an in-flight response from the previous account. */
+   if(epoch!==S.accountEpoch||uid()!==currentId)return null;
+   applyState(r);if(paintNow&&S.opened)paint();return r;
+  }catch(e){if(epoch===S.accountEpoch){S.lastError=String(e?.message||e);console.warn('[V8.219 Grow Cup] state',e)}return null}
+  finally{if(S.refreshInFlight===request)S.refreshInFlight=null}
  })();
- return S.refreshInFlight;
+ S.refreshInFlight=request;
+ return request;
 }
 /* V8.317: The Android trace caught repeated [hidden] writes to the Cup tile
    after account hydration. Rendering the same visibility state again triggered
@@ -301,18 +308,23 @@ function showRankReward(result){
 }
 
 async function loadRanking(force=false){
+ const currentId=uid();
+ if(!currentId||!db())return null;
  if(S.rankingInFlight)return S.rankingInFlight;
  if(S.busy&&!force)return null;
  if(!force&&S.ranking&&Date.now()-S.rankingLoadedAt<45000){paintHomeResults();return S.ranking}
- S.rankingInFlight=(async()=>{
+ const epoch=S.accountEpoch;
+ const request=(async()=>{
   try{
    const r=await rpc('v8210_growcup_leaderboard',{p_limit:100});
+   if(epoch!==S.accountEpoch||uid()!==currentId)return null;
    if(r?.ok){S.ranking=r;S.rankingLoadedAt=Date.now();paintHomeResults();if(S.opened)paint()}
    return r;
-  }catch(e){S.lastError=String(e?.message||e);console.warn('[V8.306 Grow Cup] ranking',e);return null}
-  finally{S.rankingInFlight=null}
+  }catch(e){if(epoch===S.accountEpoch){S.lastError=String(e?.message||e);console.warn('[V8.317 Grow Cup] ranking',e)}return null}
+  finally{if(S.rankingInFlight===request)S.rankingInFlight=null}
  })();
- return S.rankingInFlight;
+ S.rankingInFlight=request;
+ return request;
 }
 
 function v8229ToggleGlobalMenu(){
@@ -411,9 +423,22 @@ window.v8310GrowCupResultsPaint=paintHomeResults;
 window.v8210GrowCupDiagnostics=()=>({version:VERSION,busy:S.busy,opened:S.opened,view:S.view,refreshes:S.refreshes,starts:S.starts,submits:S.submits,lastError:S.lastError,state:S.state,ranking:S.ranking});
 window.addEventListener('keydown',key);
 window.addEventListener('growlegends:account-ready',()=>{
- stopClock();closeRankReward();S.state=null;S.ranking=null;S.rankingLoadedAt=0;
- S.draft=null;S.draftKey='';S.boundaryKey='';S.boundaryRetryAt=0;
- paintHomeResults();void refresh({paintNow:false}).then(()=>void loadRanking(true));
+ const key=String(window.GROW_RELEASE_CHANNEL||'')+':'+uid();
+ if(!uid())return;
+ /* V8.317: account-ready is emitted for multiple hydration phases. The
+    old unconditional S.ranking=null caused a confirmed Cup tile hide/show
+    whenever the SAME player received another ready event. */
+ if(key!==S.accountKey){
+  S.accountKey=key;S.accountEpoch++;
+  stopClock();closeRankReward();
+  S.state=null;S.ranking=null;S.rankingLoadedAt=0;
+  S.refreshInFlight=null;S.rankingInFlight=null;
+  S.draft=null;S.draftKey='';S.boundaryKey='';S.boundaryRetryAt=0;
+  paintHomeResults();
+ }
+ /* Same account: refresh server state but retain its verified visible tile.
+    True account switches still clear all per-player data immediately. */
+ void refresh({paintNow:false}).then(()=>void loadRanking(true));
 },{passive:true});
 window.addEventListener('growlegends:home-rendered-v8009',()=>{
  paintHomeResults();
