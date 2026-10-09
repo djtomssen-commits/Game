@@ -13,6 +13,8 @@ if(typeof base==='function'&&!base.__v7119PostNavigation){
       try{window.dispatchEvent(new CustomEvent(EVENT,{detail:{id:target}}))}catch(e){console.warn('[V7.119] navigation refresh dispatch',e)}
       if(target==='character'){
         const ms=Math.round((performance.now?.()||Date.now())-t);
+        if(String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta')
+          window.__V8343_CHARACTER_NAV_EVENT__={at:Date.now(),listenersMs:ms};
         try{window.__GL_RUNTIME_WATCHDOG__?.report?.('character_postnav_profile','info',{listenersMs:ms},{screen:'character',incidentKey:'v7119-v7207'})}catch(_){}
       }
     };
@@ -28,6 +30,7 @@ if(typeof base==='function'&&!base.__v7119PostNavigation){
   window.v032Go=wrapped;
   try{v032Go=wrapped}catch(_){ }
 }
+window.v7119CharacterNavEventDiagnostics=()=>({...window.__V8343_CHARACTER_NAV_EVENT__});
 window.__GROW_LEGENDS_RELEASE__='V7.119';
 window.__V7119_CLEANUP__=Object.freeze({
   phase:4,
