@@ -33,9 +33,17 @@ jobs:
           import json
           beta=Path('beta.html').read_text(encoding='utf-8')
           stable=Path('index.html').read_text(encoding='utf-8')
+          server1=Path('server1.html').read_text(encoding='utf-8')
           src='js/features/dungeon/beta/v8009-d5-final-detail-seal.js'
           if beta.count(src)!=1: raise SystemExit('seal include count != 1')
-          if src in stable: raise SystemExit('stable unexpectedly loads seal')
+          # Historical index.html and server1.html already load the D5 owner.
+          # V8.327 changes its behaviour only under the Beta channel gate;
+          # require both released entrypoints to retain the old uncached link.
+          for label,document in [('index',stable),('server1',server1)]:
+              if document.count(f'src="{src}"')!=1:
+                  raise SystemExit(f'{label} Dungeon seal include changed')
+              if f'{src}?v=8327-active-dungeon-only' in document:
+                  raise SystemExit(f'{label} picked up Beta-only observer revision')
           body_end=beta.lower().rfind('</body>')
           if beta.rfind('<script',0,body_end)>beta.index(src):
               raise SystemExit('seal not final script')
