@@ -1,0 +1,66 @@
+/* V8.306: Grow Cup finished-event results slot and reward popup.
+   Display only for a server-final leaderboard; controller owns [hidden]. */
+#world .v8310-cup-results-slot[hidden]{display:none!important}
+#world .v8310-cup-results-slot{min-width:0;width:100%;margin:8px 0 14px;position:relative}
+#world .v8310-cup-results-trigger{
+ display:flex;width:100%;min-height:118px;align-items:center;gap:15px;
+ padding:12px 17px 12px 10px;text-align:left;cursor:pointer;position:relative;overflow:hidden;
+ border:2px solid #b78b4b;border-radius:17px;
+ background:linear-gradient(113deg,#382315 0%,#563821 52%,#29211a 100%);
+ box-shadow:inset 0 1px 0 #e3b86955,0 6px 13px #0005;color:#ffedc6;
+ font:inherit;-webkit-tap-highlight-color:transparent;
+}
+#world .v8310-cup-results-trigger:focus-visible{outline:3px solid #eebd68;outline-offset:3px}
+#world .v8310-cup-results-trigger::after{content:'';pointer-events:none;position:absolute;right:-40px;top:-70px;width:180px;height:180px;background:radial-gradient(circle,#e9ae4935,transparent 70%)}
+#world .v8310-cup-results-art{
+ display:flex;flex:0 0 102px;width:102px;height:91px;align-items:center;justify-content:center;
+ border-radius:12px;background:radial-gradient(circle at 50% 70%,#638e5540,transparent 75%),linear-gradient(145deg,#291e17,#5a3b20);
+ border:1px solid #d6ac674d;overflow:hidden
+}
+#world .v8310-cup-results-art img{width:92%;height:92%;object-fit:contain;filter:drop-shadow(0 3px 8px #000a)}
+#world .v8310-cup-results-copy{display:flex;flex:1;min-width:0;flex-direction:column;gap:5px;position:relative;z-index:1}
+#world .v8310-cup-results-copy small{font-size:10px;font-weight:900;letter-spacing:1px;color:#edc477}
+#world .v8310-cup-results-copy strong{font-size:clamp(16px,3.5vw,21px);line-height:1.12;color:#fff1c7;text-shadow:0 2px 3px #0006}
+#world .v8310-cup-results-copy [data-growcup-results-status]{font-size:12px;line-height:1.3;color:#e0c6a6}
+#world .v8310-cup-results-arrow{flex:0 0 24px;font-size:34px;font-weight:900;color:#ffce74;z-index:1}
+@media(max-width:420px){
+ #world .v8310-cup-results-trigger{padding:10px;gap:9px;min-height:103px}
+ #world .v8310-cup-results-art{flex-basis:78px;width:78px;height:80px}
+ #world .v8310-cup-results-copy small{font-size:9px}
+ #world .v8310-cup-results-copy [data-growcup-results-status]{font-size:11px}
+ #world .v8310-cup-results-arrow{font-size:26px;flex-basis:13px}
+}
+.v8310-cup-reward-layer[hidden]{display:none!important}
+.v8310-cup-reward-layer{
+ position:fixed;inset:0;z-index:160100;display:flex;justify-content:center;align-items:center;
+ padding:20px;background:#090a0ce0;backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px)
+}
+.v8310-cup-reward-panel{
+ width:min(100%,440px);max-height:min(85vh,650px);overflow-y:auto;position:relative;
+ display:flex;flex-direction:column;align-items:center;text-align:center;gap:13px;
+ padding:31px 25px 24px;border:3px solid #d9ae64;border-radius:21px;
+ background:radial-gradient(ellipse at 50% 1%,#6a4b28,#312419 55%,#1b1b1b 100%);
+ color:#fff1d4;box-shadow:0 0 0 4px #25170c,0 25px 80px #000c,inset 0 2px 0 #ffe1a766;
+ animation:v8310-reward-entry .22s ease-out both
+}
+.v8310-cup-reward-kicker{color:#eec97f;letter-spacing:2px;font-size:11px;font-weight:900}
+.v8310-cup-reward-medal{font-size:67px;filter:drop-shadow(0 6px 11px #0008)}
+.v8310-cup-reward-panel h2{font-size:clamp(25px,6vw,34px);line-height:1.1;margin:0;color:#ffdf88}
+.v8310-cup-reward-panel p{font-size:14px;line-height:1.5;color:#edd5ac;margin:0}
+.v8310-cup-reward-items{width:100%;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.v8310-cup-reward-item{
+ display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;
+ min-height:113px;border:1px solid #ddad6e88;border-radius:13px;
+ background:linear-gradient(155deg,#70502b,#302518);box-shadow:inset 0 2px 7px #1c130e88
+}
+.v8310-cup-reward-item i{font-style:normal;font-size:33px}
+.v8310-cup-reward-item b{font-size:25px;color:#fff0b9}
+.v8310-cup-reward-item small{font-size:12px;color:#f4d79c}
+.v8310-cup-reward-confirm{
+ width:100%;min-height:49px;border:1px solid #ffdc8c;border-radius:12px;
+ background:linear-gradient(#f7ce6b,#b57731);color:#32210f;font:900 16px inherit;
+ cursor:pointer;box-shadow:0 4px 0 #6d401b
+}
+.v8310-cup-reward-confirm:focus-visible{outline:3px solid white;outline-offset:3px}
+@keyframes v8310-reward-entry{from{transform:translateY(18px) scale(.93);opacity:0}to{transform:translateY(0) scale(1);opacity:1}}
+@media(prefers-reduced-motion:reduce){.v8310-cup-reward-panel{animation:none}}
