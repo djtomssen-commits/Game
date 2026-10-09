@@ -89,7 +89,7 @@ check(hudJs.includes("panel.classList.remove('open','show')")&&hudJs.includes("p
 check(hudJs.includes("legacy.style.setProperty('display','none','important')"),'V8.338 must eliminate old header inline-important layout footprint');
 const tech=read('js/features/system/beta/v8009-s1-v4107-systemtechnik.js');
 check(tech.includes("const basename=match[1].split('/').pop().split(/[?#]/)[0]"),'V8.338 must resolve JSON caller cache-query URLs and SDK bundles');
-check(beta.includes('v8009-s1-v4107-systemtechnik.js?v=8344-hero-navigation-owner-beta'),'V8.344 profiler cache not updated');
+check(beta.includes('v8009-s1-v4107-systemtechnik.js?v=8346-loaf-phases-navigation-beta'),'V8.344 profiler cache not updated');
 check(tech.includes('const longShort=long.filter(x=>x.ms>=50&&x.ms<100).length')&&
   tech.includes('...longPrint.map(x=>'),'V8.340 profiler must print measured 50-99ms long tasks');
 check(tech.includes("'LONGTASK-BEREICHE: 50–99 ms '"),'V8.340 profiler must explain longtask thresholds');
@@ -126,7 +126,7 @@ check(beta.includes('v8009-s2-v459-character-hub.js?v=8343-nav-event-owner-beta'
   'V8.343 character hub cache key missing');
 const characterRenderer=read('js/features/ui/beta/v8009-s2-v086-polish-script.js');
 check(characterRenderer.includes('window.v7207CharacterRenderDiagnostics=()')&&
-  beta.includes('v8009-s2-v086-polish-script.js?v=8342-character-stage-diag-beta'),
+  beta.includes('v8009-s2-v086-polish-script.js?v=8346-character-idle-stage-beta'),
   'V8.342 character render-stage metrics or JS cache missing');
 check(tech.includes('CHARAKTER RENDER-STUFEN (V8.342')&&
   tech.includes('freshCharacterRender'),
@@ -165,6 +165,37 @@ check(beta.includes('v8009-s10-v510-character-hero-rebuild.js?v=8344-nav-timing-
   'V8.344 character hero owners cache not updated');
 
 
+
+/* V8.345/346: single original owner and opt-in profiler regression. */
+const passiveOwner=read('js/features/character/beta/v8009-s2-v4156-class-identity-balance.js');
+const passiveRepair=read('js/features/character/beta/v8009-s12-v6117-class-passive-prismatic-fix.js');
+const donorOwner=read('js/features/character/beta/v8009-s8-v460-char-ui.js');
+const ornamentOwner=read('js/features/character/beta/v8009-s16-v526-heldenquartier-final-ornament.js');
+const summaryOwner=read('js/features/character/beta/v8009-s2-v7124-character-scroll-summary-owner.js');
+check(passiveOwner.includes('box.innerHTML!==markup')&&passiveRepair.includes('repair(true)')&&
+  passiveRepair.includes("window.__v514GoWrapped==='v7119-event'")&&
+  tech.includes('V8.345 KLASSENPASSIVE:'),
+  'V8.345 passive owner single-navigation behavior missing');
+check(beta.includes('v8009-s2-v4156-class-identity-balance.js?v=8345-passive-idempotent-beta')&&
+  beta.includes('v8009-s12-v6117-class-passive-prismatic-fix.js?v=8345-passive-single-owner-beta'),
+  'V8.345 passive cache not active');
+check(donorOwner.includes("typeof window.v515PolishHero==='function'")&&
+  ornamentOwner.includes("root.getAttribute('data-hero-layout')==='reference-v7124'")&&
+  summaryOwner.includes("img.style.getPropertyPriority(k)!=='important'")&&
+  donorOwner.includes('v460CharacterNavDiagnostics')&&
+  ornamentOwner.includes('v526CharacterNavDiagnostics')&&
+  summaryOwner.includes('v7124CharacterNavDiagnostics'),
+  'V8.346 original owner DOM idempotence / timing missing');
+check(tech.includes('LOAF-PHASEN Scripts gesamt')&&
+  tech.includes('V8.346 WEITERE NAV-OWNER:')&&
+  tech.includes('Inventar-Idle-Warten')&&
+  characterRenderer.includes('profile.inventoryWaitMs=')&&
+  characterRenderer.includes('profile.secondFrameWaitMs='),
+  'V8.346 LoAF phase or deferred inventory timing missing');
+check(beta.includes('v8009-s8-v460-char-ui.js?v=8346-donor-single-owner-beta')&&
+  beta.includes('v8009-s16-v526-heldenquartier-final-ornament.js?v=8346-hero-layout-idempotent-beta')&&
+  beta.includes('v8009-s2-v7124-character-scroll-summary-owner.js?v=8346-avatar-style-idempotent-beta'),
+  'V8.346 character owner cache keys missing');
 
 check(beta.includes('v8009-s12-v7081-account-capability-gate.js?v=8337-flat-diag-beta'),'Beta capability hotpath cache not updated');
 check(beta.includes('v8009-s1-v7042-unified-authority-bridge.js?v=8337-memo-diag-beta'),'Beta bridge hotpath cache not updated');
