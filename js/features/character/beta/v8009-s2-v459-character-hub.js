@@ -384,8 +384,10 @@
       fallbackMs=(performance.now?.()||Date.now())-fBegin;
     }
     stamp();
-    /* e belongs to this single synchronous dispatch, never persisted. */
-    e.__v8343CharacterHubRefreshed=true;
+    /* Only signal a completed Hub pass if v459 actually owns/presents a
+       shell. If V504 or incomplete boot provides none, Frost keeps the
+       historical extra inventory refresh instead of dropping it. */
+    e.__v8343CharacterHubRefreshed=hubReady||!!document.getElementById('v459CharacterShell');
     lastNav={at:Date.now(),totalMs:Math.round((performance.now?.()||Date.now())-begin),
       layoutMs:Math.round(layoutMs),fallbackMs:Math.round(fallbackMs),hubReady};
   });window.__v459GoWrapped='v7119-event';
