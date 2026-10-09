@@ -32,7 +32,7 @@ for(const entry of ['beta.html','server1.html']){
   }
   check(new Set(scriptPaths).size===scriptPaths.length,entry+' duplicate JS');
   check(new Set(cssPaths).size===cssPaths.length,entry+' duplicate CSS');
-  const homeCache=entry==='beta.html'?'8334-event-top-diagnostics':'8315-trace-hook';
+  const homeCache=entry==='beta.html'?'8335-event-paint-sources-beta':'8315-trace-hook';
   check(html.includes('v8009-home-renderer.js?v='+homeCache),entry+' home cache');
   if(entry==='beta.html')check(html.includes('v7288-home-adaptive-fit-script.js?v=8326-beta-height-stable'),entry+' fit cache');
   check(html.includes('v6118-event-x2-worldboss-design-css.css?v=8312-home-perf1'),entry+' boss cache');
