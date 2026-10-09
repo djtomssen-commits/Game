@@ -17,6 +17,8 @@
   }
 
   function v345RepairFreshEventDampf(){
+    /* The server owns event Dampf grants; no local 100→200 correction on logged-in accounts. */
+    try{if(typeof v073User!=='undefined'&&v073User?.id)return false}catch(_){}
     try{
       if(typeof v271DampfEventActive!=='function' || !v271DampfEventActive())return false;
 
