@@ -81,9 +81,8 @@ v271PaintDampf=function(){
 
   const active=v271DampfEventActive();
   const cap=active?300:100;
-  let current=Math.max(0,Math.floor(Number(s.energy)||0));
-  if(current>cap)current=cap;
-  if(Number(s.energy)!==current)s.energy=current;
+  /* V8.304: rendering must never overwrite confirmed server-owned Dampf. */
+  const current=Math.max(0,Math.floor(Number(s.energy)||0));
 
   card.classList.toggle('v288-dampf-event-active',active);
 
