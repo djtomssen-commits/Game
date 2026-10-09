@@ -200,6 +200,17 @@ async function checkPostLoginHomeHydration(channel){
   await page.waitForTimeout(140);
   const home=await page.evaluate(()=>({progress:window.qaProgress,diag:window.v7133AuthorityDiagnostics().homePostLoginHydratesSuppressed}));
   await page.evaluate(()=>{
+    window.__V7204_CANONICAL_LOGIN_AT__=Date.now()-20000;
+    window.v7214AccountReadyQueueDiagnostics=()=>({queued:19});
+    window.persist();
+  });
+  await page.waitForTimeout(140);
+  const queued=await page.evaluate(()=>({
+    progress:window.qaProgress,
+    suppressed:window.v7133AuthorityDiagnostics().homeQueueHydratesSuppressed,
+    trace:window.v7133AuthorityDiagnostics().hydrationTrace.slice(-1)[0]
+  }));
+  await page.evaluate(()=>{
     document.getElementById('world').classList.remove('active');
     document.getElementById('quests').classList.add('active');
     window.persist();
@@ -210,16 +221,20 @@ async function checkPostLoginHomeHydration(channel){
     document.getElementById('quests').classList.remove('active');
     document.getElementById('world').classList.add('active');
     window.__V7204_CANONICAL_LOGIN_AT__=Date.now()-30000;
+    window.v7214AccountReadyQueueDiagnostics=()=>({queued:0});
     window.persist();
   });
   await page.waitForTimeout(140);
   const later=await page.evaluate(()=>window.qaProgress);
   assert.equal(home.progress,channel==='beta'?0:1,channel+' immediate Home should only skip duplicate Beta refresh');
   assert.equal(home.diag,channel==='beta'?1:0,channel+' Beta counter');
-  assert.equal(quests.progress,channel==='beta'?1:2,channel+' Quests must keep canonical hydration');
+  assert.equal(queued.progress,channel==='beta'?0:2,channel+' pending login queue should only skip redundant Beta Home refresh');
+  assert.equal(queued.suppressed,channel==='beta'?1:0,channel+' queue-specific suppression count');
+  assert.equal(queued.trace?.reason,channel==='beta'?'persist':undefined,channel+' Beta-only trace reason');
+  assert.equal(quests.progress,channel==='beta'?1:3,channel+' Quests must keep canonical hydration');
   assert.equal(quests.quest,1,channel+' Quests must keep their screen-specific sync');
-  assert.equal(later,channel==='beta'?2:3,channel+' later Home refresh must remain available');
-  scenarios.push({channel,hydration:{home,quests,later}});
+  assert.equal(later,channel==='beta'?2:4,channel+' later Home refresh must remain available');
+  scenarios.push({channel,hydration:{home,queued,quests,later}});
   await page.close();
 }
 async function checkAccountReadyCpuAttribution(channel){
