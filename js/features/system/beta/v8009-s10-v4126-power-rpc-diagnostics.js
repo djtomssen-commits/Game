@@ -30,7 +30,12 @@
   const cp=stablePower();
   ['#power','#charPower','#v358Power','#v110Cp'].forEach(sel=>{const el=document.querySelector(sel);if(el)el.textContent=cp});
   try{
-   document.querySelectorAll('.v349-power b,.v366-power b').forEach(el=>el.textContent=cp);
+   /* V8.325: canonical home V366 formats power with de-DE grouping.
+      Keep Server 1's current presentation until separate approval. */
+   document.querySelectorAll('.v349-power b').forEach(el=>{if(el.textContent!==String(cp))el.textContent=cp});
+   const homePower=String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta'
+    ?cp.toLocaleString('de-DE'):String(cp);
+   document.querySelectorAll('.v366-power b').forEach(el=>{if(el.textContent!==homePower)el.textContent=homePower});
    const own=typeof v073User!=='undefined'&&v073User?.id?String(v073User.id):'';
    if(own){
     document.querySelectorAll('.v072-player-row[data-profile-id]').forEach(row=>{
