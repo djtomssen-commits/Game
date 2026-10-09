@@ -60,6 +60,16 @@ for(const channel of ['beta','server1']){
  assert.equal(afterLoad.hidden,false);
  assert.ok(afterLoad.text.includes('Rangbelohnung prüfen'));
 
+ // Account-ready can fire again for a later hydration stage of the SAME
+ // player: the known final reward slot must not disappear and reappear.
+ await page.evaluate(()=>window.dispatchEvent(new CustomEvent('growlegends:account-ready')));
+ await page.waitForTimeout(130);
+ const afterSameAccount=await page.evaluate(()=>({
+   events:window.__qaEvents,visible:!document.querySelector('.v8310-cup-results-slot').hidden
+ }));
+ assert.equal(afterSameAccount.visible,true,channel+' same player ready event must retain the tile');
+ assert.equal(afterSameAccount.events.length,1,channel+' duplicate account-ready must not hide Cup');
+
  // New Thursday active flag: hide exactly once and do not expose claims.
  await page.evaluate(()=>{
    window.v8210GrowCupEventActive=()=>true;
@@ -84,7 +94,8 @@ for(const channel of ['beta','server1']){
  assert.equal(afterReturn.events.length,3);
  assert.deepEqual(errors,[]);
  results.push({channel,firstLoadTransitions:afterLoad.events.length,
-   activeHideTransitions:afterActive.events.length-afterLoad.events.length,
+   sameAccountRepeatTransitions:afterSameAccount.events.length-afterLoad.events.length,
+   activeHideTransitions:afterActive.events.length-afterSameAccount.events.length,
    returnShowTransitions:afterReturn.events.length-afterActive.events.length,
    status:afterLoad.text,errors:errors.length});
  await page.close();
