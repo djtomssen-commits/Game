@@ -601,6 +601,9 @@
   }
 
   function notifyWorldRendered(mode){
+    /* V8.315: opt-in device profiler sees *which* canonical Home render
+       occurred before its DOM observer notes a visible Current replacement. */
+    try{window.GL_PAGE_AUDIT?.renderMark?.('world',String(mode||'render'),{owner:'v8009-home'})}catch(_){}
     try{
       window.dispatchEvent(new CustomEvent('growlegends:home-rendered-v8009',{detail:{mode:String(mode||'render')}}));
     }catch(e){}
