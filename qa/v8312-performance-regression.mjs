@@ -32,7 +32,7 @@ for(const entry of ['beta.html','server1.html']){
   }
   check(new Set(scriptPaths).size===scriptPaths.length,entry+' duplicate JS');
   check(new Set(cssPaths).size===cssPaths.length,entry+' duplicate CSS');
-  check(html.includes('v8009-home-renderer.js?v=8314-current-dom-stable'),entry+' home cache');
+  check(html.includes('v8009-home-renderer.js?v=8315-trace-hook'),entry+' home cache');
   check(html.includes('v6118-event-x2-worldboss-design-css.css?v=8312-home-perf1'),entry+' boss cache');
   scriptPaths.forEach(x=>scriptFiles.add(x));
   cssPaths.forEach(x=>cssFiles.add(x));
