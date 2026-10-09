@@ -89,7 +89,7 @@ check(hudJs.includes("panel.classList.remove('open','show')")&&hudJs.includes("p
 check(hudJs.includes("legacy.style.setProperty('display','none','important')"),'V8.338 must eliminate old header inline-important layout footprint');
 const tech=read('js/features/system/beta/v8009-s1-v4107-systemtechnik.js');
 check(tech.includes("const basename=match[1].split('/').pop().split(/[?#]/)[0]"),'V8.338 must resolve JSON caller cache-query URLs and SDK bundles');
-check(beta.includes('v8009-s1-v4107-systemtechnik.js?v=8343-character-nav-metrics-beta'),'V8.343 profiler cache not updated');
+check(beta.includes('v8009-s1-v4107-systemtechnik.js?v=8344-hero-navigation-owner-beta'),'V8.344 profiler cache not updated');
 check(tech.includes('const longShort=long.filter(x=>x.ms>=50&&x.ms<100).length')&&
   tech.includes('...longPrint.map(x=>'),'V8.340 profiler must print measured 50-99ms long tasks');
 check(tech.includes("'LONGTASK-BEREICHE: 50–99 ms '"),'V8.340 profiler must explain longtask thresholds');
@@ -146,6 +146,24 @@ check(postNavOwner.includes('v7119CharacterNavEventDiagnostics')&&
 check(beta.includes('v8009-s3-v4153-frost-class-avatar-authority.js?v=8343-frost-nav-light-beta')&&
   beta.includes('v8009-s15-v7119-character-navigation-consolidation.js?v=8343-nav-listener-metrics-beta'),
   'V8.343 Frost and postnav owner cache not updated');
+/* V8.344 avoid v510/v514 double character layout within later v7157. */
+const heroBuild=read('js/features/character/beta/v8009-s10-v510-character-hero-rebuild.js');
+const heroRef=read('js/features/character/beta/v8009-s1-v514-heldenquartier-reference.js');
+const heroStable=read('js/features/character/beta/v8009-s15-v7157-character-equipment-scroll-stability.js');
+check(heroStable.includes("fromCharacterNavigation&&window.__v510GoWrapped==='v7119-event'")&&
+  heroStable.includes("fromCharacterNavigation&&window.__v514GoWrapped==='v7119-event'")&&
+  heroStable.includes("if(String(e?.detail?.id||'')==='character')stable(true)")&&
+  heroStable.includes("window.v7157CharacterStableSettle=stable"),
+  'V8.344 character hero stability must skip already performed nav builds but retain explicit full recovery');
+check(heroBuild.includes('v510CharacterNavDiagnostics')&&heroRef.includes('v514CharacterNavDiagnostics')&&
+  heroStable.includes('v7157CharacterNavDiagnostics')&&
+  tech.includes('V8.344 HELDENQUARTIER:'),
+  'V8.344 character hero owner listener timing reporting missing');
+check(beta.includes('v8009-s10-v510-character-hero-rebuild.js?v=8344-nav-timing-beta')&&
+  beta.includes('v8009-s1-v514-heldenquartier-reference.js?v=8344-nav-timing-beta')&&
+  beta.includes('v8009-s15-v7157-character-equipment-scroll-stability.js?v=8344-no-duplicate-hero-beta'),
+  'V8.344 character hero owners cache not updated');
+
 
 
 check(beta.includes('v8009-s12-v7081-account-capability-gate.js?v=8337-flat-diag-beta'),'Beta capability hotpath cache not updated');
