@@ -159,3 +159,6 @@ V8.287 – Aktive tägliche Verlustwache
 
 ### 09.10.2026 – V8.309: Grow-Cup-Ergebnis-Kartenhöhe
 - World / „Aktuelles“ auf Beta + Server 1: `.v8310-cup-results-slot` ist jetzt eine automatisch gestreckte Grid-Kachel wie ihre Nachbarn, ohne doppelte `height:100%`-Abhängigkeit im inneren Button. Bestehender CSS-Owner direkt geändert, Cache beidseitig `8309-cup-equal-size`; Live-Android-Sichttest offen.
+
+### 09.10.2026 – V8.310: Grow-Cup-Ergebnis-Slot mit identischer Kartenhöhe
+- World / Startseite / „Aktuelles“: Die Grow-Cup-Ergebniskachel besitzt jetzt dieselbe direkte `v366-panel`-Klasse wie Weltboss/Buch, wodurch die bereits vorhandene kanonische Kartenhöhe 190px (bis 390px Viewport: 174px) tatsächlich auf Cup angewendet wird. Inneren Button-`min-height:205px` entfernt, Grafik/Text verkleinert und Hidden-Kaskade abgesichert. Beta + Server 1 Cache `8310-cup-panel-size`, JS-/DOM-Prüfung PASS; Android-Test offen.
