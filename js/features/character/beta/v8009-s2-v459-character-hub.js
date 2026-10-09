@@ -303,24 +303,45 @@
     cards.forEach((card,i)=>{
       const it=s?.inventory?.[i];if(!it)return;
       try{window.v8198ApplyItemFx?.(card,it)}catch(_){}
-      card.dataset.v459Index=String(i);card.setAttribute('role','button');card.setAttribute('tabindex','0');
+      /* V8.342 Beta: the three presentation owners can revisit the same
+         inventory in one navigation. Preserve existing item/image nodes when
+         their visible identity has not changed, avoiding repeated decode,
+         layout and MutationObserver work. Only item presentation changes
+         invalidate the display; gameplay/item state remains untouched. */
+      if(card.dataset.v459Index!==String(i))card.dataset.v459Index=String(i);
+      if(card.getAttribute('role')!=='button')card.setAttribute('role','button');
+      if(card.getAttribute('tabindex')!=='0')card.setAttribute('tabindex','0');
       const name=card.querySelector('.item-name');
       if(name){
-        name.replaceChildren();
-        const icon=document.createElement('span');icon.className='v459-inv-icon';
-        try{
-          const u=typeof window.v466ItemArtUri==='function'?window.v466ItemArtUri(it):'';
-          if(u){const im=document.createElement('img');im.className='v466-item-art';im.src=u;im.alt=String(it.name||'Item');im.decoding='async';icon.appendChild(im)}
-          else icon.textContent=it.icon||'🎁';
-        }catch(e){icon.textContent=it.icon||'🎁'};
-        const txt=document.createElement('span');txt.className='v459-inv-name';
-        txt.textContent=String(it.name||'Unbekanntes Item').replace(/^(Normal|Gewöhnlich|Rare|Episch|Legendär|Mystisch):\s*/i,'').replace(/\s*\[Lv\.\d+\]\s*$/i,'');
-        name.append(icon,txt);
+        const raw=String(it.name||'Item');
+        const display=String(it.name||'Unbekanntes Item').replace(/^(Normal|Gewöhnlich|Rare|Episch|Legendär|Mystisch):\s*/i,'').replace(/\s*\[Lv\.\d+\]\s*$/i,'');
+        let u='';
+        try{u=typeof window.v466ItemArtUri==='function'?(window.v466ItemArtUri(it)||''):''}catch(_){}
+        const fall=it.icon||'🎁';
+        const existingIcon=name.querySelector(':scope > .v459-inv-icon');
+        const existingText=name.querySelector(':scope > .v459-inv-name');
+        const oldImage=existingIcon?.querySelector(':scope > img.v466-item-art');
+        const correctArt=u
+          ? !!oldImage&&oldImage.getAttribute('src')===u&&oldImage.alt===raw
+          : !!existingIcon&&!oldImage&&existingIcon.textContent===fall;
+        if(name.childElementCount!==2||!existingText||existingText.textContent!==display||!correctArt){
+          const icon=document.createElement('span');icon.className='v459-inv-icon';
+          if(u){
+            const im=document.createElement('img');im.className='v466-item-art';
+            im.src=u;im.alt=raw;im.decoding='async';icon.appendChild(im);
+          }else icon.textContent=fall;
+          const txt=document.createElement('span');txt.className='v459-inv-name';txt.textContent=display;
+          name.replaceChildren(icon,txt);
+        }
       }
       let lv=card.querySelector('.v459-inv-level');if(!lv){lv=document.createElement('span');lv.className='v459-inv-level';card.appendChild(lv)}
-      lv.textContent=`Lv.${Math.max(1,Number(it.dropLevel)||Number(s.level)||1)}`;
-      const open=e=>{if(e.target.closest('.v268-pick,input,button,label'))return;openInventory(i)};
-      card.onclick=open;card.onkeydown=e=>{if((e.key==='Enter'||e.key===' ')&&!e.target.closest('input,button')){e.preventDefault();openInventory(i)}};
+      const levelText=`Lv.${Math.max(1,Number(it.dropLevel)||Number(s.level)||1)}`;
+      if(lv.textContent!==levelText)lv.textContent=levelText;
+      if(card.dataset.v459Bound!=='1'){
+        card.onclick=e=>{if(e.target.closest('.v268-pick,input,button,label'))return;openInventory(Number(card.dataset.v459Index))};
+        card.onkeydown=e=>{if((e.key==='Enter'||e.key===' ')&&!e.target.closest('input,button')){e.preventDefault();openInventory(Number(card.dataset.v459Index))}};
+        card.dataset.v459Bound='1';
+      }
     });
     updateHero();
   }
@@ -331,9 +352,12 @@
     const base=renderInventory;
     renderInventory=function(){
       const r=base.apply(this,arguments);
-      layout();
-      if(activeTab()==='inventory')refreshTab('inventory');
-      else updateHero();
+      /* layout() already calls activate() -> refreshTab() on success.
+         Refresh only on the V504-owned/no-layout path. */
+      if(!layout()){
+        if(activeTab()==='inventory')refreshTab('inventory');
+        else updateHero();
+      }
       return r;
     };
     try{window.renderInventory=renderInventory}catch(e){}
@@ -343,7 +367,11 @@
   /* V8.009: global render hook retired.
      renderInventory/renderSkillTree/materials + character navigation already own this UI. */
   window.addEventListener('growlegends:navigation-open-v7119',e=>{
-    if(String(e?.detail?.id||'')==='character'){layout();activate(activeTab(),false);updateHero();stamp()}
+    if(String(e?.detail?.id||'')==='character'){
+      /* layout succeeds with its own tab activation, otherwise V504 owns it. */
+      if(!layout()){activate(activeTab(),false);updateHero()}
+      stamp();
+    }
   });window.__v459GoWrapped='v7119-event';
 
   layout();activate(activeTab(),false);stamp();
