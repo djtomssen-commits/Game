@@ -464,6 +464,49 @@ async function checkReadOnlyConsistencyWatch(channel){
   }});
   await page.close();
 }
+async function checkCharacterNavigationSingleDispatch(){
+  /* V8.341: actual v4149 and v7119 wrappers run together. Only the
+     character route is deduplicated; v7119 still defers listeners two frames. */
+  const page=await browser.newPage();
+  const errors=[];page.on('pageerror',e=>errors.push(e.message));
+  await page.setContent('<!doctype html><html><body><div id="v032MenuPanel"></div><div id="world" class="screen active"></div><div id="character" class="screen"></div></body></html>');
+  await page.evaluate(()=>{
+    window.v032Go=id=>{
+      document.querySelectorAll('.screen.active').forEach(x=>x.classList.remove('active'));
+      document.getElementById(id)?.classList.add('active');
+      return id;
+    };
+    window.v8144GameplayI18n={schedule:()=>{}};
+    window.qaNavEvents=[];
+    window.addEventListener('growlegends:navigation-open-v7119',e=>{
+      window.qaNavEvents.push(String(e.detail?.id||''));
+    });
+  });
+  await page.addScriptTag({path:file('js/features/system/beta/v8009-s8-v4149-final-navigation-render-authority.js')});
+  await page.addScriptTag({path:file('js/features/character/beta/v8009-s15-v7119-character-navigation-consolidation.js')});
+  const result=await page.evaluate(async()=>{
+    const nextFrames=()=>new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(()=>requestAnimationFrame(r))));
+    window.v032Go('character');
+    const immediate=window.qaNavEvents.slice();
+    await nextFrames();
+    const after=window.qaNavEvents.slice();
+    window.v032Go('world');
+    const worldImmediate=window.qaNavEvents.slice();
+    await nextFrames();
+    return {immediate,after,worldImmediate,final:window.qaNavEvents.slice(),
+      installed:window.__V7119_CHARACTER_NAV_CONSOLIDATION__===true};
+  });
+  assert.deepEqual(errors,[],'V8.341 actual navigation owner scripts must not throw');
+  assert.equal(result.installed,true,'V8.341 deferred v7119 owner installed');
+  assert.deepEqual(result.immediate,[],'V8.341 character must not fire the earlier duplicate event');
+  assert.deepEqual(result.after,['character'],'V8.341 character must deliver one deferred navigation event');
+  assert.deepEqual(result.worldImmediate,['character','world'],
+    'V8.341 retain original early navigation behavior for non-character screens');
+  assert.deepEqual(result.final,['character','world','world'],
+    'V8.341 preserve other routes without unrequested behavioral changes');
+  scenarios.push({channel:'beta',characterNavigationEvent:result});
+  await page.close();
+}
 async function checkLongTaskDetailReporting(){
   /* V8.340: execute the actual report's aggregation code on synthetic
      browser long-task records; count and printed data must agree. */
@@ -743,6 +786,7 @@ try{
   await checkEnchantAliasConsistency();
   await checkPowerPaintEfficiency('beta');
   await checkPowerPaintEfficiency('server1');
+  await checkCharacterNavigationSingleDispatch();
   await checkLongTaskDetailReporting();
   await checkSampledJsonProfile();
   await checkDiagnosticReadHotPaths();
