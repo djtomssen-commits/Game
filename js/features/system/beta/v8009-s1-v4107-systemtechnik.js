@@ -294,6 +294,15 @@ function stopRuntimeProfiler(){
   }catch(_){}
  }
  const loaf=runtimeProfile.loafFrames;
+ /* V8.323 Beta: correlate the existing fetch timings with long tasks without
+    intercepting Supabase/auth methods or recording request credentials. */
+ const recentNetwork=String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta'
+  ? network.calls.filter(x=>Number(x.at)>=runtimeProfile.startEpoch&&Number(x.at)<=Date.now())
+    .map(x=>({at:Math.max(0,Math.round(Number(x.at)-Number(x.ms)-runtimeProfile.startEpoch)),
+       ms:Math.round(Number(x.ms)||0),status:Number(x.status)||0,
+       endpoint:endpointName(x.url)}))
+    .sort((x,y)=>x.at-y.at)
+  : [];
  const lines=[
   'GROW LEGENDS | 30-SEKUNDEN-LAUFZEIT-PROFIL | '+String(window.GROW_RELEASE_CHANNEL||'unbekannt').toUpperCase(),
   'Dauer: '+duration+' ms | Startbildschirm: '+String(before.screen||'unbekannt'),
@@ -324,6 +333,12 @@ function stopRuntimeProfiler(){
    'FRAME '+x.ms+' ms | t+'+x.t+' ms | '+x.screen+
    (x.scripts.length?' | '+x.scripts.map(y=>y.file+':'+(y.fn||'?')+' '+y.ms+' ms (Layout '+y.layoutMs+' ms)').join(' ; '):' | keine Script-Zuordnung')),
   '',
+  ...(String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta'?[
+   'NETZWERK/RPC-ZEITLINIE (existierender Fetch-Monitor, kein JS-CPU-Profil): '+recentNetwork.length,
+   ...recentNetwork.slice(-35).map(x=>'FETCH t+'+x.at+' ms | Dauer '+x.ms+' ms | HTTP '+x.status+' | '+x.endpoint),
+   'Hinweis: zeitliche Naehe von FETCH und LONGTASK beweist keine Ursache.',
+   ''
+  ]:[]),
   'Hinweis: Timer-CPU ist nur instrumentierte Callback-CPU. Nicht-Timer-Skripte und Netzwerkverzoegerungen koennen andere Ursachen haben.',
   'Ohne LoAF-Script-Zuordnung wird kein konkreter Verursacher behauptet.'
  ];
