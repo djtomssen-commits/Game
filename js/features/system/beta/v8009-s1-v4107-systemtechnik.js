@@ -154,24 +154,42 @@ function reactionStats(){
 }
 const tech=()=>window.__V4106_TECH__||{intervals:new Map(),timeouts:new Map(),listeners:new Map(),longTasks:[],renderSamples:{},mutations:0,maxDom:0};
 
-/* V8.318: 30-second read-only profiler lives in its existing Systemtechnik
-   owner. It takes deltas from the already active timer/render instrumentation:
-   no timer monkey-patches, MutationObserver loops, or new render lifecycle. */
-const runtimeProfile={running:false,startEpoch:0,startPerf:0,timeout:0,before:null,report:''};
-function runtimeTimerSnapshot(){
- const items=[...(tech().intervals?.values?.()||[]),...(tech().timeouts?.values?.()||[])];
- const grouped=new Map();
- for(const item of items){
-  const kind=String(item.kind||'timer'),delay=Number(item.delay)||0;
-  const site=String(item.site||'unknown').slice(0,100);
-  const callback=String(item.callback||'anonymous').slice(0,80);
-  const key=[kind,delay,site,callback].join(' | ');
-  const row=grouped.get(key)||{kind,delay,site,callback,calls:0,cpu:0,max:0,count:0};
-  row.calls+=Number(item.calls)||0;row.cpu+=Number(item.cpu)||0;
-  row.max=Math.max(row.max,Number(item.max)||0);row.count++;
-  grouped.set(key,row);
+/* V8.319: canonical opt-in 30-second profiler. V8.318 read an obsolete
+   __V4106_TECH__ store that is not populated in production. Use the actual
+   V477 timer/observer counters and native browser long-task/LoAF entries.
+   Only opt-in measurement installs observers; no renderer or gameplay hooks. */
+const runtimeProfile={running:false,startEpoch:0,startPerf:0,timeout:0,before:null,report:'',
+  longObserver:null,loafObserver:null,longTasks:[],loafFrames:[],longSupported:false,loafSupported:false};
+function runtimeCounterSnapshot(since=0){
+ let raw=null,kind='nicht verfügbar';
+ try{
+  if(typeof window.__V477_RUNTIME_PROFILE_SNAPSHOT__==='function'){
+   raw=window.__V477_RUNTIME_PROFILE_SNAPSHOT__(since);
+   kind='V477 vollständig';
+  }else if(typeof window.__V477_RUNTIME_DIAGNOSTICS__==='function'){
+   const diag=window.__V477_RUNTIME_DIAGNOSTICS__()||{};
+   raw={intervals:diag.top||[],observers:diag.observers||[]};
+   kind='V477 Top-12 (eingeschränkt)';
+  }
+ }catch(_){raw=null;kind='nicht verfügbar'}
+ const timers=new Map(),observers=new Map();
+ for(const t of raw?.intervals||[]){
+  const id=String(t.id??[t.site,t.callback,t.requestedDelay].join('|'));
+  timers.set(id,{id,site:String(t.site||'unbekannt').slice(0,90),
+   callback:String(t.callback||'Callback').slice(0,110),
+   delay:Number(t.actualDelay??t.delay)||0,
+   requested:Number(t.requestedDelay??t.delay)||0,
+   nativeBypass:!!t.nativeBypass,active:t.active!==false,
+   calls:Number(t.calls)||0,cpu:Number(t.cpuMs??t.cpu)||0,
+   max:Number(t.maxMs??t.max)||0});
  }
- return grouped;
+ for(const o of raw?.observers||[]){
+  const id=String(o.key??[o.site,(o.targets||[]).join(',')].join('|'));
+  observers.set(id,{id,site:String(o.site||'unbekannt').slice(0,90),
+   target:(o.targets||[]).map(x=>String(x).slice(0,60)).slice(0,3).join(', '),
+   batches:Number(o.batches)||0,records:Number(o.records)||0,active:o.active!==false});
+ }
+ return{timers,observers,kind};
 }
 function runtimeProfilerUi(message){
  const status=document.getElementById('glProfilerStatus');
@@ -189,72 +207,157 @@ function runtimeProfilerUi(message){
   body.style.overflowWrap='anywhere';
  }
 }
+function safeScriptName(url){
+ const s=String(url||'').split(/[?#]/)[0];
+ const name=s.split('/').pop()||'Inline/Unbekannt';
+ return name.slice(0,100).replace(/[^a-zA-Z0-9_.-]/g,'_');
+}
+function collectLongTasks(entries){
+ for(const e of entries||[]){
+  if(!runtimeProfile.running||e.startTime<runtimeProfile.startPerf)continue;
+  const duration=Math.round(Number(e.duration)||0);
+  if(duration<50)continue;
+  runtimeProfile.longTasks.push({
+   ms:duration,t:Math.max(0,Math.round(e.startTime-runtimeProfile.startPerf)),
+   screen:currentScreenId()
+  });
+  if(runtimeProfile.longTasks.length>100)runtimeProfile.longTasks.shift();
+ }
+}
+function collectLoaf(entries){
+ for(const e of entries||[]){
+  if(!runtimeProfile.running||e.startTime<runtimeProfile.startPerf)continue;
+  const duration=Math.round(Number(e.duration)||0);
+  const scripts=Array.from(e.scripts||[]).map(x=>({
+   file:safeScriptName(x.sourceURL),fn:String(x.sourceFunctionName||'').slice(0,65),
+   ms:Math.round(Number(x.duration)||0),
+   layoutMs:Math.round(Number(x.forcedStyleAndLayoutDuration)||0)
+  })).sort((a,b)=>b.ms-a.ms).slice(0,5);
+  runtimeProfile.loafFrames.push({
+   ms:duration,t:Math.max(0,Math.round(e.startTime-runtimeProfile.startPerf)),
+   screen:currentScreenId(),scripts
+  });
+  if(runtimeProfile.loafFrames.length>80)runtimeProfile.loafFrames.shift();
+ }
+}
+function startRuntimeProfileObservers(){
+ const types=typeof PerformanceObserver==='function'?(PerformanceObserver.supportedEntryTypes||[]):[];
+ if(types.includes('longtask')){
+  try{
+   runtimeProfile.longObserver=new PerformanceObserver(list=>collectLongTasks(list.getEntries()));
+   runtimeProfile.longObserver.observe({type:'longtask',buffered:false});
+   runtimeProfile.longSupported=true;
+  }catch(_){runtimeProfile.longObserver=null}
+ }
+ if(types.includes('long-animation-frame')){
+  try{
+   runtimeProfile.loafObserver=new PerformanceObserver(list=>collectLoaf(list.getEntries()));
+   runtimeProfile.loafObserver.observe({type:'long-animation-frame',buffered:false});
+   runtimeProfile.loafSupported=true;
+  }catch(_){runtimeProfile.loafObserver=null}
+ }
+}
 function stopRuntimeProfiler(){
  if(!runtimeProfile.running)return runtimeProfile.report;
- runtimeProfile.running=false;
  clearTimeout(runtimeProfile.timeout);runtimeProfile.timeout=0;
- const before=runtimeProfile.before||{timers:new Map(),mutations:0};
- const after=runtimeTimerSnapshot(),duration=Math.round(performance.now()-runtimeProfile.startPerf);
- const timerRows=[];
- for(const [key,row] of after){
-  const old=before.timers.get(key)||{calls:0,cpu:0};
-  const calls=Math.max(0,row.calls-old.calls);
-  const cpu=Math.max(0,row.cpu-old.cpu);
-  if(calls||cpu)timerRows.push({key,calls,cpu,max:row.max});
+ // Drain pending records before setting running=false, then disconnect.
+ try{collectLongTasks(runtimeProfile.longObserver?.takeRecords?.())}catch(_){}
+ try{collectLoaf(runtimeProfile.loafObserver?.takeRecords?.())}catch(_){}
+ runtimeProfile.running=false;
+ runtimeProfile.longObserver?.disconnect();runtimeProfile.longObserver=null;
+ runtimeProfile.loafObserver?.disconnect();runtimeProfile.loafObserver=null;
+ const before=runtimeProfile.before||{timers:new Map(),observers:new Map(),kind:'nicht verfügbar'};
+ const after=runtimeCounterSnapshot(runtimeProfile.startEpoch);
+ const duration=Math.round(performance.now()-runtimeProfile.startPerf);
+ const timers=[];
+ for(const [id,t] of after.timers){
+  const old=before.timers.get(id)||{calls:0,cpu:0};
+  const calls=Math.max(0,t.calls-old.calls),cpu=Math.max(0,t.cpu-old.cpu);
+  if(calls||cpu)timers.push({...t,callsDelta:calls,cpuDelta:cpu});
  }
- timerRows.sort((a,b)=>b.cpu-a.cpu||b.calls-a.calls);
- const long=(tech().longTasks||[]).filter(x=>Number(x.at||0)>=runtimeProfile.startEpoch);
- const slow=(tech().slowRenders||[]).filter(x=>Number(x.at||0)>=runtimeProfile.startEpoch);
- const mutationDelta=Math.max(0,(Number(tech().mutations)||0)-before.mutations);
+ timers.sort((a,b)=>b.cpuDelta-a.cpuDelta||b.callsDelta-a.callsDelta);
+ const observers=[];
+ for(const [id,o] of after.observers){
+  const old=before.observers.get(id)||{records:0,batches:0};
+  const records=Math.max(0,o.records-old.records),batches=Math.max(0,o.batches-old.batches);
+  if(records||batches)observers.push({...o,recordsDelta:records,batchesDelta:batches});
+ }
+ observers.sort((a,b)=>b.recordsDelta-a.recordsDelta);
+ let long=runtimeProfile.longTasks;
+ let longSource=runtimeProfile.longSupported?'PerformanceObserver (live)':'nicht verfügbar';
+ if(!runtimeProfile.longSupported){
+  try{
+   long=Array.from(window.__GL_RUNTIME_WATCHDOG__?.diagnostics?.()?.longTasks||[])
+    .filter(x=>Number(x.at||0)>=runtimeProfile.startEpoch)
+    .map(x=>({ms:Math.round(Number(x.duration)||0),t:Math.max(0,Number(x.at||0)-runtimeProfile.startEpoch),screen:String(x.screen||'unbekannt')}));
+   longSource='V7092 Watchdog (nur Tasks ab 350 ms)';
+  }catch(_){}
+ }
+ const loaf=runtimeProfile.loafFrames;
  const lines=[
-  'GROW LEGENDS | 30-SEKUNDEN-LAUFZEIT-PROFIL | BETA',
-  'Dauer: '+duration+' ms | Startbildschirm: '+before.screen,
-  'DOM-Mutationszaehler (bereits instrumentiert): '+mutationDelta,
-  'Lange Main-Thread-Tasks (existierender Logger): '+long.length,
-  ...long.slice(-20).map(x=>'LONGTASK '+Math.round(Number(x.duration)||0)+' ms | t+'+Math.max(0,Number(x.at||0)-runtimeProfile.startEpoch)+' ms'),
+  'GROW LEGENDS | 30-SEKUNDEN-LAUFZEIT-PROFIL | '+String(window.GROW_RELEASE_CHANNEL||'unbekannt').toUpperCase(),
+  'Dauer: '+duration+' ms | Startbildschirm: '+String(before.screen||'unbekannt'),
+  'Timerquelle: '+after.kind+' | Timer vor/nach: '+before.timers.size+'/'+after.timers.size,
+  'Observerquelle: '+after.kind+' | Observer vor/nach: '+before.observers.size+'/'+after.observers.size,
+  'Long-Task-Quelle: '+longSource,
+  'Long Tasks: '+(runtimeProfile.longSupported||longSource.startsWith('V7092')?long.length:'NICHT MESSBAR'),
+  ...long.filter(x=>x.ms>=100).slice(-25).map(x=>
+   'LONGTASK '+x.ms+' ms | t+'+x.t+' ms | '+x.screen),
   '',
-  'TIMER CALLBACK HOTSPOTS (CPU-Differenz im Messfenster):',
-  ...(timerRows.length?timerRows.slice(0,25).map(x=>
-   'CPU '+x.cpu.toFixed(1)+' ms | Aufrufe '+x.calls+' | max '+x.max.toFixed(1)+' ms | '+x.key
-  ):['Keine instrumentierten Timer-Aufrufe im Messfenster.']),
+  'TIMER CPU-HOTSPOTS (Delta, vorhandener V477-Owner):',
+  ...(timers.length?timers.slice(0,30).map(x=>
+   'CPU '+x.cpuDelta.toFixed(1)+' ms | Aufrufe '+x.callsDelta+
+   ' | max '+x.max.toFixed(1)+' ms | Takt '+x.delay+' ms'+
+   ' | '+x.site+' | '+x.callback
+  ):[after.kind==='nicht verfügbar'?'NICHT MESSBAR: V477-Registry fehlt.':
+     'Kein aktiver instrumentierter Timer im Messfenster (nicht gleichbedeutend mit 0 JS-Last).']),
   '',
-  'LANGSAME RENDER (im Messfenster):',
-  ...(slow.length?slow.slice(-20).map(x=>
-   String(x.name||'unbekannt')+' | '+Number(x.ms||0).toFixed(1)+' ms | Seite '+String(x.screen||'unknown')
-  ):['Keine langsamen Renderer im vorhandenen Logger.']),
+  'MUTATIONOBSERVER-HOTSPOTS (Delta, vorhandener V477-Owner):',
+  ...(observers.length?observers.slice(0,20).map(x=>
+   'Records '+x.recordsDelta+' | Batches '+x.batchesDelta+
+   ' | '+x.site+' | '+x.target
+  ):[after.kind==='nicht verfügbar'?'NICHT MESSBAR: Registry fehlt.':
+   'Keine aktiven registrierten Observer mit neuen Records.']),
   '',
-  'Hinweis: vorhandene Instrumentierung; ohne Zuordnung kein JS-Task-Verursacher bewiesen.'
+  'LANGE ANIMATIONSFRAMES (LoAF): '+(runtimeProfile.loafSupported?loaf.length:'NICHT UNTERSTÜTZT'),
+  ...loaf.filter(x=>x.ms>=100).sort((a,b)=>b.ms-a.ms).slice(0,20).map(x=>
+   'FRAME '+x.ms+' ms | t+'+x.t+' ms | '+x.screen+
+   (x.scripts.length?' | '+x.scripts.map(y=>y.file+':'+(y.fn||'?')+' '+y.ms+' ms (Layout '+y.layoutMs+' ms)').join(' ; '):' | keine Script-Zuordnung')),
+  '',
+  'Hinweis: Timer-CPU ist nur instrumentierte Callback-CPU. Nicht-Timer-Skripte und Netzwerkverzoegerungen koennen andere Ursachen haben.',
+  'Ohne LoAF-Script-Zuordnung wird kein konkreter Verursacher behauptet.'
  ];
  runtimeProfile.report=lines.join('\n');
- runtimeProfilerUi('Messung beendet ('+(duration/1000).toFixed(1)+' s). Mit "Profil kopieren" den Bericht senden.');
+ runtimeProfilerUi('Messung beendet ('+(duration/1000).toFixed(1)+' s). Bericht kopieren und senden.');
  return runtimeProfile.report;
 }
 function startRuntimeProfiler(){
  if(runtimeProfile.running)return false;
  runtimeProfile.report='';
  runtimeProfile.startEpoch=Date.now();runtimeProfile.startPerf=performance.now();
- runtimeProfile.before={
-  timers:runtimeTimerSnapshot(),
-  mutations:Number(tech().mutations)||0,
-  screen:currentScreenId()
- };
+ runtimeProfile.before=runtimeCounterSnapshot(runtimeProfile.startEpoch);
+ runtimeProfile.before.screen=currentScreenId();
+ runtimeProfile.longTasks=[];runtimeProfile.loafFrames=[];
+ runtimeProfile.longSupported=false;runtimeProfile.loafSupported=false;
  runtimeProfile.running=true;
+ startRuntimeProfileObservers();
  runtimeProfile.timeout=setTimeout(stopRuntimeProfiler,30000);
- runtimeProfilerUi('Profil läuft 30 Sekunden. Jetzt auf die Startseite wechseln; danach hier den Bericht kopieren.');
+ runtimeProfilerUi('Profil läuft 30 Sekunden. Jetzt zur Startseite wechseln; danach hier Bericht kopieren.');
  return true;
 }
 function copyRuntimeProfiler(){
  const report=runtimeProfile.report;
  if(!report){runtimeProfilerUi(runtimeProfile.running?'Messung läuft noch.':'Noch kein Profil vorhanden.');return}
  const fallback=()=>{
-  const ta=document.createElement('textarea');ta.value=report;ta.style.position='fixed';ta.style.opacity='0';
+  const ta=document.createElement('textarea');ta.value=report;
+  ta.style.position='fixed';ta.style.opacity='0';
   document.body.appendChild(ta);ta.select();const ok=document.execCommand('copy');ta.remove();return ok;
  };
  try{
   if(navigator.clipboard?.writeText){
-   void navigator.clipboard.writeText(report).then(()=>{
-    runtimeProfilerUi('Profil in die Zwischenablage kopiert.');
-   }).catch(()=>{runtimeProfilerUi(fallback()?'Profil kopiert.':'Kopieren fehlgeschlagen. Bericht steht unten.')});
+   void navigator.clipboard.writeText(report).then(()=>
+    runtimeProfilerUi('Profil in die Zwischenablage kopiert.')
+   ).catch(()=>runtimeProfilerUi(fallback()?'Profil kopiert.':'Kopieren fehlgeschlagen. Bericht steht unten.'));
   }else runtimeProfilerUi(fallback()?'Profil kopiert.':'Kopieren fehlgeschlagen. Bericht steht unten.');
  }catch(_){runtimeProfilerUi('Kopieren fehlgeschlagen. Bericht steht unten.')}
 }
