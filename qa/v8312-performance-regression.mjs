@@ -89,7 +89,7 @@ check(hudJs.includes("panel.classList.remove('open','show')")&&hudJs.includes("p
 check(hudJs.includes("legacy.style.setProperty('display','none','important')"),'V8.338 must eliminate old header inline-important layout footprint');
 const tech=read('js/features/system/beta/v8009-s1-v4107-systemtechnik.js');
 check(tech.includes("const basename=match[1].split('/').pop().split(/[?#]/)[0]"),'V8.338 must resolve JSON caller cache-query URLs and SDK bundles');
-check(beta.includes('v8009-s1-v4107-systemtechnik.js?v=8342-character-stage-diag-beta'),'V8.342 profiler cache not updated');
+check(beta.includes('v8009-s1-v4107-systemtechnik.js?v=8343-character-nav-metrics-beta'),'V8.343 profiler cache not updated');
 check(tech.includes('const longShort=long.filter(x=>x.ms>=50&&x.ms<100).length')&&
   tech.includes('...longPrint.map(x=>'),'V8.340 profiler must print measured 50-99ms long tasks');
 check(tech.includes("'LONGTASK-BEREICHE: 50–99 ms '"),'V8.340 profiler must explain longtask thresholds');
@@ -122,8 +122,8 @@ check(characterHub.includes('if(name.childElementCount!==2||!existingText||exist
 check(characterHub.includes("if(!layout()){")&&
   !characterHub.includes("layout();\n      if(activeTab()==='inventory')refreshTab('inventory');"),
   'V8.342 renderInventory is still refreshing the tab twice');
-check(beta.includes('v8009-s2-v459-character-hub.js?v=8342-inventory-dom-stability-beta'),
-  'V8.342 character hub cache key missing');
+check(beta.includes('v8009-s2-v459-character-hub.js?v=8343-nav-event-owner-beta'),
+  'V8.343 character hub cache key missing');
 const characterRenderer=read('js/features/ui/beta/v8009-s2-v086-polish-script.js');
 check(characterRenderer.includes('window.v7207CharacterRenderDiagnostics=()')&&
   beta.includes('v8009-s2-v086-polish-script.js?v=8342-character-stage-diag-beta'),
@@ -131,6 +131,22 @@ check(characterRenderer.includes('window.v7207CharacterRenderDiagnostics=()')&&
 check(tech.includes('CHARAKTER RENDER-STUFEN (V8.342')&&
   tech.includes('freshCharacterRender'),
   'V8.342 Systemtechnik character render-stage readout missing');
+/* V8.343 prevent second Frost-owned hub traversal for one shared event only. */
+const frostOwner=read('js/features/character/beta/v8009-s3-v4153-frost-class-avatar-authority.js');
+const postNavOwner=read('js/features/character/beta/v8009-s15-v7119-character-navigation-consolidation.js');
+check(characterHub.includes('e.__v8343CharacterHubRefreshed=true')&&
+  frostOwner.includes("refreshAll('nav-character',e.__v8343CharacterHubRefreshed===true)")&&
+  frostOwner.includes('if(!skipDuplicateHub){'),
+  'V8.343 two character owners still render the same inventory on navigation');
+check(postNavOwner.includes('v7119CharacterNavEventDiagnostics')&&
+  tech.includes('CHARAKTER-NAVIGATION LISTENER (V8.343')&&
+  tech.includes('v4153CharacterNavDiagnostics')&&
+  tech.includes('v459CharacterNavDiagnostics'),
+  'V8.343 character navigation listener timing attribution missing');
+check(beta.includes('v8009-s3-v4153-frost-class-avatar-authority.js?v=8343-frost-nav-light-beta')&&
+  beta.includes('v8009-s15-v7119-character-navigation-consolidation.js?v=8343-nav-listener-metrics-beta'),
+  'V8.343 Frost and postnav owner cache not updated');
+
 
 check(beta.includes('v8009-s12-v7081-account-capability-gate.js?v=8337-flat-diag-beta'),'Beta capability hotpath cache not updated');
 check(beta.includes('v8009-s1-v7042-unified-authority-bridge.js?v=8337-memo-diag-beta'),'Beta bridge hotpath cache not updated');
