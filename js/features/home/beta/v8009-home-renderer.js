@@ -558,8 +558,11 @@
         return 'y'+delta+':'+names(document.elementsFromPoint(xy[0],y)).slice(0,3).join('>');
       });
       const candidateNodes=[
-        ['header',document.querySelector('.app > header')],
-        ['topbar',document.querySelector('.app > header .v366-topbar')],
+        /* The authoritative HUD is a body-level shell, not the legacy header. */
+        ['hud-shell',document.querySelector('#v372TopbarShell')],
+        ['hud-topbar',document.querySelector('#v372TopbarShell > .v372-topbar')],
+        ['legacy-header',document.querySelector('.app > header')],
+        ['legacy-v366',document.querySelector('.app > header .v366-topbar')],
         ['world',world],['world-grid',el.parentElement],['events',el]
       ];
       const paintCandidates=candidateNodes.filter(x=>!!x[1]).map(([label,node])=>{
@@ -568,6 +571,8 @@
         const pseudo=[before?.content,after?.content].filter(v=>v&&v!=='none'&&v!=='normal');
         return label+':y'+Math.round(bounds.top)+'-'+Math.round(bounds.bottom)+
           '/z'+css.zIndex+'/position='+css.position+
+          '/display='+css.display+'/visibility='+css.visibility+
+          '/opacity='+css.opacity+'/pointer='+css.pointerEvents+
           '/shadow='+String(css.boxShadow||'none').slice(0,110)+
           (pseudo.length?'/pseudo='+pseudo.join(',').slice(0,60):'');
       });
