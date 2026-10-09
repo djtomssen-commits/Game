@@ -28,10 +28,9 @@
    try{persist(false)}catch(_){}try{v069SyncCurrencies?.()}catch(_){}try{v441PaintResources?.()}catch(_){}try{render?.()}catch(_){}try{v063Toast?.('⬆️ Klassenset aufgewertet','success',`${x.name} · Stein und Rolle behalten`)}catch(_){}setTimeout(inject,30)
  }
  document.addEventListener('click',e=>{const b=e.target instanceof Element?e.target.closest('[data-v6170-upgrade]'):null;if(!b)return;e.preventDefault();void doUpgrade(b.dataset.v6170Upgrade)},true);
- /* V8.321 Beta: no character-subtree observer for a forge panel.
-    v6130's canonical panel render now calls v6170RefreshSetUpgrade directly.
-    Keep the previous observer only on Server 1 pending Beta test. */
- if(String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()!=='beta'){
+ /* V8.322: Beta-verified forge owner refreshes classset upgrade directly.
+    No character-subtree MutationObserver is needed on Beta or Server 1. */
+ if(!['beta','server1'].includes(String(window.GROW_RELEASE_CHANNEL||'').toLowerCase())){
   const mo=new MutationObserver(()=>{if(document.querySelector('#v6130ClassSetPanel')&&!document.querySelector('#v6170SetUpgrade'))queueMicrotask(inject)});
   const v7291SetHost=document.getElementById('character');
   if(v7291SetHost)mo.observe(v7291SetHost,{childList:true,subtree:true});
