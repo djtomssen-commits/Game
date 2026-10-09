@@ -89,6 +89,18 @@ check(hudJs.includes("legacy.style.setProperty('display','none','important')"),'
 const tech=read('js/features/system/beta/v8009-s1-v4107-systemtechnik.js');
 check(tech.includes("const basename=match[1].split('/').pop().split(/[?#]/)[0]"),'V8.338 must resolve JSON caller cache-query URLs and SDK bundles');
 check(beta.includes('v8009-s1-v4107-systemtechnik.js?v=8338-sdk-callsite-beta'),'V8.338 profiler caller cache not updated');
+/* V8.339: never use v7133AuthorityDiagnostics inside the v4139 diagnostic
+   because v7133 includes v4139LoginAuthorityDiagnostics in its own result. */
+const accountOwner=read('js/features/account/beta/v8009-s1-v4139-account-switch-authority.js');
+const domainsStart=accountOwner.indexOf('function authorityDomains(){');
+const domainsEnd=accountOwner.indexOf('\n function allAuthorityEnforced()',domainsStart);
+const domainsBody=accountOwner.slice(domainsStart,domainsEnd);
+check(domainsStart>=0&&domainsEnd>domainsStart,'V8.339 account domain function missing');
+check(!domainsBody.includes('v7133AuthorityDiagnostics') || domainsBody.slice(domainsBody.indexOf('try{return')).includes('try{return window.v7040AuthorityDiagnostics'),
+  'V8.339 account domain gate must read v7040 directly, not recursive v7133');
+check(beta.includes('v8009-s1-v4139-account-switch-authority.js?v=8339-break-diag-cycle-beta'),
+  'V8.339 account diagnostic fix missing cache bust');
+
 const beta=read('beta.html');
 check(beta.includes('v8009-s12-v7081-account-capability-gate.js?v=8337-flat-diag-beta'),'Beta capability hotpath cache not updated');
 check(beta.includes('v8009-s1-v7042-unified-authority-bridge.js?v=8337-memo-diag-beta'),'Beta bridge hotpath cache not updated');
