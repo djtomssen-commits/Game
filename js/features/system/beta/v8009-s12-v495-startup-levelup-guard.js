@@ -5,6 +5,10 @@
 
   let syncing=true;
   let settleTimer=0;
+  /* V8.320: Beta-only retirement once account hydration has settled.
+     Keep server1 runtime behavior unchanged until Beta mobile validation. */
+  const betaScopedLevelGuard=String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta';
+  let v6101LevelObserver=null;
   const root=document.documentElement;
 
   function isLevelUpText(value){
@@ -29,6 +33,7 @@
   function beginSync(){
     syncing=true;
     clearTimeout(settleTimer);
+    if(betaScopedLevelGuard)v6101StartLevelObserver();
     root.classList.add('v495-level-syncing');
     removeLegacyLevelUi();
     syncLevelObservers();
@@ -41,6 +46,9 @@
       syncLevelObservers();
       syncing=false;
       root.classList.remove('v495-level-syncing');
+      /* Global DOM monitoring is only needed while restoring an account.
+         Reinstall on the next beginSync/account switch. */
+      if(betaScopedLevelGuard)v6101StopLevelObserver();
     },650);
   }
 
@@ -75,7 +83,6 @@
 
   /* If a legacy handler still inserts an overlay during hydration, remove it
      before it can become visible. Genuine later gameplay Level-Ups are untouched. */
-  let v6101LevelObserver=null;
  function v6101StartLevelObserver(){
   try{
    if(v6101LevelObserver)return;
