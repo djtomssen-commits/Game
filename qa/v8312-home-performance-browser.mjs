@@ -1,0 +1,110 @@
+// V8.312 browser regression for the real Home renderer and shipped CSS.
+// Headless Chromium is not the Android WebView and cannot certify a live FPS improvement.
+import assert from 'node:assert/strict';
+import path from 'node:path';
+const {chromium}=await import('playwright');
+const root=process.cwd();
+const file=p=>path.join(root,p);
+const browser=await chromium.launch({headless:true});
+const failures=[];
+const scenarios=[];
+async function run(channel){
+  const page=await browser.newPage({viewport:{width:390,height:844}});
+  page.on('pageerror',e=>failures.push(channel+': '+e.message));
+  await page.setContent('<!doctype html><html><head></head><body><div class="app"><header></header><main><div id="world" class="active"></div><div id="quests"></div></main></div></body></html>');
+  await page.evaluate(channel=>{
+    window.GROW_RELEASE_CHANNEL=channel;
+    window.s={characterName:'PerformanceQA',playerClass:'grower',level:30,xp:5,energy:60,
+      gold:200,harzTaler:10,points:0,skillPoints:0,attrs:{},equipment:{},quests:{offers:[]},
+      grow:{plants:[]},social:{playerId:'perf-qa'}};
+    window.v073User={id:'perf-qa'};
+    window.classSets={};
+    window.v093Events=[];
+    window.v093LoadPublicContent=async()=>true;
+    window.v094XpEventActive=()=>false;
+    window.v274GoldEventActive=()=>false;
+    window.v271DampfEventActive=()=>false;
+    window.v271ActiveDampfEvent=()=>null;
+    window.v271DampfCap=()=>100;
+    window.v110MysticEventActive=()=>true;
+    window.v120ActiveWorldBossEvent=()=>({active:true});
+    window.v110ResetDay=()=>{};
+    window.v110Open=()=>{};
+    window.v032Go=()=>{};
+    window.v080AvatarFor=()=>'/assets/fake-avatar.png';
+    window.v081DungeonPosition=()=>({dungeonNumber:2,enemyNumber:4});
+    window.v6104PetUnseen=()=>0;
+    window.v085InstallWorld=()=>{};
+    window.v085WorldHtml=()=>{};
+    window.v6239WeeklyChestSignature=()=> 'qa-weekly';
+    window.v6239WeeklyChestHomeHtml=()=> '<div class="v6239-weekly-chest"></div>';
+    window.v6239OpenWeeklyChest=()=>{};
+    window.v106OpenBook=()=>{};
+    window.v488OpenForge=()=>{};
+    window.v8144GameplayI18n={apply(){}};
+  },channel);
+  for(const stylesheet of [
+    'v8009-extracted-v366-world-reference-rebuild-css.css',
+    'v8009-extracted-v523-approved-home-comic-css.css',
+    'v8009-extracted-v524-approved-home-strong-css.css',
+    'v8009-extracted-v690-world-wood-comic-css.css',
+    'v8009-extracted-v6118-event-x2-worldboss-design-css.css',
+    'v8009-extracted-v6123-worldboss-slot-feinschliff-css.css',
+    'css/features/events/beta/v8306-growcup-home-results.css'
+  ])await page.addStyleTag({path:file(stylesheet)});
+  await page.addScriptTag({path:file('js/features/home/beta/v8009-home-renderer.js')});
+  await page.waitForSelector('#world .v366-world');
+  const baseline=await page.evaluate(()=>({
+    hero:document.querySelector('#world .v366-hero'),
+    full:window.v8009HomeEventDiagnostics().fullRenders
+  })).catch(()=>null);
+  assert.ok(baseline,channel+' must render the home');
+  const values=await page.evaluate(()=>{
+    const world=document.getElementById('world');
+    const hero=world.querySelector('.v366-hero');
+    const full=()=>window.v8009HomeEventDiagnostics().fullRenders;
+    const begin=full();
+    s.gold+=55;s.harzTaler+=12;
+    v085InstallWorld(false);
+    const wallet={sameHero:world.querySelector('.v366-hero')===hero,fullDelta:full()-begin};
+    s.energy=95;
+    v085InstallWorld(false);
+    const energy={sameHero:world.querySelector('.v366-hero')===hero,
+      text:world.querySelector('.v366-card.quest .v366-status b')?.textContent||'',
+      fullDelta:full()-begin};
+    s.xp+=10;
+    v085InstallWorld(false);
+    const xp={differentHero:world.querySelector('.v366-hero')!==hero,fullDelta:full()-begin};
+    const cup=world.querySelector('.v8310-cup-results-slot');
+    cup.removeAttribute('hidden'); 
+    const boss=world.querySelector('.v366-feature.boss');
+    const button=boss.querySelector('.v366-go');
+    const heights={boss:boss.getBoundingClientRect().height,cup:cup.getBoundingClientRect().height,
+      buttonBottom:button.getBoundingClientRect().bottom,bossBottom:boss.getBoundingClientRect().bottom,
+      buttonHeight:button.getBoundingClientRect().height};
+    return {wallet,energy,xp,heights,diag:window.v8009HomeEventDiagnostics()};
+  });
+  assert.equal(values.wallet.sameHero,true,channel+' wallet should not replace home hero');
+  assert.equal(values.wallet.fullDelta,0,channel+' wallet should avoid full render');
+  assert.equal(values.energy.sameHero,true,channel+' Dampf should keep home hero');
+  assert.equal(values.energy.text,'95/100 Dampf',channel+' Dampf should update quest card');
+  assert.equal(values.energy.fullDelta,0,channel+' Dampf should avoid full render');
+  assert.equal(values.xp.differentHero,true,channel+' XP should still refresh home');
+  assert.equal(values.xp.fullDelta,1,channel+' XP must trigger exactly one full render');
+  assert.ok(Math.abs(values.heights.boss-values.heights.cup)<=2,channel+' Cup/Boss heights differ '+JSON.stringify(values.heights));
+  assert.ok(values.heights.buttonHeight>=28,channel+' boss CTA too small');
+  assert.ok(values.heights.buttonBottom<=values.heights.bossBottom-1,channel+' boss CTA is clipped '+JSON.stringify(values.heights));
+  scenarios.push({channel,...values});
+  await page.close();
+}
+try{
+  await run('beta');
+  await run('server1');
+  assert.deepEqual(failures,[],'uncaught browser errors');
+  console.log(JSON.stringify({ok:true,scenarios},null,2));
+}catch(e){
+  console.error('Browser performance regression FAILED',e.stack||e);
+  process.exitCode=1;
+}finally{
+  await browser.close();
+}
