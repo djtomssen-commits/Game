@@ -2,11 +2,9 @@
 'use strict';
 if(window.__V6321_COMPANION_ACTOR_RENDER_FIX__)return;
 window.__V6321_COMPANION_ACTOR_RENDER_FIX__=true;
-/* V8.320 Beta: the matching v6321 companion stylesheet already applies
-   every property that sanitizeActor wrote. Its CSS rules apply to future
-   summons automatically, so no document-wide MutationObserver/DOM restyler
-   is required. Server1 retains its existing path until mobile QA approval. */
-if(String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta'){
+/* V8.322: Beta-tested v6321 CSS now owns companion visuals on Beta and Server 1.
+   Future summons inherit the existing CSS: no global DOM restyler is required. */
+if(['beta','server1'].includes(String(window.GROW_RELEASE_CHANNEL||'').toLowerCase())){
  window.v6321CompanionActorDiagnostics=()=>({
   version:'V8.320-CSS-OWNER',
   actorCount:document.querySelectorAll('.v6287-summon-fx').length,
