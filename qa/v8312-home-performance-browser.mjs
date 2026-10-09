@@ -266,6 +266,46 @@ async function checkAccountReadyCpuAttribution(channel){
   scenarios.push({channel,accountReady:{drained:d.drained,cpuMs:d.callbackCpuMs,owners:d.callbackOwners}});
   await page.close();
 }
+async function checkEnchantAliasConsistency(){
+ const page=await browser.newPage();
+ await page.setContent('<!doctype html><html><body><div id="v372Gold"></div></body></html>');
+ await page.evaluate(()=>{
+  window.GROW_RELEASE_CHANNEL='beta';
+  window.v073User={id:'qa-enchant'};
+  window.s={inventory:[],equipment:{},social:{playerId:'qa-enchant'}};
+  window.qaCalls=0;
+  window.v073Db={rpc:()=>{window.qaCalls++;throw Error('Unexpected RPC')}};
+  const make=(i)=>{
+   const base={id:'test-item-'+i,bonus:{staerke:i+3}};
+   if(i<27)return {...base,enchants:null};
+   return {...base,enchants:[{name:'Example',effect:'luck',value:i}]};
+  };
+  window.qaServerItems=Array.from({length:31},(_,i)=>make(i));
+  window.s.inventory=window.qaServerItems.map((x,i)=>
+   i<27?{...x,enchants:[]}:{...x,enchants:undefined,enchant:{name:'Example',effect:'luck',value:i}});
+ });
+ await page.addScriptTag({path:file('js/features/system/beta/v8330-data-consistency-watch.js')});
+ await page.evaluate(()=>window.v8330ObserveCanonical('items',{inventory:window.qaServerItems,equipment:{}}));
+ await page.waitForTimeout(1650);
+ const equal=await page.evaluate(()=>window.v8330DataConsistencyReport());
+ assert.equal(equal.issues.length,0,'Empty [] vs null on 27 of 31 inventory items and a single enchant vs one-item array must be equivalent');
+ await page.evaluate(()=>{
+  const x=window.s.inventory[30];x.enchant={...x.enchant,value:x.enchant.value+1};
+ });
+ await page.waitForTimeout(1700);
+ const changed=await page.evaluate(()=>window.v8330DataConsistencyReport());
+ const issue=changed.issues.find(x=>x.key==='inventory:runtime');
+ assert.ok(issue,'Changed enchantment must still raise one warning');
+ assert.equal(issue.expected,31,'Must keep total server item count');
+ assert.equal(issue.actual,31,'Must keep total local item count');
+ assert.equal(issue.changed,1,'Only one enchanted item is semantically changed');
+ assert.deepEqual(issue.fields,['Verzauberung'],'Only real enchantment changes should appear');
+ assert.match(issue.detail,/anderer Inhalt: 1/,'Explain that the enchantment content differs, not missing ownership');
+ const rpc=await page.evaluate(()=>window.qaCalls);
+ assert.equal(rpc,0,'No network reads allowed for consistency comparison');
+ scenarios.push({channel:'beta',enchantNormalization:{noFalsePositiveFor27:equal.issues.length===0,realChangeDetected:issue.changed===1,extraRpcs:rpc}});
+ await page.close();
+}
 async function checkReadOnlyConsistencyWatch(channel){
   const page=await browser.newPage();
   const origin='https://guard-test.invalid/';
@@ -395,6 +435,7 @@ try{
   await checkAccountReadyCpuAttribution('server1');
   await checkReadOnlyConsistencyWatch('beta');
   await checkReadOnlyConsistencyWatch('server1');
+  await checkEnchantAliasConsistency();
   assert.deepEqual(failures,[],'uncaught browser errors');
   console.log(JSON.stringify({ok:true,scenarios},null,2));
 }catch(e){
