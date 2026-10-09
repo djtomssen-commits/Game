@@ -2,6 +2,7 @@
 // Headless Chromium is not the Android WebView and cannot certify a live FPS improvement.
 import assert from 'node:assert/strict';
 import path from 'node:path';
+import {readFileSync} from 'node:fs';
 const {chromium}=await import('playwright');
 const root=process.cwd();
 const file=p=>path.join(root,p);
@@ -59,6 +60,10 @@ async function run(channel){
     full:window.v8009HomeEventDiagnostics().fullRenders
   })).catch(()=>null);
   assert.ok(baseline,channel+' must render the home');
+  const eventLayers=await page.evaluate(()=>window.v8334HomeEventTopDiagnostics?.()||null);
+  if(channel==='beta')assert.ok(eventLayers?.childOrder?.some(x=>x.includes('v690-events-card')),
+    'Beta should expose bounded event top hit-test without modifying the world');
+  else assert.equal(eventLayers,null,'Event layer diagnostics must stay Beta-only');
   const values=await page.evaluate(()=>{
     const world=document.getElementById('world');
     const hero=world.querySelector('.v366-hero');
@@ -428,6 +433,45 @@ async function checkReadOnlyConsistencyWatch(channel){
   }});
   await page.close();
 }
+async function checkSampledJsonProfile(){
+  const full=readFileSync(file('js/features/system/beta/v8009-s1-v4107-systemtechnik.js'),'utf8');
+  const from=full.indexOf('function startRuntimeCpuProbe(){');
+  const to=full.indexOf('function stopRuntimeProfiler(){',from);
+  assert.ok(from>0&&to>from,'Current sampled JSON profiler functions exist');
+  const source=full.slice(from,to);
+  const page=await browser.newPage();
+  await page.goto('https://sampled-profile-test.invalid/').catch(()=>{});
+  await page.evaluate(()=>{
+    window.GROW_RELEASE_CHANNEL='beta';
+    window.runtimeProfile={startPerf:performance.now(),cpuProbe:null};
+    window.currentScreenId=()=> 'world';
+    window.qaOriginalParse=JSON.parse;
+    window.qaOriginalStringify=JSON.stringify;
+    window.qaOriginalSetItem=Storage.prototype.setItem;
+  });
+  await page.addScriptTag({content:source+';window.qaStartSampledProbe=startRuntimeCpuProbe;window.qaStopSampledProbe=stopRuntimeCpuProbe;'});
+  const out=await page.evaluate(()=>{
+    runtimeProfile.cpuProbe=qaStartSampledProbe();
+    for(let i=0;i<512;i++){JSON.parse('{"ok":1}');JSON.stringify({ok:1})}
+    localStorage.setItem('v8334-qa-probe','yes');
+    const result=qaStopSampledProbe();
+    return {parseRestored:JSON.parse===qaOriginalParse,
+      stringifyRestored:JSON.stringify===qaOriginalStringify,
+      storageRestored:Storage.prototype.setItem===qaOriginalSetItem,
+      parse:result.entries['JSON.parse'],
+      stringify:result.entries['JSON.stringify'],
+      storage:result.entries['Storage.setItem']};
+  });
+  assert.ok(out.parseRestored&&out.stringifyRestored&&out.storageRestored,
+    'All native methods must restore when profiler stops');
+  assert.ok(out.parse.calls>=512&&out.stringify.calls>=512,'Sampler must count all JSON calls');
+  assert.ok(out.parse.samples>=2&&out.stringify.samples>=2,'Sampler only times 1 in 256 calls');
+  assert.ok(out.parse.samples<out.parse.calls/100,'Hot path should avoid timing every JSON call');
+  assert.ok(out.storage.calls>=1,'Storage setter remains observable');
+  scenarios.push({channel:'beta',jsonSampling:{calls:out.parse.calls,samples:out.parse.samples,
+    restored:true,storageWrites:out.storage.calls}});
+  await page.close();
+}
 async function checkPowerPaintEfficiency(channel){
  const page=await browser.newPage();
  await page.setContent('<!doctype html><html><body><main><div id="world" class="screen active"><div class="v366-power"><b>0</b></div></div></main><b id="power"></b><b id="charPower"></b><b id="v358Power"></b><b id="v110Cp"></b></body></html>');
@@ -496,6 +540,7 @@ try{
   await checkEnchantAliasConsistency();
   await checkPowerPaintEfficiency('beta');
   await checkPowerPaintEfficiency('server1');
+  await checkSampledJsonProfile();
   assert.deepEqual(failures,[],'uncaught browser errors');
   console.log(JSON.stringify({ok:true,scenarios},null,2));
 }catch(e){
