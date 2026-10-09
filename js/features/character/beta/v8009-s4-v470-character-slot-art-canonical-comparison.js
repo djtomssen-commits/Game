@@ -173,6 +173,10 @@
       }
       const img=document.createElement('img');img.className='v466-item-art v470-slot-art';img.src=uri;img.alt=String(it.name||'Item');img.decoding='async';
       box.replaceChildren(img);box.dataset.v470Art='1';box.dataset.v470Uri=uri;
+      if(slot==='ring'&&String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta'){
+        const v=window.__V8348_VISUAL_METRICS__||(window.__V8348_VISUAL_METRICS__={});
+        v.ringImageReplaces=(Number(v.ringImageReplaces)||0)+1;
+      }
     }else if(box.textContent!==String(it.icon||'🎁')){
       box.textContent=it.icon||'🎁';delete box.dataset.v470Uri;
     }
