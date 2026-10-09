@@ -291,9 +291,13 @@ async function checkEnchantAliasConsistency(){
  assert.equal(equal.issues.length,0,'Empty [] vs null on 27 of 31 inventory items and a single enchant vs one-item array must be equivalent');
  await page.evaluate(()=>{
   const x=window.s.inventory[30];x.enchant={...x.enchant,value:x.enchant.value+1};
+  window.v8330DataConsistencyCheck();
  });
- await page.waitForTimeout(1700);
- const changed=await page.evaluate(()=>window.v8330DataConsistencyReport());
+ await page.waitForTimeout(650);
+ const changed=await page.evaluate(()=>{
+  window.v8330DataConsistencyCheck();
+  return window.v8330DataConsistencyReport();
+ });
  const issue=changed.issues.find(x=>x.key==='inventory:runtime');
  assert.ok(issue,'Changed enchantment must still raise one warning');
  assert.equal(issue.expected,31,'Must keep total server item count');
