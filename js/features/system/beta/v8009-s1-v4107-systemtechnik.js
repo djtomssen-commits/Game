@@ -313,9 +313,16 @@ function startRuntimeCpuProbe(){
     /* V8.336: file+line, never a URL/query, and include the next caller.
        JS filename alone is insufficient to distinguish clone() from
        diagnostics() or to locate a repeated call chain. */
-    const match=line.match(/([a-zA-Z0-9_.-]+\.js):(\d+):\d+/);
+    /* V8.338: Error.stack source URLs may carry a ?v= cache key,
+       or be extensionless SDK bundles (supabase-js_2). The previous
+       '.js:<line>' matcher called these 'unknown' even for valid frames.
+       Only retain the last path component and numeric source line. */
+    const match=line.trim().match(/(?:^|\\s|\\()([^\\s()]+):(\\d+):(\\d+)\\)?$/);
     if(!match)continue;
-    const label=(match[1]+':'+match[2]).slice(0,110);
+    const basename=match[1].split('/').pop().split(/[?#]/)[0];
+    const safe=basename.replace(/[^a-zA-Z0-9_.-]/g,'_').slice(0,90);
+    if(!safe)continue;
+    const label=safe+':'+match[2];
     if(!labels.includes(label))labels.push(label);
     if(labels.length===3)break;
    }
@@ -495,12 +502,12 @@ function stopRuntimeProfiler(){
      'HYDRATE t+'+Math.max(0,Number(x.at)-runtimeProfile.startEpoch)+' ms | '+x.outcome+
      ' | '+x.reason+' | '+x.screen+' | wartende Listener '+x.queued),
    '',
-   'JSON/STORAGE STICHPROBEN (V8.336, Callsite-Zeilen ohne Payloads):',
+   'JSON/STORAGE STICHPROBEN (V8.338, Cache-URLs und SDK-Zeilen ohne Payloads):',
    ...(cpuCost?Object.entries(cpuCost.entries||{}).flatMap(([label,m])=>[
       'SYNC '+label+' | Aufrufe '+m.calls+' | Stichproben '+m.samples+
       ' | Stichproben-CPU '+Number(m.sampledMs||0).toFixed(1)+' ms'+
       ' | max Probe '+Number(m.maxSampleMs||0).toFixed(1)+' ms',
-      ...(label.startsWith('JSON.')?['SYNC-CALLER-SAMPLING '+label+' | '+Number(m.ownerSamples||0)+' verteilte Callsite-Stichproben (1:4096)']:[]),
+      ...(label.startsWith('JSON.')?['SYNC-CALLER-SAMPLING '+label+' | '+Number(m.ownerSamples||0)+' verteilte Callsite-Stichproben (1:4096; SDK/Cache-URLs)']:[]),
       ...Object.entries(m.buckets||{}).sort((a,b)=>b[1]-a[1]).slice(0,5)
        .map(([second,calls])=>'SYNC-HOT-SECOND '+label+' | t+'+second+'s | ca. '+calls+' Aufrufe (1:256 Zeitstempel)'),
       ...Object.entries(m.owners||{}).sort((x,y)=>y[1].calls-x[1].calls)
