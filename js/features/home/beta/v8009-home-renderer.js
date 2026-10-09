@@ -549,8 +549,31 @@
       const inside=names(document.elementsFromPoint(xy[0],Math.round(rect.top+8)));
       const childOrder=[...el.parentElement.children].slice(0,12).map(x=>
         (x.className||'').split(' ').slice(0,3).join('.')+':'+getComputedStyle(x).order);
+      /* V8.335: the previous point was 13px above a panel with only 8px
+         between it and the World top. Include points INSIDE that band.
+         Hit tests do not include painted box-shadows or pseudo-elements,
+         so read their computed styles from the existing owners as well. */
+      const hitBands=[-7,-2,2,10].map(delta=>{
+        const y=Math.max(0,Math.min(innerHeight-1,Math.round(rect.top+delta)));
+        return 'y'+delta+':'+names(document.elementsFromPoint(xy[0],y)).slice(0,3).join('>');
+      });
+      const candidateNodes=[
+        ['header',document.querySelector('.app > header')],
+        ['topbar',document.querySelector('.app > header .v366-topbar')],
+        ['world',world],['world-grid',el.parentElement],['events',el]
+      ];
+      const paintCandidates=candidateNodes.filter(x=>!!x[1]).map(([label,node])=>{
+        const bounds=node.getBoundingClientRect(),css=getComputedStyle(node);
+        const before=getComputedStyle(node,'::before'),after=getComputedStyle(node,'::after');
+        const pseudo=[before?.content,after?.content].filter(v=>v&&v!=='none'&&v!=='normal');
+        return label+':y'+Math.round(bounds.top)+'-'+Math.round(bounds.bottom)+
+          '/z'+css.zIndex+'/position='+css.position+
+          '/shadow='+String(css.boxShadow||'none').slice(0,110)+
+          (pseudo.length?'/pseudo='+pseudo.join(',').slice(0,60):'');
+      });
       return {eventTop:Math.round(rect.top),worldTop:Math.round(world.getBoundingClientRect().top),
-        gapPx:Math.round(rect.top-world.getBoundingClientRect().top),above,inside,childOrder};
+        gapPx:Math.round(rect.top-world.getBoundingClientRect().top),above,inside,childOrder,
+        hitBands,paintCandidates};
     }catch(_){return null}
   }
   window.v8334HomeEventTopDiagnostics=eventTopDiagnostic;
