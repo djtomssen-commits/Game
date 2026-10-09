@@ -12,7 +12,7 @@ const CAP_NAMES=new Set([
  'guild_rewards','guild','social','billing','shop','grow_dealer','profile','liveops','quest','dungeon','pvp','build','seeds'
 ]);
 const D={fullAuthority:false,fullAuthorityChecks:0,legacyCloudWritesSuppressed:0,legacyCloudAppliesBlocked:0,legacyGameplayFallbacksBlocked:0,
- dungeonRoutes:0,pvpRoutes:0,buildRoutes:0,legacyLegendarySeedBlocks:0,legacyKeyBlocks:0,rehydrates:0,fullHydrates:0,homePostLoginHydratesSuppressed:0,coreHydrating:false,lastFullHydrateAt:0,suppressedHydrates:0,lastCloudApplyBlockAt:0,lastError:'',lastDomains:{},localDailyGuardVersion:'V7.174'};
+ dungeonRoutes:0,pvpRoutes:0,buildRoutes:0,legacyLegendarySeedBlocks:0,legacyKeyBlocks:0,rehydrates:0,fullHydrates:0,homePostLoginHydratesSuppressed:0,homeQueueHydratesSuppressed:0,hydrationRequests:0,hydrationTrace:[],coreHydrating:false,lastFullHydrateAt:0,suppressedHydrates:0,lastCloudApplyBlockAt:0,lastError:'',lastDomains:{},localDailyGuardVersion:'V7.174'};
 let hydrateTimer=0,buildChain=Promise.resolve();
 const db=()=>{try{return (typeof v073Db!=='undefined'&&v073Db)||null}catch(_){return null}};
 const uid=()=>{try{return String((typeof v073User!=='undefined'&&v073User?.id)||'')}catch(_){return ''}};
@@ -72,7 +72,7 @@ if(typeof previousCloudApply==='function'){
  const applyOwner=async function(data){
    if(auth()&&authorityKnownEnforced()){
      D.legacyCloudAppliesBlocked++;D.lastCloudApplyBlockAt=Date.now();
-     scheduleHydrate();
+     scheduleHydrate('late-cloud-apply');
      return true;
    }
    return previousCloudApply.apply(this,arguments);
@@ -172,8 +172,9 @@ try{
    This does not perform or reward an action; it only prevents an old local mutation
    from surviving long enough to become the visible source of truth. */
 function activeScreen(){return String(document.querySelector('.screen.active,main > section.active')?.id||'')}
-async function hydrateActive(){
+async function hydrateActive(reason='persist'){
  if(!auth())return;D.rehydrates++;
+ if(String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta')trackHydrate('executed',reason,activeScreen(),0);
  const screen=activeScreen();
  try{await window.v7077ProgressRefresh?.()}catch(_){ }
  try{
@@ -224,44 +225,61 @@ async function hydrateAllCore(){
  }finally{D.coreHydrating=false;D.lastFullHydrateAt=Date.now()}
  return {ok:Object.values(result).every(x=>x.ok),result};
 }
-function scheduleHydrate(){
+function trackHydrate(outcome,reason,screen,queued){
+ if(String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()!=='beta')return;
+ const list=D.hydrationTrace;
+ list.push({at:Date.now(),outcome,reason:String(reason||'unknown'),screen,queued:Math.max(0,queued||0)});
+ if(list.length>60)list.splice(0,list.length-60);
+}
+function scheduleHydrate(reason='persist'){
  const screen=activeScreen();
- /* V8.328 Beta: Home has no locally authorised gameplay actions. Immediately
-    after canonical login has completed its progress and Dungeon hydration,
-    UI-only persist() and post-login authority checks must not start another
-    progress-state RPC just to repaint the already confirmed Startseite.
-    Limit this strictly to the first 15 seconds; preserve ordinary later
-    safety-net hydration, manual full refresh and every gameplay screen. */
- if(String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta' && screen==='world'){
+ const isBeta=String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta';
+ D.hydrationRequests++;
+ /* V8.329: the initial login work drains 179 deferred account-ready callbacks.
+    That queue can remain nonempty long after the 15-second fixed window.
+    Its UI-only persist() and authority boot() notifications are NOT gameplay
+    changes; canonical login already loaded progress + Dungeon state. Only
+    suppress these two implicit request types on the Home page; never suppress
+    late cloud-apply corrections, actions on other screens, or explicit refresh. */
+ let queued=0;
+ if(isBeta&&screen==='world'&&(reason==='persist'||reason==='boot')){
+   try{queued=Number(window.v7214AccountReadyQueueDiagnostics?.()?.queued)||0}catch(_){}
    const loginAt=Number(window.__V7204_CANONICAL_LOGIN_AT__||0);
    const age=Date.now()-loginAt;
-   if(loginAt>0&&age>=0&&age<15000&&
-      window.__V7203_LOGIN_DUNGEON_READY__===true &&
-      (typeof window.v452AccountVerified!=='function'||window.v452AccountVerified(uid()))){
+   const verified=typeof window.v452AccountVerified!=='function'||window.v452AccountVerified(uid());
+   if(loginAt>0&&age>=0&&age<45000&&verified&&window.__V7203_LOGIN_DUNGEON_READY__===true&&
+      (age<15000||queued>0)){
      D.suppressedHydrates++;D.homePostLoginHydratesSuppressed++;
+     if(age>=15000&&queued>0)D.homeQueueHydratesSuppressed++;
+     trackHydrate('suppressed-login',reason,screen,queued);
      return;
    }
  }
  /* V7.207: canonical login already refreshes the critical first-frame domains. Do not let the
     many legacy persist() calls fired by first-paint decorators immediately start a
     second hydration wave while the app is settling. */
- if(D.coreHydrating||Date.now()-Number(D.lastFullHydrateAt||0)<1400){D.suppressedHydrates++;return}
+ if(D.coreHydrating||Date.now()-Number(D.lastFullHydrateAt||0)<1400){
+   D.suppressedHydrates++;trackHydrate('suppressed-core',reason,screen,queued);return;
+ }
  /* V7.136: Grow has a fail-closed action owner that applies RPC responses directly.
     Generic persist() calls (seed selection, UI state, old decorators) must not fan
     out into two extra Grow state RPCs. */
- if(screen==='grow'&&window.__V7065_GROW_FAIL_CLOSED__)return;
+ if(screen==='grow'&&window.__V7065_GROW_FAIL_CLOSED__){
+   trackHydrate('suppressed-grow',reason,screen,queued);return;
+ }
  /* V8.177: Build/items already have fail-closed server owners. A generic UI
     persist is not an authority event and must not rehydrate Character/Shop. */
  if(screen==='character'||screen==='shop'||screen==='forge'||screen==='harzForge'){
-   D.suppressedHydrates++;
+   D.suppressedHydrates++;trackHydrate('suppressed-screen',reason,screen,queued);
    return;
  }
- clearTimeout(hydrateTimer);hydrateTimer=setTimeout(()=>void hydrateActive(),80)
+ trackHydrate('scheduled',reason,screen,queued);
+ clearTimeout(hydrateTimer);hydrateTimer=setTimeout(()=>void hydrateActive(reason),80);
 }
 try{
  const base=window.persist||((typeof persist==='function')?persist:null);
  if(typeof base==='function'&&!base.__v7133AuthorityHydrate){
-   const w=function(){const out=base.apply(this,arguments);if(auth())scheduleHydrate();return out};
+   const w=function(){const out=base.apply(this,arguments);if(auth())scheduleHydrate('persist');return out};
    w.__v7133AuthorityHydrate=true;w.__v7133Base=base;window.persist=w;try{persist=w}catch(_){ }
  }
 }catch(_){ }
@@ -270,7 +288,7 @@ async function boot(){
  if(!auth())return;
  if(window.v7206StartupBusy?.()){D.suppressedHydrates++;return}
  if(window.v7204StartupQuiet?.()&&Date.now()-Number(D.lastFullHydrateAt||0)<7000){D.suppressedHydrates++;return}
- try{await refreshAuthority();if(D.fullAuthority&&Date.now()-Number(D.lastFullHydrateAt||0)>7000)scheduleHydrate()}
+ try{await refreshAuthority();if(D.fullAuthority&&Date.now()-Number(D.lastFullHydrateAt||0)>7000)scheduleHydrate('boot')}
  catch(e){D.lastError=String(e?.message||e)}
 }
 window.addEventListener('growlegends:account-ready',()=>setTimeout(()=>void boot(),120),{passive:true});
