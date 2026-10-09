@@ -5,12 +5,20 @@
     const c=document.getElementById('character');
     if(!c)return;
     /* Old location label is created by an early renderer; hide it every time without removing game logic. */
-    c.querySelectorAll(':scope > .v038-location,:scope > .v052-scene-banner,:scope > .v052-character,:scope > .v459-page-kicker').forEach(el=>el.style.setProperty('display','none','important'));
+    c.querySelectorAll(':scope > .v038-location,:scope > .v052-scene-banner,:scope > .v052-character,:scope > .v459-page-kicker').forEach(el=>{
+      if(String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()!=='beta'||
+         el.style.getPropertyValue('display')!=='none'||el.style.getPropertyPriority('display')!=='important')
+        el.style.setProperty('display','none','important');
+    });
     const stats=c.querySelectorAll('#v510HeroRoot .v510-stats .combat-box');
     stats.forEach((box,i)=>{
       box.classList.toggle('hp',i===0);box.classList.toggle('power',i===1);
       const label=box.querySelector('span');
-      if(label)label.textContent=i===0?'Lebenspunkte':'Kampfkraft';
+      if(label){
+        const next=i===0?'Lebenspunkte':'Kampfkraft';
+        if(String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()!=='beta'||label.textContent!==next)
+          label.textContent=next;
+      }
     });
   }
   window.v515PolishHero=polish;
