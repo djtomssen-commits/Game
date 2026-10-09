@@ -70,6 +70,8 @@ async function v294CanonicalDampfRefill(){
     }catch(e){console.warn('[V8.305] Quest repaint after refill',e)}
     try{window.v443PaintDampf?.()}catch(_){}
     try{v271PaintDampf()}catch(_){}
+    /* V8.330: successful paid refill is a single atomic server confirmation. */
+    try{window.v8330ObserveCanonical?.('refill',{energy:q.energy,harz:q.harz})}catch(_){}
     return true;
   }catch(e){
     console.warn('[V8.303] server Dampf refill',e);
