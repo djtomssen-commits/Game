@@ -440,7 +440,8 @@ async function checkSampledJsonProfile(){
   assert.ok(from>0&&to>from,'Current sampled JSON profiler functions exist');
   const source=full.slice(from,to);
   const page=await browser.newPage();
-  await page.goto('https://sampled-profile-test.invalid/').catch(()=>{});
+  await page.route('https://sampled-profile-test.invalid/',route=>route.fulfill({status:200,contentType:'text/html',body:'<!doctype html><html><body></body></html>'}));
+  await page.goto('https://sampled-profile-test.invalid/');
   await page.evaluate(()=>{
     window.GROW_RELEASE_CHANNEL='beta';
     window.runtimeProfile={startPerf:performance.now(),cpuProbe:null};
