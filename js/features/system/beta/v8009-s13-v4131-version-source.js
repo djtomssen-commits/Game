@@ -11,7 +11,9 @@ if(!window.__V7214_ACCOUNT_READY_QUEUE__){
   const nativeRemove=window.removeEventListener.bind(window);
   const wrappedMap=new WeakMap();
   const queue=[];
-  const stats={queuedTotal:0,drained:0,maxDepth:0,interactionDefers:0};
+  const stats={queuedTotal:0,drained:0,maxDepth:0,interactionDefers:0,callbackCpuMs:0,maxCallbackMs:0};
+  const callbackOwners=new Map();
+  const IS_BETA=String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta';
   let draining=false,busyUntil=0,timer=0;
   const markBusy=(ms=1050)=>{busyUntil=Math.max(busyUntil,Date.now()+Math.max(150,Number(ms)||0))};
   const userBusy=()=>Date.now()<busyUntil||window.__V446_FIGHTING__===true||window.v204BattleBusy===true||window.__V7085_TOWER_FIGHTING__===true;
@@ -19,10 +21,23 @@ if(!window.__V7214_ACCOUNT_READY_QUEUE__){
   nativeAdd('scroll',()=>markBusy(650),{capture:true,passive:true});
   nativeAdd('growlegends:navigation-open-v7119',()=>markBusy(1200),{passive:true});
   function callListener(job){
+    /* V8.328 Beta: measure synchronous listener CPU without touching async
+       promises, account data or production gameplay sequencing. The LoAF
+       attribution calls this dispatcher "step" rather than naming its job. */
+    const started=IS_BETA?performance.now():0;
     try{
       if(typeof job.listener==='function')job.listener.call(job.ctx,job.ev);
       else job.listener?.handleEvent?.call(job.listener,job.ev);
     }catch(e){console.warn('[V7.214] deferred account-ready listener',job.scriptId,e)}
+    finally{
+      if(IS_BETA){
+        const ms=Math.max(0,performance.now()-started),name=String(job.scriptId||'unknown').slice(0,90);
+        let cost=callbackOwners.get(name);
+        if(!cost){cost={script:name,calls:0,cpuMs:0,maxMs:0};callbackOwners.set(name,cost)}
+        cost.calls++;cost.cpuMs+=ms;cost.maxMs=Math.max(cost.maxMs,ms);
+        stats.callbackCpuMs+=ms;stats.maxCallbackMs=Math.max(stats.maxCallbackMs,ms);
+      }
+    }
   }
   function schedule(ms=0){
     clearTimeout(timer);
@@ -73,6 +88,10 @@ if(!window.__V7214_ACCOUNT_READY_QUEUE__){
     markBusy(500);
     schedule(560);
   },{passive:true});
-  window.v7214AccountReadyQueueDiagnostics=()=>({queued:queue.length,draining,busyUntil,enabled:true,...stats});
+  window.v7214AccountReadyQueueDiagnostics=()=>({
+    queued:queue.length,draining,busyUntil,enabled:true,...stats,
+    /* Counts and script-owner names only. No authentication or character data. */
+    callbackOwners:IS_BETA?[...callbackOwners.values()].sort((a,b)=>b.cpuMs-a.cpuMs).slice(0,24).map(x=>({...x})):null
+  });
   window.v7214DrainAccountReady=()=>{window.__V7214_ACCOUNT_READY_DRAIN_NOW__=true;schedule(0)};
 }
