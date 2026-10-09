@@ -222,6 +222,8 @@ function invalidateQuestState(){
  questStateFlight=null;
 }
 window.v7045QuestCanonicalState=(force=false)=>canonicalQuestState(!!force);
+/* V8.305: called only after a confirmed server Dampf refill to discard stale pre-purchase reads. */
+window.v7045InvalidateQuestState=invalidateQuestState;
 async function receipt(runId){
  if(!runId)return null;
  try{return await rpcTimeout('v7044_quest_receipt',{p_run_id:Number(runId)},6000)}catch(_){return null}
