@@ -24,6 +24,23 @@ function stable(v){
  return v;
 }
 const serial=v=>JSON.stringify(stable(v));
+/* V8.332: legacy clients may represent "no enchantment" as null,
+   absent enchant or enchants:[]. JSON [] is truthy, which made 27 ordinary
+   inventory items compare as different while their counts stayed 31.
+   The actual game logic handles both enchant and enchants[0]. Only compare
+   the effective non-empty canonical enchantment list, not its representation.
+   This is a read-only projection: do not mutate server/client items. */
+function canonicalEnchants(it){
+ const list=Array.isArray(it?.enchants)?it.enchants.filter(x=>x!=null&&x!==false&&x!==''):[];
+ if(list.length)return list.map(stable);
+ const single=it?.enchant;
+ if(single==null||single===false||single==='')return null;
+ if(Array.isArray(single)){
+  const active=single.filter(x=>x!=null&&x!==false&&x!=='');
+  return active.length?active.map(stable):null;
+ }
+ return [stable(single)];
+}
 function itemFields(it){
  return {
   level:Number(it?.level)||0,
@@ -31,7 +48,7 @@ function itemFields(it){
   upgradeLevel:Number(it?.upgradeLevel)||0,
   bonus:serial(it?.bonus||it?.stats||it?.attributes||{}),
   gem:serial(it?.gem||null),
-  enchant:serial(it?.enchants||it?.enchant||null)
+  enchant:serial(canonicalEnchants(it))
  };
 }
 function inventorySnapshot(inventory){
