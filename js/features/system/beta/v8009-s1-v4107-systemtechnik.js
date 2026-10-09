@@ -452,10 +452,7 @@ function stopRuntimeProfiler(){
  const nav510Same=navFresh&&characterNav510&&Math.abs(Number(characterNav510.at||0)-Number(characterNavEvent.at||0))<3000;
  const nav514Same=navFresh&&characterNav514&&Math.abs(Number(characterNav514.at||0)-Number(characterNavEvent.at||0))<3000;
  const nav7157Same=navFresh&&characterNav7157&&Math.abs(Number(characterNav7157.at||0)-Number(characterNavEvent.at||0))<3000;
- const navOwnerMeasured=[hubSame&&Number(characterNavHub.totalMs||0),
-   frostSame&&Number(characterNavFrost.totalMs||0),nav510Same&&Number(characterNav510.cpuMs||0),
-   nav514Same&&Number(characterNav514.cpuMs||0),nav7157Same&&Number(characterNav7157.totalMs||0)];
- const navMeasuredComplete=navOwnerMeasured.every(x=>x!==false);
+ const navMeasuredComplete=!!(hubSame&&frostSame&&nav510Same&&nav514Same&&nav7157Same);
  const consistencyIssues=(consistencyAfter?.issues||[]).filter(x=>Number(x.at||0)>=runtimeProfile.startEpoch);
  const progressBefore=runtimeProfile.progressBefore||{};
  const progressAfter=isBetaProfile?(window.v7077ProgressDiagnostics?.()||{}):{};
