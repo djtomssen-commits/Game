@@ -88,7 +88,12 @@ check(hudJs.includes("panel.classList.remove('open','show')")&&hudJs.includes("p
 check(hudJs.includes("legacy.style.setProperty('display','none','important')"),'V8.338 must eliminate old header inline-important layout footprint');
 const tech=read('js/features/system/beta/v8009-s1-v4107-systemtechnik.js');
 check(tech.includes("const basename=match[1].split('/').pop().split(/[?#]/)[0]"),'V8.338 must resolve JSON caller cache-query URLs and SDK bundles');
-check(beta.includes('v8009-s1-v4107-systemtechnik.js?v=8338-sdk-callsite-beta'),'V8.338 profiler caller cache not updated');
+check(beta.includes('v8009-s1-v4107-systemtechnik.js?v=8340-longtask-50ms-beta'),'V8.340 profiler cache not updated');
+check(tech.includes('const longShort=long.filter(x=>x.ms>=50&&x.ms<100).length')&&
+  tech.includes('...longPrint.map(x=>'),'V8.340 profiler must print measured 50-99ms long tasks');
+check(tech.includes("'LONGTASK-BEREICHE: 50–99 ms '"),'V8.340 profiler must explain longtask thresholds');
+check(!tech.includes('...long.filter(x=>x.ms>=100).slice(-25).map(x=>'),
+  'V8.340 profiler must not hide 50-99ms entries after counting them');
 /* V8.339: never use v7133AuthorityDiagnostics inside the v4139 diagnostic
    because v7133 includes v4139LoginAuthorityDiagnostics in its own result. */
 const accountOwner=read('js/features/account/beta/v8009-s1-v4139-account-switch-authority.js');
