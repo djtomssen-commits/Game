@@ -2,6 +2,10 @@
 /* There must be exactly one visible in-game header.
    Use higher specificity than the historic global header owner so the old
    .app header cannot leave a painted strip behind the authoritative HUD. */
+/* V8.337: Beta's real HUD is the body-level #v372TopbarShell. The older
+   .app > header must not reserve 15px of flow after the fixed V372 HUD.
+   Retire it inside this original V372 visibility owner, not a late CSS patch. */
+html body.v8011-beta-unified-headers.v371-game-ui .app > header,
 html body .app > header,
 body.v371-game-ui .app > header,
 #v371TopbarShell,
