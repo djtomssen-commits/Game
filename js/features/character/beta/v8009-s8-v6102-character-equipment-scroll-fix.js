@@ -58,8 +58,20 @@ function paintSlots(){
     if(!el)return;
 
     const it=s?.equipment?.[slot]||null;
-    const cls='slot'+(it?.rarity?(' '+String(it.rarity)):'');
-    if(el.className!==cls)el.className=cls;
+    const rarity=String(it?.rarity||'').trim();
+    if(String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta'){
+      /* V8.348: v470 equipment, v123 rarity and FX owners attach their
+         own classes. Resetting className here erased them every repaint. */
+      const before=String(el.dataset.v6102Rarity||'').split(/\s+/).filter(Boolean);
+      const current=rarity.split(/\s+/).filter(Boolean);
+      before.forEach(name=>{if(!current.includes(name))el.classList.remove(name)});
+      if(!el.classList.contains('slot'))el.classList.add('slot');
+      current.forEach(name=>{if(!el.classList.contains(name))el.classList.add(name)});
+      if(el.dataset.v6102Rarity!==rarity)el.dataset.v6102Rarity=rarity;
+    }else{
+      const cls='slot'+(rarity?(' '+rarity):'');
+      if(el.className!==cls)el.className=cls;
+    }
     const enchant=(Array.isArray(it?.enchants)&&it.enchants.length?it.enchants[0]:it?.enchant);
     const sig=JSON.stringify({
       slot,name:it?.name||'',rarity:it?.rarity||'',quality:it?.quality||'',level:it?itemLevel(it):0,
