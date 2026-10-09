@@ -27,6 +27,7 @@ const serial=v=>JSON.stringify(stable(v));
 function itemFields(it){
  return {
   level:Number(it?.level)||0,
+  dropLevel:Number(it?.dropLevel)||0,
   upgradeLevel:Number(it?.upgradeLevel)||0,
   bonus:serial(it?.bonus||it?.stats||it?.attributes||{}),
   gem:serial(it?.gem||null),
@@ -55,10 +56,10 @@ function classifyItemDelta(expected,actual,kind){
  for(const [k,old] of a){
   const fresh=b.get(k);if(!fresh)continue;
   if(kind==='equipment'&&old.identity!==fresh.identity){changed.add(k);fields.add('Belegung');continue}
-  for(const attr of ['level','upgradeLevel','bonus','gem','enchant']){
+  for(const attr of ['level','dropLevel','upgradeLevel','bonus','gem','enchant']){
    if(old.fields?.[attr]!==fresh.fields?.[attr]){
     changed.add(k);
-    fields.add(({level:'Item-Level',upgradeLevel:'Upgrade-Stufe',
+    fields.add(({level:'Item-Level',dropLevel:'Fund-Level',upgradeLevel:'Upgrade-Stufe',
        bonus:'Bonuswerte',gem:'Edelstein',enchant:'Verzauberung'})[attr]);
    }
   }
