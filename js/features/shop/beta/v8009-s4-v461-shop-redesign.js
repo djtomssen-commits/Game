@@ -11,6 +11,23 @@
       ? '👑 VIP FREIWÜRFELN'
       : `🔄 ${section} neu würfeln · 1 Harz-Taler`;
   }
+  /* V8.297: Paint the authoritative reroll-price state immediately, without
+     reconstructing item offers or waiting for a navigation / VIP network poll.
+     Both merchant buttons always share the single daily VIP free reroll. */
+  function syncRerollControls(available=vipFreeReroll()){
+    const free=available===true;
+    [
+      ['v461RerollGear','Waffen & Rüstung'],
+      ['v461RerollMagic','Schmuck & Materialien']
+    ].forEach(([id,section])=>{
+      const button=document.getElementById(id);
+      if(!button)return;
+      button.classList.toggle('v461-vip-free',free);
+      button.textContent=free?'👑 VIP FREIWÜRFELN':`🔄 ${section} neu würfeln · 1 Harz-Taler`;
+    });
+    return free;
+  }
+  window.v461SyncRerollControls=syncRerollControls;
   function syncVersion(){
     try{document.querySelectorAll('.version').forEach(el=>el.textContent=VERSION)}catch(e){}
     try{document.title=document.title.replace(/V4\.(59|60|61)/g,'V4.67')}catch(e){}
@@ -223,5 +240,10 @@
   /* V8.009: delayed 80 ms startup repaint retired; v464 performs the immediate canonical shop render. */
   try{syncVersion()}catch(e){}
   window.addEventListener('growlegends:account-ready',()=>{try{syncVersion()}catch(e){}},{passive:true});
-  window.addEventListener('growlegends:vip-state',()=>{try{if(document.getElementById('shop')?.classList.contains('active'))window.renderShop?.()}catch(_){}},{passive:true});
+  window.addEventListener('growlegends:vip-state',()=>{try{
+    /* Keep the two price labels correct regardless of how the shop is shown.
+       Full render is still owned by renderShop only on an active shop screen. */
+    syncRerollControls();
+    if(document.getElementById('shop')?.classList.contains('active'))window.renderShop?.();
+  }catch(_){}},{passive:true});
 })();
