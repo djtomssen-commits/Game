@@ -288,19 +288,29 @@ function v7207TimedCharacterStage(profile,name,fn){
 }
 function v7207RenderCharacterProgressive(){
   const epoch=++v7207CharacterRenderEpoch,started=performance.now?.()||Date.now(),profile={};
+  /* V8.346: read-only Beta timing of original staged render. */
+  const firstFrameQueued=performance.now?.()||Date.now();
   /* Above-the-fold identity is the only character work allowed in the first
      navigation frame. The large talent/inventory trees are presentation-only
      and are split across later frames so tapping Held never blocks the UI. */
   v7207TimedCharacterStage(profile,'avatar',()=>renderClassAvatar?.());
   requestAnimationFrame(()=>{
     if(!v7207CharacterActive(epoch))return;
+    if(String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta')
+      profile.firstFrameWaitMs=Math.round((performance.now?.()||Date.now())-firstFrameQueued);
     v7207TimedCharacterStage(profile,'set',()=>renderSetPanel?.());
     v7207TimedCharacterStage(profile,'classes',()=>renderClasses?.());
+    const secondFrameQueued=performance.now?.()||Date.now();
     requestAnimationFrame(()=>{
       if(!v7207CharacterActive(epoch))return;
+      if(String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta')
+        profile.secondFrameWaitMs=Math.round((performance.now?.()||Date.now())-secondFrameQueued);
       v7207TimedCharacterStage(profile,'skills',()=>renderSkillTree?.());
+      const inventoryQueued=performance.now?.()||Date.now();
       const inventory=()=>{
         if(!v7207CharacterActive(epoch))return;
+        if(String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta')
+          profile.inventoryWaitMs=Math.round((performance.now?.()||Date.now())-inventoryQueued);
         v7207TimedCharacterStage(profile,'inventory',()=>renderInventory?.());
         profile.total=Math.round((performance.now?.()||Date.now())-started);
         /* V8.342 Beta: stage-only numeric diagnostics for the existing 30s
