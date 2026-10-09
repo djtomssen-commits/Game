@@ -464,6 +464,9 @@ function stopRuntimeProfiler(){
  const characterNav275=isBetaProfile?(window.v275CharacterNavDiagnostics?.()||null):null;
  const characterNav537=isBetaProfile?(window.v537CharacterNavDiagnostics?.()||null):null;
  const characterNav444=isBetaProfile?(window.v444CharacterNavDiagnostics?.()||null):null;
+ const characterNav4103=isBetaProfile?(window.v4103CharacterNavDiagnostics?.()||null):null;
+ const characterNav511=isBetaProfile?(window.v511CharacterNavDiagnostics?.()||null):null;
+ const characterNav7154=isBetaProfile?(window.v7154CharacterNavDiagnostics?.()||null):null;
  /* Existing boot owner, only its phase and task durations; no identity is copied. */
  const bootState=isBetaProfile?(window.v4147BootDiagnostics?.()||null):null;
  const characterNav4156=isBetaProfile?(window.v4156CharacterNavDiagnostics?.()||null):null;
@@ -478,9 +481,12 @@ function stopRuntimeProfiler(){
  const nav275Same=navFresh&&characterNav275&&Math.abs(Number(characterNav275.at||0)-Number(characterNavEvent.at||0))<3000;
  const nav537Same=navFresh&&characterNav537&&Math.abs(Number(characterNav537.at||0)-Number(characterNavEvent.at||0))<3000;
  const nav444Same=navFresh&&characterNav444&&Math.abs(Number(characterNav444.at||0)-Number(characterNavEvent.at||0))<3000;
+ const nav4103Same=navFresh&&characterNav4103&&Math.abs(Number(characterNav4103.at||0)-Number(characterNavEvent.at||0))<3000;
+ const nav511Same=navFresh&&characterNav511&&Math.abs(Number(characterNav511.at||0)-Number(characterNavEvent.at||0))<3000;
+ const nav7154Same=navFresh&&characterNav7154&&Math.abs(Number(characterNav7154.at||0)-Number(characterNavEvent.at||0))<3000;
  const nav4156Same=navFresh&&characterNav4156&&Math.abs(Number(characterNav4156.at||0)-Number(characterNavEvent.at||0))<3000;
  const nav6117Same=navFresh&&characterNav6117&&Math.abs(Number(characterNav6117.at||0)-Number(characterNavEvent.at||0))<3000;
- const navMeasuredComplete=!!(hubSame&&frostSame&&nav510Same&&nav514Same&&nav7157Same&&nav4156Same&&nav6117Same&&nav460Same&&nav526Same&&nav7124Same&&nav6339Same&&nav275Same&&nav537Same&&nav444Same);
+ const navMeasuredComplete=!!(hubSame&&frostSame&&nav510Same&&nav514Same&&nav7157Same&&nav4156Same&&nav6117Same&&nav460Same&&nav526Same&&nav7124Same&&nav6339Same&&nav275Same&&nav537Same&&nav444Same&&nav4103Same&&nav511Same&&nav7154Same);
  const consistencyIssues=(consistencyAfter?.issues||[]).filter(x=>Number(x.at||0)>=runtimeProfile.startEpoch);
  const progressBefore=runtimeProfile.progressBefore||{};
  const progressAfter=isBetaProfile?(window.v7077ProgressDiagnostics?.()||{}):{};
@@ -610,6 +616,13 @@ function stopRuntimeProfiler(){
      ' | XP-Layout-Verschiebungen '+visualCount('xpNodeMoves')+
      ' | Ring-Slot-Neuaufbauten '+visualCount('ringRebuilds')+
      ' | Ring-Bild-Ersetzungen '+visualCount('ringImageReplaces'),
+   'V8.349 XP-KORREKTUR: unterdrückte CSSOM-Rundungswrites '+visualCount('xpBarPrecisionSkips')+
+     ' | echte/gegensätzliche Balkenbreitenänderungen '+visualCount('xpBarExternalOrRealChanges'),
+   ...(isBetaProfile?(visualNow.ringRebuildTrace||[]).filter(x=>Number(x.at||0)>=runtimeProfile.startEpoch)
+     .slice(-10).map(x=>'V8.349 RING-NEUAUFBAU t+'+Math.max(0,Math.round(Number(x.at)-runtimeProfile.startEpoch))+
+       ' ms | Ursache '+String(x.reason||'n/v')+
+       ' | Felder '+((x.changedKeys||[]).join(',')||'keine')+
+       ' | Slot belegt '+!!x.equipped):[]),
    'CHARAKTER RENDER-STUFEN (V8.342, nur letzter vollständiger Charakter-Render im Messfenster):',
    freshCharacterRender
     ?'CPU synchron: Avatar '+Number(characterRender.avatar||0)+' ms | Set '+Number(characterRender.set||0)+
@@ -640,7 +653,10 @@ function stopRuntimeProfiler(){
           (nav6339Same?Number(characterNav6339.cpuMs||0):0)-
           (nav275Same?Number(characterNav275.cpuMs||0):0)-
           (nav537Same?Number(characterNav537.cpuMs||0):0)-
-          (nav444Same?Number(characterNav444.cpuMs||0):0))+
+          (nav444Same?Number(characterNav444.cpuMs||0):0)-
+          (nav4103Same?Number(characterNav4103.cpuMs||0):0)-
+          (nav511Same?Number(characterNav511.cpuMs||0):0)-
+          (nav7154Same?Number(characterNav7154.cpuMs||0):0))+
           ' ms ('+(navMeasuredComplete?'andere Listener/Dispatch':'nicht alle Owner erfasst')+')'
         :'nicht bestimmt')
     :'Kein Charakter-Navigations-Event im Messfenster vollständig erfasst.',
@@ -654,6 +670,10 @@ function stopRuntimeProfiler(){
        ' ms | zusätzliches Hub/Inventar '+Number(characterNavFrost.hubMs||0)+
        ' ms | redundanter Hub-Durchlauf vermieden '+!!characterNavFrost.skippedDuplicateHub
    ]:[]),
+   'V8.349 NAVIGATION REST-OWNER: v4103 Item-Deko '+(nav4103Same?Number(characterNav4103.cpuMs||0)+' ms':'nicht erfasst')+
+     ' | v511 XP-Knoten '+(nav511Same?Number(characterNav511.cpuMs||0)+' ms':'nicht erfasst')+
+     ' | v7154 Frame-Stabilität '+(nav7154Same?Number(characterNav7154.cpuMs||0)+' ms':'nicht erfasst')+
+     ' | v7154 zweiter Hero-Aufbau vermieden '+(nav7154Same?!!characterNav7154.skippedDuplicateHero:'nicht erfasst'),
    'V8.347 TITEL/NAME/ORDNUNG: v6339 '+(nav6339Same?Number(characterNav6339.cpuMs||0)+' ms':'nicht erfasst')+
      ' | v275 '+(nav275Same?Number(characterNav275.cpuMs||0)+' ms':'nicht erfasst')+
      ' | v537 '+(nav537Same?Number(characterNav537.cpuMs||0)+' ms':'nicht erfasst')+
