@@ -339,6 +339,8 @@ function stopRuntimeProfiler(){
  const queueAfter=isBetaProfile?(window.v7214AccountReadyQueueDiagnostics?.()||{}):{};
  const authorityBefore=runtimeProfile.authorityBefore||{};
  const authorityAfter=isBetaProfile?(window.v7133AuthorityDiagnostics?.()||{}):{};
+ const consistencyAfter=isBetaProfile?(window.v8330DataConsistencyReport?.()||null):null;
+ const consistencyIssues=(consistencyAfter?.issues||[]).filter(x=>Number(x.at||0)>=runtimeProfile.startEpoch);
  const progressBefore=runtimeProfile.progressBefore||{};
  const progressAfter=isBetaProfile?(window.v7077ProgressDiagnostics?.()||{}):{};
  const hydrateEvents=(authorityAfter.hydrationTrace||[]).filter(x=>Number(x.at)>=runtimeProfile.startEpoch);
@@ -414,6 +416,16 @@ function stopRuntimeProfiler(){
    ...hydrateEvents.slice(-20).map(x=>
      'HYDRATE t+'+Math.max(0,Number(x.at)-runtimeProfile.startEpoch)+' ms | '+x.outcome+
      ' | '+x.reason+' | '+x.screen+' | wartende Listener '+x.queued),
+   '',
+   'DATENKONSISTENZ (V8.330, nur bestätigte Serverantworten, keine eigenen RPCs):',
+   consistencyAfter
+    ?'Bestätigungen seit Account-Start '+consistencyAfter.observations+
+      ' | Prüfungen '+consistencyAfter.checks+
+      ' | neue Verdachtsfälle in 30 s '+consistencyIssues.length
+    :'Wächter nicht verfügbar.',
+   ...(consistencyIssues.length?consistencyIssues.slice(-12).map(x=>
+     'ABWEICHUNG '+x.key+' | erwartet '+x.expected+' | angezeigt '+x.actual+' | '+x.detail
+   ):['Keine anhaltende Abweichung während des Messfensters beobachtet (kein Vollabgleich).']),
    '',
    'NETZWERK/RPC-ZEITLINIE (existierender Fetch-Monitor, kein JS-CPU-Profil): '+recentNetwork.length,
    ...recentNetwork.slice(-35).map(x=>'FETCH t+'+x.at+' ms | Dauer '+x.ms+' ms | HTTP '+x.status+' | '+x.endpoint),
