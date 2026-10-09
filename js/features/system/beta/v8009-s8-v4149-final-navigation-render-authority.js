@@ -106,7 +106,13 @@
     if(id==='grow'&&window.v7081UseAuthority?.('grow')){const c=window.__V7208_GROW_ORDERS_CANONICAL__,rows=Array.isArray(c?.contracts)?c.contracts:[];if(rows.length!==6)setTimeout(()=>{Promise.resolve(window.v7065GrowAuthorityRefresh?.()).finally(()=>window.v6163GrowTabs?.refresh?.())},0)}
     settle(false);
     try{
-      window.dispatchEvent(new CustomEvent('growlegends:navigation-open-v7119',{detail:{id:String(id||'')}}));
+      /* V8.341 Beta: v7119 already publishes the same character navigation
+         event after two paint frames. The historical v4149 immediate publish
+         made every character navigation listener run twice (measured ~116ms
+         + ~120ms). Keep v7119's deferred canonical publish; retain the
+         original v4149 behavior when that later owner is not installed. */
+      if(!(id==='character'&&window.__V7119_CHARACTER_NAV_CONSOLIDATION__===true))
+        window.dispatchEvent(new CustomEvent('growlegends:navigation-open-v7119',{detail:{id:String(id||'')}}));
       window.v8144GameplayI18n?.schedule?.(String(id||''));
     }catch(e){}
     return r;
