@@ -17,12 +17,21 @@ function syncAvatarTitle(){
   const name=document.getElementById('avatarTitle');
   if(!root||!name)return false;
 
+  const label=activeTitle();
+  /* V8.347: stable Beta title must not be destroyed and recreated on each
+     navigation. Rebuild only when title, anchor, or duplicate/legacy nodes differ.
+     Keep the original full-repair path for unexpected DOM or title changes. */
+  if(String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta'){
+    const badges=root.querySelectorAll('.v6339-avatar-active-title');
+    const legacy=root.querySelectorAll('.v6338-own-title');
+    if(legacy.length===0&&badges.length===(label?1:0)&&
+       (!label||(badges[0]?.textContent===label&&badges[0]?.previousElementSibling===name)))
+      return true;
+  }
   root.querySelectorAll('.v6339-avatar-active-title').forEach(n=>n.remove());
   /* Remove the old misplaced own-title badge from the character page only.
      Hall/profile title badges are intentionally untouched. */
   root.querySelectorAll('.v6338-own-title').forEach(n=>n.remove());
-
-  const label=activeTitle();
   if(!label)return true;
   const badge=document.createElement('div');
   badge.className='v6339-avatar-active-title';
@@ -43,7 +52,15 @@ document.addEventListener('click',e=>{
 
 window.addEventListener('growlegends:account-ready',syncAvatarTitle,{passive:true});
 window.addEventListener('pageshow',syncAvatarTitle,{passive:true});
-window.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')==='character')syncAvatarTitle()},{passive:true});
+let navTime={at:0,cpuMs:0};
+window.v6339CharacterNavDiagnostics=()=>({...navTime});
+window.addEventListener('growlegends:navigation-open-v7119',e=>{
+  if(String(e?.detail?.id||'')!=='character')return;
+  const beta=String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta';
+  const start=beta?(performance.now?.()||Date.now()):0;
+  syncAvatarTitle();
+  if(beta)navTime={at:Date.now(),cpuMs:Math.round((performance.now?.()||Date.now())-start)};
+},{passive:true});
 window.__V6339_RENDER_WRAP__='retired';
 window.v6339CharacterTitleDiagnostics=()=>({
   version:'V6.347',
