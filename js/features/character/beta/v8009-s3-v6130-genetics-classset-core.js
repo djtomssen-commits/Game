@@ -116,6 +116,12 @@ async function openSetPanel(options={}){
  body.classList.add('v6130-set-mode');
  let p=body.querySelector('#v6130ClassSetPanel');if(!p){p=document.createElement('div');p.id='v6130ClassSetPanel';body.appendChild(p)}
  p.innerHTML=panelHtml();
+ /* V8.321 Beta: the forge panel itself owns its optional upgrade section.
+    It is regenerated after every set-panel redraw; no global character
+    MutationObserver is necessary to detect a forge render. */
+ if(String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta'){
+  try{window.v6170RefreshSetUpgrade?.()}catch(e){console.warn('[V8.321 classset upgrade panel]',e)}
+ }
  body.querySelectorAll('.v667-tab').forEach(x=>x.classList.toggle('active',x.classList.contains('v6130-set-tab')));
  if(options.refreshPvp===false)return;
  try{
