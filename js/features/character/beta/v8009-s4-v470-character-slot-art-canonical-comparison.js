@@ -162,7 +162,15 @@
     const uri=artUri(it);
     if(uri){
       const current=box.querySelector(':scope > img.v470-slot-art,:scope > img.v466-item-art');
-      if(current&&box.dataset.v470Uri===uri&&box.childElementCount===1)return;
+      if(current&&box.childElementCount===1&&(
+         box.dataset.v470Uri===uri||
+         (String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta'&&
+          (current.getAttribute('src')===uri||current.src===uri)))){
+        /* V8.348: v6102/v4103 may have mounted the exact same artwork.
+           Preserve that image node instead of destroying/recreating it. */
+        if(box.dataset.v470Uri!==uri)box.dataset.v470Uri=uri;
+        return;
+      }
       const img=document.createElement('img');img.className='v466-item-art v470-slot-art';img.src=uri;img.alt=String(it.name||'Item');img.decoding='async';
       box.replaceChildren(img);box.dataset.v470Art='1';box.dataset.v470Uri=uri;
     }else if(box.textContent!==String(it.icon||'🎁')){
