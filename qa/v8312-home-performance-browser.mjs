@@ -464,6 +464,29 @@ async function checkReadOnlyConsistencyWatch(channel){
   }});
   await page.close();
 }
+async function checkLongTaskDetailReporting(){
+  /* V8.340: execute the actual report's aggregation code on synthetic
+     browser long-task records; count and printed data must agree. */
+  const source=readFileSync(file('js/features/system/beta/v8009-s1-v4107-systemtechnik.js'),'utf8');
+  const start=source.indexOf(' const longPrint=long.slice()');
+  const end=source.indexOf(' const loaf=runtimeProfile.loafFrames;',start);
+  assert.ok(start>0&&end>start,'V8.340 long-task formatting block exists');
+  const fragment=source.slice(start,end);
+  const compute=new Function('long',fragment+';return {longPrint,longShort,longHundred,longMax}');
+  const result=compute([
+    {ms:58,t:100,screen:'world'}, {ms:95,t:200,screen:'world'},
+    {ms:155,t:300,screen:'world'}, {ms:63,t:400,screen:'world'}
+  ]);
+  assert.equal(result.longShort,3,'V8.340 counts sub-100ms long tasks');
+  assert.equal(result.longHundred,1,'V8.340 counts 100ms+ tasks');
+  assert.equal(result.longMax,155,'V8.340 displays true maximum');
+  assert.deepEqual(result.longPrint.map(x=>x.ms),[58,95,155,63],
+    'V8.340 prints all records including 50-99ms in time order');
+  assert.ok(source.includes('...longPrint.map(x=>'),'V8.340 prints the computed long-task details');
+  scenarios.push({channel:'beta',longTaskReporting:{
+    total:result.longPrint.length,short:result.longShort,
+    overHundred:result.longHundred,maxMs:result.longMax}});
+}
 async function checkSampledJsonProfile(){
   const full=readFileSync(file('js/features/system/beta/v8009-s1-v4107-systemtechnik.js'),'utf8');
   const from=full.indexOf('function startRuntimeCpuProbe(){');
@@ -720,6 +743,7 @@ try{
   await checkEnchantAliasConsistency();
   await checkPowerPaintEfficiency('beta');
   await checkPowerPaintEfficiency('server1');
+  await checkLongTaskDetailReporting();
   await checkSampledJsonProfile();
   await checkDiagnosticReadHotPaths();
   await checkAuthorityDiagnosticsRecursion();
