@@ -125,3 +125,9 @@ V8.287 – Aktive tägliche Verlustwache
 - Beide HTML-Skript-Cache-URLs gezielt aktualisiert: `8302cup-nav` und `8302cup-history`.
 - Backend-Migration `v8302_growcup_history_state_both_worlds` für `public` / `server1` ist angewendet. Historien-Fallback beider Funktionen überprüft; Donnerstag-Neustart-Lobby bleibt erhalten; die Prämien-SQL-Funktion ist unverändert.
 - Tests: JS Syntax für Menü/Cup **PASS**; HTML Pfade **PASS**; isolierter Claim-Button-State-Test **PASS** (final offen, final abgeholt, nicht final, Nichtteilnehmer). Echter Android-End-to-End-Claim bleibt zu testen. Keine Daten-/Reward-Veränderung.
+
+### V8.303 – Dampf-Kauf nur serverseitig (09.10.2026)
+- K3n3dr0: Ledger bestätigt 05:46 +2 Harz aus Grow-Auftrag, 05:51:27 -1 Harz für einen Dampf-Refill, 05:51:33 -7 Dampf durch nächste Quest. Kanonischer Stand anschließend 13 Dampf und 1 Harz. Zwei vorangehende UI-Käufe ohne verifizierte Buchung; Backup-Spielstand zeigt veraltete Werte.
+- Bestehender Owner `js/features/quest/beta/v8009-s8-v294-dampf-canonical.js` geändert: lokaler Kauf-Fallback entfernt, nur `v7044_refill_dampf` darf Kauf ausführen. Vorher Quest- und Harz-Serverstand synchronisieren, parallele Käufe sperren, bei fehlgeschlagenem RPC keine lokale Kontobewegung.
+- Beta/Server1 HTML Cacheversion jeweils `?v=8303dampf`. Backend/Preise/Questmechanik unangetastet.
+- Isolierter Test PASS: Erfolg, Netzwerkfehler, nicht angemeldet, parallele Klicks. Android-End-to-End noch nicht bestätigt.
