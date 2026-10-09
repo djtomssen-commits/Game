@@ -41,6 +41,8 @@ function apply(r,{paint=true}={}){
       }
     }catch(_){}
   }
+  /* V8.330: observe values only after a confirmed enforced server response. */
+  try{window.v8330ObserveCanonical?.('progress',{gold:r.gold,harz:r.harz,level:r.level,xp:r.xp})}catch(_){}
   return true;
 }
 
