@@ -64,6 +64,9 @@ async function run(channel){
     const hero=world.querySelector('.v366-hero');
     const full=()=>window.v8009HomeEventDiagnostics().fullRenders;
     const begin=full();
+    const currentRow=world.querySelector('.v366-lower');
+    const currentHeading=world.querySelector('.v690-current-title');
+    const currentCup=world.querySelector('.v8310-cup-results-slot');
     s.gold+=55;s.harzTaler+=12;
     v085InstallWorld(false);
     const wallet={sameHero:world.querySelector('.v366-hero')===hero,fullDelta:full()-begin};
@@ -74,7 +77,21 @@ async function run(channel){
       fullDelta:full()-begin};
     s.xp+=10;
     v085InstallWorld(false);
-    const xp={differentHero:world.querySelector('.v366-hero')!==hero,fullDelta:full()-begin};
+    const xp={differentHero:world.querySelector('.v366-hero')!==hero,fullDelta:full()-begin,
+      sameCurrentRow:world.querySelector('.v366-lower')===currentRow,
+      sameCurrentHeading:world.querySelector('.v690-current-title')===currentHeading,
+      sameCupResults:world.querySelector('.v8310-cup-results-slot')===currentCup};
+    /* A true change inside Aktuelles must repaint its content, not freeze a
+       retained card indefinitely. Account changes must replace stale results. */
+    window.GL_WEATHER={kind:'sun',icon:'☀️',label:'Sonne',temp:23,bonus:{text:'Ertrag +5 %'}};
+    v085InstallWorld(false);
+    const weather={replacedCurrentRow:world.querySelector('.v366-lower')!==currentRow,
+      updated:world.querySelector('.vHome-weather-card')?.textContent.includes('Sonne')};
+    const cupBeforeAccount=world.querySelector('.v8310-cup-results-slot');
+    window.v073User={id:'qa-other'};
+    s.social={...s.social,playerId:'qa-other'};
+    v085InstallWorld(false);
+    const account={freshCup:world.querySelector('.v8310-cup-results-slot')!==cupBeforeAccount};
     const cup=world.querySelector('.v8310-cup-results-slot');
     cup.removeAttribute('hidden'); 
     const boss=world.querySelector('.v366-feature.boss');
@@ -82,7 +99,7 @@ async function run(channel){
     const heights={boss:boss.getBoundingClientRect().height,cup:cup.getBoundingClientRect().height,
       buttonBottom:button.getBoundingClientRect().bottom,bossBottom:boss.getBoundingClientRect().bottom,
       buttonHeight:button.getBoundingClientRect().height};
-    return {wallet,energy,xp,heights,diag:window.v8009HomeEventDiagnostics()};
+    return {wallet,energy,xp,weather,account,heights,diag:window.v8009HomeEventDiagnostics()};
   });
   assert.equal(values.wallet.sameHero,true,channel+' wallet should not replace home hero');
   assert.equal(values.wallet.fullDelta,0,channel+' wallet should avoid full render');
@@ -91,6 +108,12 @@ async function run(channel){
   assert.equal(values.energy.fullDelta,0,channel+' Dampf should avoid full render');
   assert.equal(values.xp.differentHero,true,channel+' XP should still refresh home');
   assert.equal(values.xp.fullDelta,1,channel+' XP must trigger exactly one full render');
+  assert.equal(values.xp.sameCurrentRow,true,channel+' XP must not repaint Aktuelles');
+  assert.equal(values.xp.sameCurrentHeading,true,channel+' XP must not flash Aktuelles heading');
+  assert.equal(values.xp.sameCupResults,true,channel+' XP must preserve async Cup result slot');
+  assert.equal(values.weather.replacedCurrentRow,true,channel+' weather change must refresh actual Current content');
+  assert.equal(values.weather.updated,true,channel+' new weather must be displayed');
+  assert.equal(values.account.freshCup,true,channel+' account switch must not keep other account reward UI');
   assert.ok(Math.abs(values.heights.boss-values.heights.cup)<=2,channel+' Cup/Boss heights differ '+JSON.stringify(values.heights));
   assert.ok(values.heights.buttonHeight>=28,channel+' boss CTA too small');
   assert.ok(values.heights.buttonBottom<=values.heights.bossBottom-1,channel+' boss CTA is clipped '+JSON.stringify(values.heights));
