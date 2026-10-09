@@ -109,13 +109,27 @@ function v123PolishEquipment(){
     const it=s.equipment?.[sl];
     if(!el)return;
 
-    ['v123-gray','v123-green','v123-blue','v123-purple','v123-orange','v123-cyan'].forEach(c=>el.classList.remove(c));
-    el.classList.add('v123-'+v123QualityKey(it));
+    const quality='v123-'+v123QualityKey(it);
+    if(String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta'){
+      /* V8.348: touching every rarity class resets visible ring frame state.
+         Keep the correct class mounted unless quality really changes. */
+      ['v123-gray','v123-green','v123-blue','v123-purple','v123-orange','v123-cyan'].forEach(c=>{
+        if(c!==quality&&el.classList.contains(c))el.classList.remove(c)
+      });
+      if(!el.classList.contains(quality))el.classList.add(quality);
+    }else{
+      ['v123-gray','v123-green','v123-blue','v123-purple','v123-orange','v123-cyan'].forEach(c=>el.classList.remove(c));
+      el.classList.add(quality);
+    }
 
     if(!it)return;
 
     const tiny=el.querySelector('.tiny');
-    if(tiny)tiny.textContent=v123BaseBonusText(it);
+    if(tiny){
+      const bonus=v123BaseBonusText(it);
+      if(String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()!=='beta'||tiny.textContent!==bonus)
+        tiny.textContent=bonus;
+    }
 
     const effectsHtml=v123EffectHtml(it);
     const existingEffects=el.querySelector('.v123-item-effects');
