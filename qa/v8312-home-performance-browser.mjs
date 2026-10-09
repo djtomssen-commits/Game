@@ -176,11 +176,90 @@ async function checkDungeonObserverScope(channel){
   scenarios.push({channel,dungeonObservers:{initial,active,after}});
   await page.close();
 }
+async function checkPostLoginHomeHydration(channel){
+  const page=await browser.newPage();
+  await page.setContent('<!doctype html><html><body><main><section id="world" class="screen active"></section><section id="quests" class="screen"></section></main></body></html>');
+  await page.evaluate(channel=>{
+    window.GROW_RELEASE_CHANNEL=channel;
+    window.s={social:{playerId:'qa-hydrate'},dungeon:{selected:0}};
+    window.v073User={id:'qa-hydrate'};
+    window.v452AccountVerified=()=>true;
+    window.__V7204_CANONICAL_LOGIN_AT__=Date.now();
+    window.__V7203_LOGIN_DUNGEON_READY__=true;
+    window.persist=()=>true;
+    window.qaProgress=0;
+    window.qaQuest=0;
+    window.v7077ProgressRefresh=async()=>{window.qaProgress++;return true};
+    window.v7110SyncQuestAuthority=async()=>{window.qaQuest++;return true};
+    window.v7040AuthorityDiagnostics=()=>({domains:{}});
+    window.v7040AuthorityRefresh=async()=>true;
+    window.v7081CapabilitiesRefresh=async()=>true;
+  },channel);
+  await page.addScriptTag({path:file('js/features/authority/beta/v8009-s2-v7133-global-gameplay-authority-lockdown.js')});
+  await page.evaluate(()=>window.persist());
+  await page.waitForTimeout(140);
+  const home=await page.evaluate(()=>({progress:window.qaProgress,diag:window.v7133AuthorityDiagnostics().homePostLoginHydratesSuppressed}));
+  await page.evaluate(()=>{
+    document.getElementById('world').classList.remove('active');
+    document.getElementById('quests').classList.add('active');
+    window.persist();
+  });
+  await page.waitForTimeout(140);
+  const quests=await page.evaluate(()=>({progress:window.qaProgress,quest:window.qaQuest}));
+  await page.evaluate(()=>{
+    document.getElementById('quests').classList.remove('active');
+    document.getElementById('world').classList.add('active');
+    window.__V7204_CANONICAL_LOGIN_AT__=Date.now()-30000;
+    window.persist();
+  });
+  await page.waitForTimeout(140);
+  const later=await page.evaluate(()=>window.qaProgress);
+  assert.equal(home.progress,channel==='beta'?0:1,channel+' immediate Home should only skip duplicate Beta refresh');
+  assert.equal(home.diag,channel==='beta'?1:0,channel+' Beta counter');
+  assert.equal(quests.progress,channel==='beta'?1:2,channel+' Quests must keep canonical hydration');
+  assert.equal(quests.quest,1,channel+' Quests must keep their screen-specific sync');
+  assert.equal(later,channel==='beta'?2:3,channel+' later Home refresh must remain available');
+  scenarios.push({channel,hydration:{home,quests,later}});
+  await page.close();
+}
+async function checkAccountReadyCpuAttribution(channel){
+  const page=await browser.newPage();
+  await page.setContent('<!doctype html><html><body></body></html>');
+  await page.evaluate(channel=>{
+    window.GROW_RELEASE_CHANNEL=channel;
+    window.__V7210_BOOT_PENDING__=true;
+  },channel);
+  await page.addScriptTag({path:file('js/features/system/beta/v8009-s13-v4131-version-source.js')});
+  await page.evaluate(()=>{
+    window.addEventListener('growlegends:account-ready',()=>{
+      const start=performance.now();
+      while(performance.now()-start<12){}
+    });
+    window.dispatchEvent(new CustomEvent('growlegends:account-ready'));
+    window.__V7210_BOOT_PENDING__=false;
+    window.dispatchEvent(new CustomEvent('growlegends:first-playable'));
+  });
+  await page.waitForTimeout(850);
+  const d=await page.evaluate(()=>window.v7214AccountReadyQueueDiagnostics());
+  assert.equal(d.drained,1,channel+' deferred account-ready callback must execute once');
+  if(channel==='beta'){
+    assert.ok(d.callbackCpuMs>=8,channel+' should record synchronous listener CPU');
+    assert.ok(d.callbackOwners?.some(x=>x.calls===1&&x.cpuMs>=8),channel+' should expose per-owner timing');
+  }else{
+    assert.equal(d.callbackOwners,null,channel+' must retain uninstrumented Server1 callback path');
+  }
+  scenarios.push({channel,accountReady:{drained:d.drained,cpuMs:d.callbackCpuMs,owners:d.callbackOwners}});
+  await page.close();
+}
 try{
   await run('beta');
   await run('server1');
   await checkDungeonObserverScope('beta');
   await checkDungeonObserverScope('server1');
+  await checkPostLoginHomeHydration('beta');
+  await checkPostLoginHomeHydration('server1');
+  await checkAccountReadyCpuAttribution('beta');
+  await checkAccountReadyCpuAttribution('server1');
   assert.deepEqual(failures,[],'uncaught browser errors');
   console.log(JSON.stringify({ok:true,scenarios},null,2));
 }catch(e){
