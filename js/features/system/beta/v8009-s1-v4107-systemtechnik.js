@@ -153,6 +153,111 @@ function reactionStats(){
  };
 }
 const tech=()=>window.__V4106_TECH__||{intervals:new Map(),timeouts:new Map(),listeners:new Map(),longTasks:[],renderSamples:{},mutations:0,maxDom:0};
+
+/* V8.318: 30-second read-only profiler lives in its existing Systemtechnik
+   owner. It takes deltas from the already active timer/render instrumentation:
+   no timer monkey-patches, MutationObserver loops, or new render lifecycle. */
+const runtimeProfile={running:false,startEpoch:0,startPerf:0,timeout:0,before:null,report:''};
+function runtimeTimerSnapshot(){
+ const items=[...(tech().intervals?.values?.()||[]),...(tech().timeouts?.values?.()||[])];
+ const grouped=new Map();
+ for(const item of items){
+  const kind=String(item.kind||'timer'),delay=Number(item.delay)||0;
+  const site=String(item.site||'unknown').slice(0,100);
+  const callback=String(item.callback||'anonymous').slice(0,80);
+  const key=[kind,delay,site,callback].join(' | ');
+  const row=grouped.get(key)||{kind,delay,site,callback,calls:0,cpu:0,max:0,count:0};
+  row.calls+=Number(item.calls)||0;row.cpu+=Number(item.cpu)||0;
+  row.max=Math.max(row.max,Number(item.max)||0);row.count++;
+  grouped.set(key,row);
+ }
+ return grouped;
+}
+function runtimeProfilerUi(message){
+ const status=document.getElementById('glProfilerStatus');
+ const start=document.getElementById('glProfilerStart');
+ const stop=document.getElementById('glProfilerStop');
+ const copy=document.getElementById('glProfilerCopy');
+ if(status)status.textContent=message;
+ if(start)start.disabled=runtimeProfile.running;
+ if(stop)stop.disabled=!runtimeProfile.running;
+ if(copy)copy.disabled=!runtimeProfile.report;
+ const body=document.getElementById('glProfilerBody');
+ if(body){
+  body.textContent=runtimeProfile.report||'';
+  body.style.whiteSpace='pre-wrap';
+  body.style.overflowWrap='anywhere';
+ }
+}
+function stopRuntimeProfiler(){
+ if(!runtimeProfile.running)return runtimeProfile.report;
+ runtimeProfile.running=false;
+ clearTimeout(runtimeProfile.timeout);runtimeProfile.timeout=0;
+ const before=runtimeProfile.before||{timers:new Map(),mutations:0};
+ const after=runtimeTimerSnapshot(),duration=Math.round(performance.now()-runtimeProfile.startPerf);
+ const timerRows=[];
+ for(const [key,row] of after){
+  const old=before.timers.get(key)||{calls:0,cpu:0};
+  const calls=Math.max(0,row.calls-old.calls);
+  const cpu=Math.max(0,row.cpu-old.cpu);
+  if(calls||cpu)timerRows.push({key,calls,cpu,max:row.max});
+ }
+ timerRows.sort((a,b)=>b.cpu-a.cpu||b.calls-a.calls);
+ const long=(tech().longTasks||[]).filter(x=>Number(x.at||0)>=runtimeProfile.startEpoch);
+ const slow=(tech().slowRenders||[]).filter(x=>Number(x.at||0)>=runtimeProfile.startEpoch);
+ const mutationDelta=Math.max(0,(Number(tech().mutations)||0)-before.mutations);
+ const lines=[
+  'GROW LEGENDS | 30-SEKUNDEN-LAUFZEIT-PROFIL | BETA',
+  'Dauer: '+duration+' ms | Startbildschirm: '+before.screen,
+  'DOM-Mutationszaehler (bereits instrumentiert): '+mutationDelta,
+  'Lange Main-Thread-Tasks (existierender Logger): '+long.length,
+  ...long.slice(-20).map(x=>'LONGTASK '+Math.round(Number(x.duration)||0)+' ms | t+'+Math.max(0,Number(x.at||0)-runtimeProfile.startEpoch)+' ms'),
+  '',
+  'TIMER CALLBACK HOTSPOTS (CPU-Differenz im Messfenster):',
+  ...(timerRows.length?timerRows.slice(0,25).map(x=>
+   'CPU '+x.cpu.toFixed(1)+' ms | Aufrufe '+x.calls+' | max '+x.max.toFixed(1)+' ms | '+x.key
+  ):['Keine instrumentierten Timer-Aufrufe im Messfenster.']),
+  '',
+  'LANGSAME RENDER (im Messfenster):',
+  ...(slow.length?slow.slice(-20).map(x=>
+   String(x.name||'unbekannt')+' | '+Number(x.ms||0).toFixed(1)+' ms | Seite '+String(x.screen||'unknown')
+  ):['Keine langsamen Renderer im vorhandenen Logger.']),
+  '',
+  'Hinweis: vorhandene Instrumentierung; ohne Zuordnung kein JS-Task-Verursacher bewiesen.'
+ ];
+ runtimeProfile.report=lines.join('\n');
+ runtimeProfilerUi('Messung beendet ('+(duration/1000).toFixed(1)+' s). Mit "Profil kopieren" den Bericht senden.');
+ return runtimeProfile.report;
+}
+function startRuntimeProfiler(){
+ if(runtimeProfile.running)return false;
+ runtimeProfile.report='';
+ runtimeProfile.startEpoch=Date.now();runtimeProfile.startPerf=performance.now();
+ runtimeProfile.before={
+  timers:runtimeTimerSnapshot(),
+  mutations:Number(tech().mutations)||0,
+  screen:currentScreenId()
+ };
+ runtimeProfile.running=true;
+ runtimeProfile.timeout=setTimeout(stopRuntimeProfiler,30000);
+ runtimeProfilerUi('Profil läuft 30 Sekunden. Jetzt auf die Startseite wechseln; danach hier den Bericht kopieren.');
+ return true;
+}
+function copyRuntimeProfiler(){
+ const report=runtimeProfile.report;
+ if(!report){runtimeProfilerUi(runtimeProfile.running?'Messung läuft noch.':'Noch kein Profil vorhanden.');return}
+ const fallback=()=>{
+  const ta=document.createElement('textarea');ta.value=report;ta.style.position='fixed';ta.style.opacity='0';
+  document.body.appendChild(ta);ta.select();const ok=document.execCommand('copy');ta.remove();return ok;
+ };
+ try{
+  if(navigator.clipboard?.writeText){
+   void navigator.clipboard.writeText(report).then(()=>{
+    runtimeProfilerUi('Profil in die Zwischenablage kopiert.');
+   }).catch(()=>{runtimeProfilerUi(fallback()?'Profil kopiert.':'Kopieren fehlgeschlagen. Bericht steht unten.')});
+  }else runtimeProfilerUi(fallback()?'Profil kopiert.':'Kopieren fehlgeschlagen. Bericht steht unten.');
+ }catch(_){runtimeProfilerUi('Kopieren fehlgeschlagen. Bericht steht unten.')}
+}
 const clone=v=>{try{return JSON.parse(JSON.stringify(v))}catch(e){return null}};
 const esc=v=>String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
 const owner=()=>{try{return String((typeof v073User!=='undefined'&&v073User?.id)||s?.__accountOwnerId||s?.social?.playerId||'local')}catch(e){return'local'}};
@@ -372,6 +477,17 @@ function ensureScreen(){
   <div class="v4107-footerbar" id="v4107Footerbar"></div>
  </div>`;
  sec.addEventListener('click',e=>{
+  /* V8.318: initial rollout on Beta only; Server 1 remains release-gated. */
+  const betaRuntimeProfiler=String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta';
+  if(betaRuntimeProfiler&&e.target.closest?.('#glProfilerStart')){
+   e.preventDefault();startRuntimeProfiler();return;
+  }
+  if(betaRuntimeProfiler&&e.target.closest?.('#glProfilerStop')){
+   e.preventDefault();stopRuntimeProfiler();return;
+  }
+  if(betaRuntimeProfiler&&e.target.closest?.('#glProfilerCopy')){
+   e.preventDefault();copyRuntimeProfiler();return;
+  }
   /* V8.316: controls live inside canonical Systemtechnik, not retired QA dialog. */
   const profiler=window.GL_PAGE_AUDIT;
   if(e.target.closest?.('#gl8315ManualStart')){
