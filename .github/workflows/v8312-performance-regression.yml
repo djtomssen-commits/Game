@@ -1,0 +1,25 @@
+name: V8.312 Performance regression (Beta + Server 1)
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'qa/v8312-performance-regression.mjs'
+      - '.github/workflows/v8312-performance-regression.yml'
+      - 'js/features/home/beta/v8009-home-renderer.js'
+      - 'v8009-extracted-v6118-event-x2-worldboss-design-css.css'
+      - 'v8009-extracted-v6123-worldboss-slot-feinschliff-css.css'
+      - 'js/system/performance/v7288-home-adaptive-fit-script.js'
+      - 'beta.html'
+      - 'server1.html'
+jobs:
+  static-performance:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check scripts, assets and rendering invariants
+        run: node qa/v8312-performance-regression.mjs
