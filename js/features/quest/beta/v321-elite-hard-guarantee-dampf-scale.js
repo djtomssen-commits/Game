@@ -4,6 +4,8 @@
 /* ---------------- ELITE REWARD: one authoritative transaction guard ---------------- */
 
 function v321FinalizeEliteReward(before){
+ /* V8.304: elite items and Harz belong to the atomic server receipt. */
+ if(typeof v073User!=='undefined'&&v073User?.id)return null;
  const q=s.quests?.active || before?.q;
  /* At this point the paid quest has already vanished from s.quests.active,
     so prefer the original quest object stored by V4.02 when available. */
@@ -119,7 +121,8 @@ window.v321QuestDampfBase=v321QuestDampfBase;
   Active quests are not rewritten after they start.
 */
 v271NormalizeQuestOffers=function(){
- if(!Array.isArray(s.quests?.offers))return;
+ /* Authenticated players use exact server quest offers, never a local cost curve. */
+ if((typeof v073User!=='undefined'&&v073User?.id)||!Array.isArray(s.quests?.offers))return;
  const level=Math.max(1,Math.floor(Number(s.level)||1));
  s.quests.offers.forEach(q=>{
    if(!q)return;
@@ -153,6 +156,7 @@ v271EffectiveQuestCost=function(q){
 /* Direct local-start preflight used by the canonical Quest start owner.
    It prepares the exact local Dampf cost but does not own startQuest anymore. */
 window.v321PrepareLocalQuestStart=function(i){
+ if(typeof v073User!=='undefined'&&v073User?.id)return {ok:false,reason:'SERVER_QUEST_REQUIRED'};
  v271NormalizeQuestOffers();
  const q=s.quests?.offers?.[i];
  if(!q)return {ok:true};
@@ -193,8 +197,9 @@ function v321PaintQuestCosts(){
 
    card.querySelectorAll('.v321-dampf-level').forEach(x=>x.remove());
 
-   const base=v321QuestDampfBase(q);
-   const actual=v271EffectiveQuestCost(q);
+   const serverOwned=typeof v073User!=='undefined'&&!!v073User?.id;
+   const base=serverOwned?Math.max(1,Math.floor(Number(q.energy)||1)):v321QuestDampfBase(q);
+   const actual=serverOwned?base:v271EffectiveQuestCost(q);
    const meta=[...card.querySelectorAll('.quest-meta span')]
      .find(x=>/💨|⚡|Dampf/i.test(x.textContent||''));
 
@@ -220,6 +225,7 @@ window.v321PaintQuestCosts=v321PaintQuestCosts;
 /* Also set the canonical base cost while V4.02 balances a quest object. */
 const v321BaseBalanceQuest=v316BalanceQuest;
 v316BalanceQuest=function(q,level=Number(s.level)||1){
+ if(typeof v073User!=='undefined'&&v073User?.id)return q;
  const r=v321BaseBalanceQuest(q,level);
  if(r){
    r.energy=v321QuestDampfBase(r,level);
