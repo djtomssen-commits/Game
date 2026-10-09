@@ -12,7 +12,7 @@ const CAP_NAMES=new Set([
  'guild_rewards','guild','social','billing','shop','grow_dealer','profile','liveops','quest','dungeon','pvp','build','seeds'
 ]);
 const D={fullAuthority:false,fullAuthorityChecks:0,legacyCloudWritesSuppressed:0,legacyCloudAppliesBlocked:0,legacyGameplayFallbacksBlocked:0,
- dungeonRoutes:0,pvpRoutes:0,buildRoutes:0,legacyLegendarySeedBlocks:0,legacyKeyBlocks:0,rehydrates:0,fullHydrates:0,coreHydrating:false,lastFullHydrateAt:0,suppressedHydrates:0,lastCloudApplyBlockAt:0,lastError:'',lastDomains:{},localDailyGuardVersion:'V7.174'};
+ dungeonRoutes:0,pvpRoutes:0,buildRoutes:0,legacyLegendarySeedBlocks:0,legacyKeyBlocks:0,rehydrates:0,fullHydrates:0,homePostLoginHydratesSuppressed:0,coreHydrating:false,lastFullHydrateAt:0,suppressedHydrates:0,lastCloudApplyBlockAt:0,lastError:'',lastDomains:{},localDailyGuardVersion:'V7.174'};
 let hydrateTimer=0,buildChain=Promise.resolve();
 const db=()=>{try{return (typeof v073Db!=='undefined'&&v073Db)||null}catch(_){return null}};
 const uid=()=>{try{return String((typeof v073User!=='undefined'&&v073User?.id)||'')}catch(_){return ''}};
@@ -226,6 +226,22 @@ async function hydrateAllCore(){
 }
 function scheduleHydrate(){
  const screen=activeScreen();
+ /* V8.328 Beta: Home has no locally authorised gameplay actions. Immediately
+    after canonical login has completed its progress and Dungeon hydration,
+    UI-only persist() and post-login authority checks must not start another
+    progress-state RPC just to repaint the already confirmed Startseite.
+    Limit this strictly to the first 15 seconds; preserve ordinary later
+    safety-net hydration, manual full refresh and every gameplay screen. */
+ if(String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta' && screen==='world'){
+   const loginAt=Number(window.__V7204_CANONICAL_LOGIN_AT__||0);
+   const age=Date.now()-loginAt;
+   if(loginAt>0&&age>=0&&age<15000&&
+      window.__V7203_LOGIN_DUNGEON_READY__===true &&
+      (typeof window.v452AccountVerified!=='function'||window.v452AccountVerified(uid()))){
+     D.suppressedHydrates++;D.homePostLoginHydratesSuppressed++;
+     return;
+   }
+ }
  /* V7.207: canonical login already refreshes the critical first-frame domains. Do not let the
     many legacy persist() calls fired by first-paint decorators immediately start a
     second hydration wave while the app is settling. */
