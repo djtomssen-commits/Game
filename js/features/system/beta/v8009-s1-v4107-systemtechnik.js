@@ -159,7 +159,8 @@ const tech=()=>window.__V4106_TECH__||{intervals:new Map(),timeouts:new Map(),li
    V477 timer/observer counters and native browser long-task/LoAF entries.
    Only opt-in measurement installs observers; no renderer or gameplay hooks. */
 const runtimeProfile={running:false,startEpoch:0,startPerf:0,timeout:0,before:null,report:'',
-  longObserver:null,loafObserver:null,longTasks:[],loafFrames:[],longSupported:false,loafSupported:false};
+  longObserver:null,loafObserver:null,longTasks:[],loafFrames:[],longSupported:false,loafSupported:false,
+  splashObserver:null,splashEvents:[],splashState:'',splashListeners:[]};
 function runtimeCounterSnapshot(since=0){
  let raw=null,kind='nicht verfügbar';
  try{
@@ -240,6 +241,41 @@ function collectLoaf(entries){
   if(runtimeProfile.loafFrames.length>80)runtimeProfile.loafFrames.shift();
  }
 }
+/* V8.324 Beta: opt-in *targeted* splash visibility tracing.
+   The full-screen loading image may reappear after world is already playable.
+   Observe only its overlay class and record existing boot events, not user IDs. */
+function startRuntimeSplashTrace(){
+ if(String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()!=='beta')return;
+ const ov=document.getElementById('v075AuthOverlay');
+ const now=()=>Math.max(0,Math.round(performance.now()-runtimeProfile.startPerf));
+ const add=label=>{if(runtimeProfile.running&&runtimeProfile.splashEvents.length<40)
+   runtimeProfile.splashEvents.push('t+'+now()+' ms | '+label)};
+ const visible=()=>ov?.classList?.contains('v4143-restoring')?'splash'
+   :ov?.classList?.contains('show')?'overlay':'hidden';
+ runtimeProfile.splashState=visible();
+ add('Overlay-Anfang '+runtimeProfile.splashState+' | AuthReady '+(window.__V200_AUTH_READY__===true));
+ if(ov&&typeof MutationObserver==='function'){
+  try{
+   runtimeProfile.splashObserver=new MutationObserver(()=>{
+    const current=visible();
+    if(current===runtimeProfile.splashState)return;
+    runtimeProfile.splashState=current;add('Overlay-Wechsel '+current+' | Bildschirm '+currentScreenId());
+   });
+   runtimeProfile.splashObserver.observe(ov,{attributes:true,attributeFilter:['class']});
+  }catch(_){runtimeProfile.splashObserver?.disconnect?.();runtimeProfile.splashObserver=null}
+ }
+ for(const kind of ['growlegends:account-ready','growlegends:first-playable']){
+  const fn=()=>add('Event '+kind);
+  window.addEventListener(kind,fn,{passive:true});
+  runtimeProfile.splashListeners.push([kind,fn]);
+ }
+}
+function stopRuntimeSplashTrace(){
+ try{runtimeProfile.splashObserver?.disconnect()}catch(_){}
+ runtimeProfile.splashObserver=null;
+ for(const [name,fn] of runtimeProfile.splashListeners)window.removeEventListener(name,fn);
+ runtimeProfile.splashListeners=[];
+}
 function startRuntimeProfileObservers(){
  const types=typeof PerformanceObserver==='function'?(PerformanceObserver.supportedEntryTypes||[]):[];
  if(types.includes('longtask')){
@@ -266,6 +302,7 @@ function stopRuntimeProfiler(){
  runtimeProfile.running=false;
  runtimeProfile.longObserver?.disconnect();runtimeProfile.longObserver=null;
  runtimeProfile.loafObserver?.disconnect();runtimeProfile.loafObserver=null;
+ stopRuntimeSplashTrace();
  const before=runtimeProfile.before||{timers:new Map(),observers:new Map(),kind:'nicht verfügbar'};
  const after=runtimeCounterSnapshot(runtimeProfile.startEpoch);
  const duration=Math.round(performance.now()-runtimeProfile.startPerf);
@@ -334,6 +371,9 @@ function stopRuntimeProfiler(){
    (x.scripts.length?' | '+x.scripts.map(y=>y.file+':'+(y.fn||'?')+' '+y.ms+' ms (Layout '+y.layoutMs+' ms)').join(' ; '):' | keine Script-Zuordnung')),
   '',
   ...(String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta'?[
+   'BOOT/SPLASH-SICHTBARKEIT (Overlay-Klassen + Account-Events, nur diese Messung):',
+   ...runtimeProfile.splashEvents,
+   '',
    'NETZWERK/RPC-ZEITLINIE (existierender Fetch-Monitor, kein JS-CPU-Profil): '+recentNetwork.length,
    ...recentNetwork.slice(-35).map(x=>'FETCH t+'+x.at+' ms | Dauer '+x.ms+' ms | HTTP '+x.status+' | '+x.endpoint),
    'Hinweis: zeitliche Naehe von FETCH und LONGTASK beweist keine Ursache.',
@@ -353,9 +393,11 @@ function startRuntimeProfiler(){
  runtimeProfile.before=runtimeCounterSnapshot(runtimeProfile.startEpoch);
  runtimeProfile.before.screen=currentScreenId();
  runtimeProfile.longTasks=[];runtimeProfile.loafFrames=[];
+ runtimeProfile.splashEvents=[];runtimeProfile.splashState='';runtimeProfile.splashListeners=[];
  runtimeProfile.longSupported=false;runtimeProfile.loafSupported=false;
  runtimeProfile.running=true;
  startRuntimeProfileObservers();
+ startRuntimeSplashTrace();
  runtimeProfile.timeout=setTimeout(stopRuntimeProfiler,30000);
  runtimeProfilerUi('Profil läuft 30 Sekunden. Jetzt zur Startseite wechseln; danach hier Bericht kopieren.');
  return true;
