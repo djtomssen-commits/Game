@@ -92,6 +92,10 @@ function paintSlots(){
       el.dataset.v6102Sig=sig;
       const churn=window.__V7126_CHARACTER_CHURN__||(window.__V7126_CHARACTER_CHURN__={slotWrites:0});
       churn.slotWrites=(Number(churn.slotWrites)||0)+1;
+      if(slot==='ring'&&String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta'){
+        const v=window.__V8348_VISUAL_METRICS__||(window.__V8348_VISUAL_METRICS__={});
+        v.ringRebuilds=(Number(v.ringRebuilds)||0)+1;
+      }
     }
 
     el.onclick=e=>{
