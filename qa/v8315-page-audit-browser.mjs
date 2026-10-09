@@ -37,6 +37,8 @@ try{
  await page.evaluate(()=>{
   GL_PAGE_AUDIT.start();
   GL_PAGE_AUDIT.renderMark('world','full',{owner:'test'});
+  const tab=document.createElement('button');tab.dataset.tab='current';tab.textContent='QA Tab';
+  document.querySelector('#world').appendChild(tab);tab.click();
   document.querySelector('.v690-current-title').setAttribute('style','opacity:0.9');
   const grid=document.querySelector('.v366-lower');
   grid.replaceWith(grid.cloneNode(true));
@@ -48,6 +50,7 @@ try{
  assert.equal(world.renderMarks.full,1,'canonical Home marker not counted');
  assert.ok(world.aktuellesReplacements>=1,'Aktuelles DOM removal not detected');
  assert.ok(world.visibilityChanges>=1,'visibility change not detected');
+ assert.equal(world.tabClicks.current,1,'tab click instrumentation missing');
  assert.equal(manual.running,false);
  assert.equal(await page.locator('#v8315PerfDock').count(),0,'debug dock must be removed');
  const sweep=await page.evaluate(()=>GL_PAGE_AUDIT.sweep({dwellMs:170}));
