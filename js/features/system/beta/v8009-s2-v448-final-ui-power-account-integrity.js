@@ -149,7 +149,11 @@
     try{
       const cp=livePower();
       ['#power','#charPower','#v358Power','#v110Cp'].forEach(sel=>setText(document.querySelector(sel),cp));
-      document.querySelectorAll('.v349-power b,.v366-power b,.v251-detail-bottom .v251-mini-stat:first-child b').forEach(el=>setText(el,cp));
+      /* V8.324 Beta: home renderer formats CP as de-DE (1.997).
+         Do not overwrite its formatted display with ungrouped 1997. */
+      document.querySelectorAll('.v349-power b,.v251-detail-bottom .v251-mini-stat:first-child b').forEach(el=>setText(el,cp));
+      const homeCp=String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta'?fmt(cp):cp;
+      document.querySelectorAll('.v366-power b').forEach(el=>setText(el,homeCp));
       replacePowerText(document.querySelector('#v209PlayerSub'),cp);
       const uid=uidNow();
       if(uid){
