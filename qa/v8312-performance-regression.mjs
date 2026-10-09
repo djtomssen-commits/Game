@@ -89,7 +89,7 @@ check(hudJs.includes("panel.classList.remove('open','show')")&&hudJs.includes("p
 check(hudJs.includes("legacy.style.setProperty('display','none','important')"),'V8.338 must eliminate old header inline-important layout footprint');
 const tech=read('js/features/system/beta/v8009-s1-v4107-systemtechnik.js');
 check(tech.includes("const basename=match[1].split('/').pop().split(/[?#]/)[0]"),'V8.338 must resolve JSON caller cache-query URLs and SDK bundles');
-check(beta.includes('v8009-s1-v4107-systemtechnik.js?v=8340-longtask-50ms-beta'),'V8.340 profiler cache not updated');
+check(beta.includes('v8009-s1-v4107-systemtechnik.js?v=8342-character-stage-diag-beta'),'V8.342 profiler cache not updated');
 check(tech.includes('const longShort=long.filter(x=>x.ms>=50&&x.ms<100).length')&&
   tech.includes('...longPrint.map(x=>'),'V8.340 profiler must print measured 50-99ms long tasks');
 check(tech.includes("'LONGTASK-BEREICHE: 50–99 ms '"),'V8.340 profiler must explain longtask thresholds');
@@ -124,6 +124,13 @@ check(characterHub.includes("if(!layout()){")&&
   'V8.342 renderInventory is still refreshing the tab twice');
 check(beta.includes('v8009-s2-v459-character-hub.js?v=8342-inventory-dom-stability-beta'),
   'V8.342 character hub cache key missing');
+const characterRenderer=read('js/features/ui/beta/v8009-s2-v086-polish-script.js');
+check(characterRenderer.includes('window.v7207CharacterRenderDiagnostics=()')&&
+  beta.includes('v8009-s2-v086-polish-script.js?v=8342-character-stage-diag-beta'),
+  'V8.342 character render-stage metrics or JS cache missing');
+check(tech.includes('CHARAKTER RENDER-STUFEN (V8.342')&&
+  tech.includes('freshCharacterRender'),
+  'V8.342 Systemtechnik character render-stage readout missing');
 
 check(beta.includes('v8009-s12-v7081-account-capability-gate.js?v=8337-flat-diag-beta'),'Beta capability hotpath cache not updated');
 check(beta.includes('v8009-s1-v7042-unified-authority-bridge.js?v=8337-memo-diag-beta'),'Beta bridge hotpath cache not updated');
