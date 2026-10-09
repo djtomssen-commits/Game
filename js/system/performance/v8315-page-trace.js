@@ -86,12 +86,24 @@ function watchCritical(){
    if(!state.running)return;
    const p=createPage(current);
    for(const rec of records){
+    /* V8.317: a repeated assignment of hidden=true can itself produce an
+       attribute record without any visual change. Count actual transitions
+       so a trace can prove whether the Cup really flashes. */
+    if(rec.attributeName==='hidden'){
+      const wasHidden=rec.oldValue!==null;
+      const isHidden=rec.target.hasAttribute('hidden');
+      if(wasHidden===isHidden)continue;
+      p.visibilityChanges++;
+      log('visibility_attribute',current,{target:selector,attribute:'hidden',wasHidden,isHidden});
+      continue;
+    }
+    if(rec.oldValue===rec.target.getAttribute(rec.attributeName))continue;
     p.visibilityChanges++;
     if(p.visibilityChanges<=4||p.visibilityChanges%8===0)
       log('visibility_attribute',current,{target:selector,attribute:rec.attributeName});
    }
   });
-  mo.observe(el,{attributes:true,attributeFilter:['style','class','hidden']});
+  mo.observe(el,{attributes:true,attributeOldValue:true,attributeFilter:['style','class','hidden']});
   watched.push(mo);
  }
 }
@@ -133,7 +145,8 @@ function renderMark(screen,kind,details={}){
  const p=createPage(id);
  const label=String(kind||'render').slice(0,40);
  p.renderMarks[label]=(p.renderMarks[label]||0)+1;
- if(label==='full'||label==='repair')log('render_'+label,id,{owner:String(details.owner||'canonical').slice(0,50)});
+ if(label==='full'||label==='repair'||label==='cup_show'||label==='cup_hide')
+   log('render_'+label,id,{owner:String(details.owner||'canonical').slice(0,50)});
 }
 function onError(e){
  if(!state.running)return;
