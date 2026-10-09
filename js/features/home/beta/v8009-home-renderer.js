@@ -1,7 +1,7 @@
 
 (function(){
   if(!['beta','server1'].includes(String(window.GROW_RELEASE_CHANNEL||'stable').toLowerCase()))return;
-  const diagnostics={fullRenders:0,eventPanelPatches:0,goldDirectOpens:0,mailDirectOpens:0,versionStyleInstalls:0,ownershipFinalizes:0,cleanSignatureHits:0,dirtySignatureRepairs:0,energyDirectPatches:0,currentGridRetentions:0,currentGridRefreshes:0,inactiveWorldSkips:0,headerLegacyHideWrites:0,headerValueWrites:0};
+  const diagnostics={fullRenders:0,eventPanelPatches:0,goldDirectOpens:0,mailDirectOpens:0,versionStyleInstalls:0,ownershipFinalizes:0,cleanSignatureHits:0,dirtySignatureRepairs:0,energyDirectPatches:0,currentGridRetentions:0,currentGridRefreshes:0,eventNodesPreserved:0,inactiveWorldSkips:0,headerLegacyHideWrites:0,headerValueWrites:0};
   const BETA_VERSION='V8.009';
   function installBetaVersionStyle(){
     try{
@@ -259,13 +259,23 @@
     const bossFreeReady=bossActive?bossFree():true;
     const template=document.createElement('template');
     template.innerHTML=eventCardHtml(ev);
-    card.replaceWith(template.content.firstElementChild);
-    count.textContent=ev.length?`${ev.length} aktiv`:'Alles ruhig';
+    const nextEvent=template.content.firstElementChild;
+    if(nextEvent&&card.outerHTML!==nextEvent.outerHTML){
+      card.replaceWith(nextEvent);
+    }else{
+      diagnostics.eventNodesPreserved++;
+    }
+    const nextCount=ev.length?`${ev.length} aktiv`:'Alles ruhig';
+    if(count.textContent!==nextCount)count.textContent=nextCount;
 
     template.innerHTML=specialEventCardHtml(bossActive,cupActive,bossFreeReady);
     const next=template.content.firstElementChild;
-    special.replaceWith(next);
-    bindSpecialEventButtons(next);
+    if(next&&special.outerHTML!==next.outerHTML){
+      special.replaceWith(next);
+      bindSpecialEventButtons(next);
+    }else{
+      diagnostics.eventNodesPreserved++;
+    }
 
     const gi=goal.querySelector('i'),gb=goal.querySelector('b'),gs=goal.querySelector('span');
     if(cupActive){
