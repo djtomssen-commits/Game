@@ -96,7 +96,8 @@ const domainsStart=accountOwner.indexOf('function authorityDomains(){');
 const domainsEnd=accountOwner.indexOf('\n function allAuthorityEnforced()',domainsStart);
 const domainsBody=accountOwner.slice(domainsStart,domainsEnd);
 check(domainsStart>=0&&domainsEnd>domainsStart,'V8.339 account domain function missing');
-check(!domainsBody.includes('v7133AuthorityDiagnostics') || domainsBody.slice(domainsBody.indexOf('try{return')).includes('try{return window.v7040AuthorityDiagnostics'),
+check(domainsBody.includes('try{return window.v7040AuthorityDiagnostics?.()?.domains||{}}')&&
+  !/try\s*\{\s*return\s+window\.v7133AuthorityDiagnostics/.test(domainsBody),
   'V8.339 account domain gate must read v7040 directly, not recursive v7133');
 check(beta.includes('v8009-s1-v4139-account-switch-authority.js?v=8339-break-diag-cycle-beta'),
   'V8.339 account diagnostic fix missing cache bust');
