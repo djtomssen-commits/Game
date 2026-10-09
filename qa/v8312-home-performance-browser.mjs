@@ -298,6 +298,18 @@ async function checkReadOnlyConsistencyWatch(channel){
   const clean=await page.evaluate(()=>window.v8330DataConsistencyReport());
   assert.equal(clean.issues.length,0,'Formatted 1.997 and canonical item/energy should not false-alarm');
   assert.equal(clean.observations,3,'Three canonical owners should be counted');
+  /* V8.331: reordered keys inside the same semantic server bonus must not
+     cause same-count inventory false positives. */
+  await page.evaluate(()=>{
+    window.s.inventory=[{id:'item-1',bonus:{endurance:2,strength:2}}];
+    window.v8330ObserveCanonical('items',{
+      inventory:[{id:'item-1',bonus:{strength:2,endurance:2}}],
+      equipment:{weapon:null}
+    });
+  });
+  await page.waitForTimeout(1550);
+  const reordered=await page.evaluate(()=>window.v8330DataConsistencyReport());
+  assert.equal(reordered.issues.length,0,'Reordered equivalent item bonus keys must not trigger inventory drift');
 
   await page.evaluate(()=>{
     window.s.energy=100;
@@ -326,6 +338,17 @@ async function checkReadOnlyConsistencyWatch(channel){
   const items=await page.evaluate(()=>window.v8330DataConsistencyReport());
   assert.ok(items.issues.some(x=>x.key==='inventory:runtime'),
     'Silent item-stat overwrite without new canonical server item response must be flagged');
+  assert.ok(items.issues.some(x=>x.key==='inventory:runtime'&&x.changed===1&&x.fields.includes('Bonuswerte')),
+    'Same-count inventory drift must identify affected item count and category');
+  const issueCount=items.issues.filter(x=>x.key==='inventory:runtime').length;
+  await page.evaluate(()=>{
+    window.v8330ObserveCanonical('items',{inventory:[{id:'item-1',bonus:{strength:2}}],equipment:{weapon:null}});
+    window.s.inventory=[{id:'item-1',bonus:{strength:55}}];
+  });
+  await page.waitForTimeout(1550);
+  const repeated=await page.evaluate(()=>window.v8330DataConsistencyReport());
+  assert.equal(repeated.issues.filter(x=>x.key==='inventory:runtime').length,issueCount,
+    'Repeated identical inventory difference must not be logged as a new incident');
 
   await page.evaluate(()=>{
     window.v073User={id:'qa-second'};
@@ -353,6 +376,9 @@ async function checkReadOnlyConsistencyWatch(channel){
     initialIssues:clean.issues.length,
     energyDetected:mismatch.issues.some(x=>x.key==='energy:runtime'),
     itemDetected:items.issues.some(x=>x.key==='inventory:runtime'),
+    keyOrderFalseAlarm:reordered.issues.length,
+    itemCategory:items.issues.find(x=>x.key==='inventory:runtime')?.fields,
+    duplicates:repeated.issues.filter(x=>x.key==='inventory:runtime').length,
     accountSwitches:switched.report.accountSwitches,
     rpc:switched.rpc
   }});
