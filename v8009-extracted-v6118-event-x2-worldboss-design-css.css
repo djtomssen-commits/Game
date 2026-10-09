@@ -52,9 +52,12 @@
 }
 
 #world.active .v366-feature.boss.v6115-boss-open{
-  animation:v6118BossBorderPulse 1.9s ease-in-out infinite!important;
+  /* V8.312: a full-card box-shadow/border animation repaints this entire
+     tile continuously on Android WebView. Keep the small composited LIVE dot
+     animation, but leave the card border static while the event is active. */
+  animation:none!important;
   transform:none!important;
-  will-change:box-shadow,border-color!important;
+  will-change:auto!important;
   overflow:hidden!important;
   background:
     radial-gradient(circle at 50% 28%,rgba(26,117,49,.13),transparent 42%),
