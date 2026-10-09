@@ -83,7 +83,7 @@ try{
   if(typeof base==='function'&&!base.__v7110ServerCost){
     const wrapped=function(q,level){
       if(enforced()&&serverOffer(q)){
-        const n=Number(q?.v321DampfBase??q?.energy);
+        const n=Number(q?.energy??q?.v321DampfBase);
         if(Number.isFinite(n)&&n>0)return Math.floor(n);
       }
       return base.apply(this,arguments);
@@ -99,7 +99,7 @@ try{
       const offers=s?.quests?.offers;
       if(enforced()&&Array.isArray(offers)&&offers.length&&offers.every(serverOffer)){
         offers.forEach(q=>{
-          const n=Math.max(1,Math.floor(Number(q?.v321DampfBase??q?.energy)||1));
+          const n=Math.max(1,Math.floor(Number(q?.energy??q?.v321DampfBase)||1));
           q.energy=n;q.v321DampfBase=n;q.v271DampfCost=true;
         });
         return offers;
@@ -140,11 +140,11 @@ try{
       const before=s?.quests?.offers?.[idx];
       const beforeServer=serverOffer(before);
       const beforeRole=String(before?.v309Role||'');
-      const beforeCost=Math.max(1,Math.floor(Number(before?.v321DampfBase??before?.energy)||1));
+      const beforeCost=Math.max(1,Math.floor(Number(before?.energy??before?.v321DampfBase)||1));
       await sync(true);
       const q=s?.quests?.offers?.[idx];
       const afterRole=String(q?.v309Role||'');
-      const afterCost=Math.max(1,Math.floor(Number(q?.v321DampfBase??q?.energy)||1));
+      const afterCost=Math.max(1,Math.floor(Number(q?.energy??q?.v321DampfBase)||1));
       /* V7.130: ids are intentionally opaque and must not be used as a UI
          identity check. Only stop when a non-server legacy card would change
          its actual role/cost after canonical reconciliation. */
@@ -153,7 +153,7 @@ try{
         try{window.v063Toast?.('Aufträge aktualisiert','info','Die Questangebote wurden mit dem Server abgeglichen. Bitte den gewünschten Auftrag erneut antippen.')}catch(_){}
         return false;
       }
-      const need=Math.max(1,Math.floor(Number(q?.v321DampfBase??q?.energy)||1));
+      const need=Math.max(1,Math.floor(Number(q?.energy??q?.v321DampfBase)||1));
       const have=Math.max(0,Math.floor(Number(s?.energy)||0));
       if(q&&have<need){
         try{window.v063Toast?.('Quest nicht gestartet','warn',`Nicht genug Dampf. Serverstand: ${have} · benötigt: ${need}.`)}catch(_){}
