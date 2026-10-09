@@ -30,6 +30,31 @@
  #world .v8310-cup-results-copy [data-growcup-results-status]{font-size:11px}
  #world .v8310-cup-results-arrow{font-size:26px;flex-basis:13px}
 }
+/* V8.307: compact result card inside the existing lower home-card grid (Beta).
+   The standalone layout above remains untouched for Server 1 until promotion. */
+#world .v366-lower > .v8310-cup-results-slot{
+ margin:0;min-width:0;min-height:205px;height:100%;align-self:stretch
+}
+#world .v366-lower > .v8310-cup-results-slot > .v8310-cup-results-trigger{
+ height:100%;min-height:205px;flex-direction:column;align-items:center;justify-content:space-between;
+ gap:6px;padding:9px 6px;text-align:center;border-radius:10px
+}
+#world .v366-lower > .v8310-cup-results-slot .v8310-cup-results-art{
+ flex:0 0 73px;width:min(100%,94px);height:73px;border-radius:8px
+}
+#world .v366-lower > .v8310-cup-results-slot .v8310-cup-results-copy{
+ flex:0 1 auto;min-width:0;width:100%;gap:4px;align-items:center;overflow-wrap:anywhere
+}
+#world .v366-lower > .v8310-cup-results-slot .v8310-cup-results-copy small{
+ font-size:9px;line-height:1.15;letter-spacing:.2px
+}
+#world .v366-lower > .v8310-cup-results-slot .v8310-cup-results-copy strong{
+ font-size:clamp(11px,2.7vw,15px);line-height:1.1
+}
+#world .v366-lower > .v8310-cup-results-slot .v8310-cup-results-copy [data-growcup-results-status]{
+ font-size:9px;line-height:1.2
+}
+#world .v366-lower > .v8310-cup-results-slot .v8310-cup-results-arrow{display:none}
 .v8310-cup-reward-layer[hidden]{display:none!important}
 .v8310-cup-reward-layer{
  position:fixed;inset:0;z-index:160100;display:flex;justify-content:center;align-items:center;
