@@ -12,15 +12,68 @@ const state=()=>{try{return typeof s==='undefined'?null:s}catch(_){return null}}
 const finite=v=>v!==undefined&&v!==null&&v!==''&&Number.isFinite(Number(v));
 const amount=v=>Math.max(0,Math.floor(Number(v)||0));
 const itemId=x=>String(x?.id||x?.uid||'');
-const itemSig=arr=>JSON.stringify((Array.isArray(arr)?arr:[]).map(it=>[
- itemId(it),Number(it?.level)||0,Number(it?.upgradeLevel)||0,
- JSON.stringify(it?.bonus||it?.stats||it?.attributes||{}),
- JSON.stringify(it?.gem||null),JSON.stringify(it?.enchants||it?.enchant||null)
-]).sort((a,b)=>String(a[0]).localeCompare(String(b[0]))));
-const equipmentSig=eq=>JSON.stringify(Object.entries(eq&&typeof eq==='object'?eq:{})
- .map(([slot,it])=>[slot,it?itemId(it):'',it?JSON.stringify(it?.bonus||it?.stats||it?.attributes||{}):'',
- it?JSON.stringify(it?.gem||null):'',it?JSON.stringify(it?.enchants||it?.enchant||null):''])
- .sort((a,b)=>a[0].localeCompare(b[0])));
+/* V8.331: canonicalize JSON object key order before comparing. An identical
+   bonus object may be returned with a different insertion order by separate
+   RPC owners. We must NOT call that an item-stat mutation. This does not
+   normalize away actual numerical differences or alter the item objects. */
+function stable(v){
+ if(Array.isArray(v))return v.map(stable);
+ if(v&&typeof v==='object'){
+  const out={};for(const k of Object.keys(v).sort())out[k]=stable(v[k]);return out;
+ }
+ return v;
+}
+const serial=v=>JSON.stringify(stable(v));
+function itemFields(it){
+ return {
+  level:Number(it?.level)||0,
+  upgradeLevel:Number(it?.upgradeLevel)||0,
+  bonus:serial(it?.bonus||it?.stats||it?.attributes||{}),
+  gem:serial(it?.gem||null),
+  enchant:serial(it?.enchants||it?.enchant||null)
+ };
+}
+function inventorySnapshot(inventory){
+ const a=Array.isArray(inventory)?inventory:[];
+ const records=a.map((it,i)=>({key:itemId(it)||('position:'+i),fields:itemFields(it)}))
+  .sort((x,y)=>x.key.localeCompare(y.key));
+ return {count:a.length,records,sig:serial(records)};
+}
+function equipmentSnapshot(equipment){
+ const eq=equipment&&typeof equipment==='object'?equipment:{};
+ const records=Object.entries(eq).map(([slot,it])=>({
+  key:slot,identity:it?itemId(it):'',fields:it?itemFields(it):null
+ })).sort((a,b)=>a.key.localeCompare(b.key));
+ return {count:Object.values(eq).filter(Boolean).length,records,sig:serial(records)};
+}
+function classifyItemDelta(expected,actual,kind){
+ const a=new Map(expected.records.map(x=>[x.key,x]));
+ const b=new Map(actual.records.map(x=>[x.key,x]));
+ const missing=[...a.keys()].filter(k=>!b.has(k));
+ const added=[...b.keys()].filter(k=>!a.has(k));
+ const changed=new Set(),fields=new Set();
+ for(const [k,old] of a){
+  const fresh=b.get(k);if(!fresh)continue;
+  if(kind==='equipment'&&old.identity!==fresh.identity){changed.add(k);fields.add('Belegung');continue}
+  for(const attr of ['level','upgradeLevel','bonus','gem','enchant']){
+   if(old.fields?.[attr]!==fresh.fields?.[attr]){
+    changed.add(k);
+    fields.add(({level:'Item-Level',upgradeLevel:'Upgrade-Stufe',
+       bonus:'Bonuswerte',gem:'Edelstein',enchant:'Verzauberung'})[attr]);
+   }
+  }
+ }
+ const categories=[...fields].sort();
+ if(missing.length||added.length)categories.unshift('Besitzstand');
+ const count=changed.size+missing.length+added.length;
+ const parts=[...new Set(categories)];
+ return {kind:missing.length||added.length?'Besitzstand':'Item-Eigenschaften',
+  changed:count,missing:missing.length,added:added.length,fields:parts,
+  detail:(kind==='inventory'?'Inventar':'Ausrüstung')+': '+
+    (parts.length?parts.join(', '):'abweichende Item-Daten')+
+    ' · betroffene Positionen: '+count+
+    (missing.length||added.length?' · fehlend: '+missing.length+' · neu: '+added.length:'')};
+}
 const trim=(x,n)=>{if(x.length>n)x.splice(0,x.length-n)};
 function notify(){try{window.dispatchEvent(new Event('growlegends:consistency-report'))}catch(_){}}
 function resetAccount(id){
@@ -42,13 +95,12 @@ function accept(source,data){
  ]){
   if(finite(raw))patch[field]=amount(raw);
  }
- if(Array.isArray(data.inventory))patch.inventory={sig:itemSig(data.inventory),count:data.inventory.length};
- if(data.equipment&&typeof data.equipment==='object')patch.equipment={
-  sig:equipmentSig(data.equipment),count:Object.values(data.equipment).filter(Boolean).length};
+ if(Array.isArray(data.inventory))patch.inventory=inventorySnapshot(data.inventory);
+ if(data.equipment&&typeof data.equipment==='object')patch.equipment=equipmentSnapshot(data.equipment);
  if(!Object.keys(patch).length)return false;
  const now=Date.now(),gen=++S.generation;
  for(const [field,value] of Object.entries(patch))S.latest[field]={value,at:now,source,gen};
- S.seen++;S.pending.clear();
+ S.seen++;for(const field of Object.keys(patch))S.pending.delete(field+':runtime');
  S.history.push({at:now,source,fields:Object.keys(patch)});trim(S.history,30);
  clearTimeout(firstTimer);clearTimeout(secondTimer);
  firstTimer=setTimeout(()=>check('settle'),450);
@@ -66,13 +118,19 @@ function check(reason='manual'){
   if(now-rec.at>6500)continue; // old server values may be legitimately superseded.
   const expected=rec.value;
   let actual;
-  if(field==='inventory')actual={sig:itemSig(live.inventory),count:Array.isArray(live.inventory)?live.inventory.length:0};
-  else if(field==='equipment')actual={sig:equipmentSig(live.equipment),count:Object.values(live.equipment||{}).filter(Boolean).length};
+  if(field==='inventory')actual=inventorySnapshot(live.inventory);
+  else if(field==='equipment')actual=equipmentSnapshot(live.equipment);
   else actual=field==='harz'?live.harzTaler:live[field];
   if(field==='inventory'||field==='equipment'){
-   if(expected.sig!==actual.sig)differences.push({key:field+':runtime',source:rec.source,
-     detail:field==='inventory'?'Inventar stimmt nicht mit letztem Serverstand überein':'Ausrüstung weicht vom bestätigten Serverstand ab',
-     expected:expected.count,actual:actual.count});
+   if(expected.sig!==actual.sig){
+    const delta=classifyItemDelta(expected,actual,field);
+    differences.push({key:field+':runtime',source:rec.source,detail:delta.detail,
+     expected:expected.count,actual:actual.count,
+     category:delta.kind,changed:delta.changed,
+     missing:delta.missing,added:delta.added,fields:delta.fields,
+     /* Hidden inside the watcher: only used for deduplication, never exported. */
+     fingerprint:expected.sig+'|'+actual.sig});
+   }
   }else if(finite(actual)&&amount(actual)!==expected){
    differences.push({key:field+':runtime',source:rec.source,detail:field+' im Spielzustand abweichend',expected,actual:amount(actual)});
   }
@@ -105,14 +163,16 @@ function check(reason='manual'){
  S.checks++;
  const present=new Set();
  for(const d of differences){
-  const signature=d.key+'|'+d.expected+'|'+d.actual;
+  const signature=d.key+'|'+(d.fingerprint||String(d.expected)+'|'+String(d.actual));
   present.add(d.key);
   const previous=S.pending.get(d.key);
   if(previous&&previous.signature===signature&&(reason==='persistent'||now-previous.at>=550)){
-   const last=S.issues.at(-1);
-   if(!last||last.signature!==signature||now-last.at>15000){
+   const already=S.issues.some(x=>x.signature===signature&&now-x.at<120000);
+   if(!already){
     S.issues.push({at:now,key:d.key,source:d.source,detail:d.detail,
-      expected:d.expected,actual:d.actual,level:'verdacht',signature});
+      expected:d.expected,actual:d.actual,category:d.category||'Wertabweichung',
+      changed:d.changed||0,missing:d.missing||0,added:d.added||0,
+      fields:d.fields||[],level:'verdacht',signature});
     trim(S.issues,25);notify();
    }
   }else S.pending.set(d.key,{signature,at:now});
@@ -171,7 +231,10 @@ function reportText(){
   ...Object.entries(r.lastConfirmed).map(([k,v])=>'SERVER '+k+': '+v.value+' | vor '+v.ageMs+' ms | '+v.source),
   'VERDACHTSFÄLLE:',
   ...(r.issues.length?r.issues.map(x=>new Date(x.at).toLocaleTimeString('de-DE')+' | '+x.key+
-    ' | erwartet '+x.expected+', gesehen '+x.actual+' | '+x.detail):['Keine belegte, anhaltende Abweichung in den beobachteten Daten.']),
+    ' | erwartet '+x.expected+', gesehen '+x.actual+
+    (x.changed?' | betroffene Positionen '+x.changed:'')+
+    (x.fields?.length?' | Felder '+x.fields.join(', '):'')+
+    ' | '+x.detail):['Keine belegte, anhaltende Abweichung in den beobachteten Daten.']),
   'BESTÄTIGUNGEN: '+r.history.length,
   ...r.history.slice(-20).map(x=>new Date(x.at).toLocaleTimeString('de-DE')+' | '+x.source+' | '+(x.fields||[]).join(',')),
   'HINWEIS: Ein fehlender Verdachtsfall garantiert keine vollständige Fehlerfreiheit.'
