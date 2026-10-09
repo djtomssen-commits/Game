@@ -386,8 +386,7 @@
   }
 
   function worldHtml(view=homeViewSnapshot()){
-    /* V8.307: Keep Server 1 on the released layout until the Beta arrangement is approved. */
-    const cupResultsInLower=String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta';
+    /* V8.308: Both worlds render the finished Cup result with the lower home tiles. */
     const cupResultsSlot=`
       <!-- V8.306: shown only after the canonical Grow Cup leaderboard is final. -->
       <section class="v8310-cup-results-slot" hidden aria-label="Abgeschlossener Grow Cup">
@@ -452,8 +451,6 @@
 
       ${eventCardHtml(ev)}
 
-      ${cupResultsInLower?'':cupResultsSlot}
-
       <div class="v690-section-title v690-adventure-title"><span>Deine Abenteuer</span><i>🌿</i></div>
 
       <section class="v366-main">
@@ -475,7 +472,7 @@
 
         ${specialEventCardHtml(bossActive,cupActive,bossFreeReady)}
 
-        ${cupResultsInLower?cupResultsSlot:''}
+        ${cupResultsSlot}
 
         <article class="v366-panel v366-feature book"><h2>Illegales Buch</h2><div class="v366-feature-art"></div><div class="v690-mini-status">⭐ ${ac.done}/${ac.total||'—'} Erfolge</div><button class="v366-go" data-book="1">Öffnen</button></article>
 
