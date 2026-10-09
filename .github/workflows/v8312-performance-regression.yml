@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - 'qa/v8312-performance-regression.mjs'
+      - 'qa/v8312-home-performance-browser.mjs'
       - '.github/workflows/v8312-performance-regression.yml'
       - 'js/features/home/beta/v8009-home-renderer.js'
       - 'v8009-extracted-v6118-event-x2-worldboss-design-css.css'
@@ -23,3 +24,17 @@ jobs:
           node-version: '22'
       - name: Check scripts, assets and rendering invariants
         run: node qa/v8312-performance-regression.mjs
+  home-browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install Chromium
+        run: |
+          npm install --no-save playwright@1.55.0
+          npx playwright install --with-deps chromium --only-shell
+      - name: Run actual home renderer and CSS
+        run: node qa/v8312-home-performance-browser.mjs
