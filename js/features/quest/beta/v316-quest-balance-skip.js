@@ -30,6 +30,8 @@ function v316BalanceQuest(q,level=Number(s.level)||1){
    Active quests are intentionally left untouched so an in-progress timer/reward
    never changes underneath the player. */
 function v316BalanceVisibleOffers(){
+ /* Never rewrite server offer XP/Gold/Dampf when drawing the Quest list. */
+ if(typeof v073User!=='undefined'&&v073User?.id)return false;
  const level=Math.max(1,Number(s.level)||1);
  const offers=s.quests?.offers;
  if(!Array.isArray(offers)||s.quests?.active)return false;
