@@ -242,6 +242,7 @@ function applyState(r){
 async function refresh({paintNow=true}={}){
  const currentId=uid();
  if(!currentId||!db())return null;
+ if(!S.accountKey){S.accountKey=String(window.GROW_RELEASE_CHANNEL||'')+':'+currentId;S.accountEpoch++}
  if(S.refreshInFlight)return S.refreshInFlight;
  const epoch=S.accountEpoch;
  const request=(async()=>{
@@ -310,6 +311,7 @@ function showRankReward(result){
 async function loadRanking(force=false){
  const currentId=uid();
  if(!currentId||!db())return null;
+ if(!S.accountKey){S.accountKey=String(window.GROW_RELEASE_CHANNEL||'')+':'+currentId;S.accountEpoch++}
  if(S.rankingInFlight)return S.rankingInFlight;
  if(S.busy&&!force)return null;
  if(!force&&S.ranking&&Date.now()-S.rankingLoadedAt<45000){paintHomeResults();return S.ranking}
