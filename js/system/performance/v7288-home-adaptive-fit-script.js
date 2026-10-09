@@ -24,18 +24,23 @@ function run(){
 
   const width=Math.round(hero.getBoundingClientRect().width||hero.clientWidth||360);
 
-  /* A rebuilt home or a real width change gets a fresh CSS baseline. */
-  if(hero!==lastHero || Math.abs(width-lastWidth)>12 || !baseHeight){
-    lastHero=hero;lastWidth=width;
+  /* V8.326 Beta: same mounted hero, or a hero rebuilt with its prior fit,
+     must never briefly shrink to CSS baseline before the next animation frame. */
+  const betaHome=String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta';
+  const unchangedWidth=Math.abs(width-lastWidth)<=12;
+  const retainFittedHeight=betaHome && unchangedWidth && !!baseHeight &&
+    (hero===lastHero || !!hero.dataset.v7288Fit);
+  if(!retainFittedHeight && (hero!==lastHero || !unchangedWidth || !baseHeight)){
     hero.style.removeProperty('height');
     hero.style.removeProperty('min-height');
     baseHeight=Math.max(300,Math.round(hero.getBoundingClientRect().height||390));
   }
-
-  /* Start every fit from the real CSS baseline. This makes the result deterministic
-     and prevents repeated calls from growing the hero forever. */
-  hero.style.setProperty('height',px(baseHeight),'important');
-  hero.style.setProperty('min-height',px(baseHeight),'important');
+  lastHero=hero;lastWidth=width;
+  if(!retainFittedHeight){
+    hero.style.setProperty('height',px(baseHeight),'important');
+    hero.style.setProperty('min-height',px(baseHeight),'important');
+  }
+  const visibleHeight=Math.max(baseHeight,Math.round(hero.getBoundingClientRect().height||baseHeight));
 
   requestAnimationFrame(()=>{
     if(!hero.isConnected)return;
@@ -58,10 +63,18 @@ function run(){
     const lowest=Math.max(mr.bottom,cr.bottom,wr.bottom);
     extra=Math.max(extra,Math.ceil(lowest-(hr.bottom-6)));
 
-    const target=Math.min(560,baseHeight+Math.max(0,extra));
-    hero.style.setProperty('height',px(target),'important');
-    hero.style.setProperty('min-height',px(target),'important');
-    hero.dataset.v7288Fit=`${width}:${baseHeight}:${target}`;
+    const target=retainFittedHeight
+      ? Math.min(560,Math.max(visibleHeight,baseHeight)+Math.max(0,extra))
+      : Math.min(560,baseHeight+Math.max(0,extra));
+    const size=px(target);
+    if(hero.style.getPropertyValue('height')!==size||hero.style.getPropertyPriority('height')!=='important'){
+      hero.style.setProperty('height',size,'important');
+    }
+    if(hero.style.getPropertyValue('min-height')!==size||hero.style.getPropertyPriority('min-height')!=='important'){
+      hero.style.setProperty('min-height',size,'important');
+    }
+    const fit=`${width}:${baseHeight}:${target}`;
+    if(hero.dataset.v7288Fit!==fit)hero.dataset.v7288Fit=fit;
   });
 }
 
