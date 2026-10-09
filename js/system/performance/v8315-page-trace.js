@@ -235,7 +235,7 @@ function report(){
   layoutShifts:p.layoutShifts,longTasks:p.longTasks,longestTaskMs:p.longestTaskMs,
   frameCount:p.frames,jankFrames:p.jankFrames,maxFrameGapMs:p.maxFrameGapMs,
   p95FrameGapMs:percentile(p.frameGaps,0.95),renderMarks:{...p.renderMarks},tabClicks:{...p.tabClicks},brokenImages:p.imageErrors
- })).filter(p=>p.visits>0);
+ })).filter(p=>p.visits>0&&SCREENS.includes(p.screen));
  return {version:'V8.315',mode:'opt-in-device',server:state.channel,
   running:state.running,sweeping:state.sweeping,elapsedMs:Math.round((state.stoppedAt||clock())-state.startedAt),
   pages,totalScreens:pages.length,slowTasks:state.slowTasks,layoutShiftEvents:state.shiftCount,
