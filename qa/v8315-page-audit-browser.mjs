@@ -5,6 +5,11 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
 import {chromium} from 'playwright';
+const systemtechSource=fs.readFileSync(path.join(process.cwd(),'js/features/system/beta/v8009-s1-v4107-systemtechnik.js'),'utf8');
+assert.ok(systemtechSource.includes('id="gl8315ManualStart"')&&systemtechSource.includes('id="gl8315AllPages"')&&systemtechSource.includes('id="gl8315LastReport"'),'Canonical Systemtechnik page must expose 3 perf controls');
+assert.ok(systemtechSource.indexOf('id="gl8315AllPages"')>systemtechSource.indexOf('id="glProfilerStart"'),'17-page control must appear below existing 30-second profiler');
+assert.ok(systemtechSource.includes("profiler.sweep({dwellMs:2500})"),'Systemtechnik 17-page button must be bound to trace');
+assert.ok(systemtechSource.includes("profiler.start()"),'Systemtechnik manual button must be bound to trace');
 const browser=await chromium.launch({headless:true});
 const page=await browser.newPage({viewport:{width:390,height:844}});
 const errors=[];
@@ -59,6 +64,15 @@ try{
  assert.equal(sweep.sweepDone,17,'all synthetic routes should be active');
  assert.ok(sweep.pages.every(x=>x.visits>0),'every screen should have a visit');
  assert.ok(sweep.pages.every(x=>x.durationMs>=0),'invalid duration');
+ // New users start the sweep from Systemtechnik. Its navigation fixture must
+ // not count the admin screen as an 18th gameplay page.
+ const systemtechSweep=await page.evaluate(async()=>{
+   const sec=document.createElement('section');sec.id='systemtech';sec.className='screen';sec.innerHTML='<h2>Systemtechnik</h2>';document.querySelector('main').appendChild(sec);
+   v032Go('systemtech');
+   return await GL_PAGE_AUDIT.sweep({dwellMs:170});
+ });
+ assert.equal(systemtechSweep.totalScreens,17,'Systemtechnik must not count as an 18th gameplay screen');
+ assert.equal(systemtechSweep.sweepDone,17,'sweep from Systemtechnik must cover 17 screens');
  assert.ok(errors.length===0,errors.join('; '));
  fs.mkdirSync('qa/reports',{recursive:true});
  fs.writeFileSync('qa/reports/v8315-per-page-browser.json',JSON.stringify({
