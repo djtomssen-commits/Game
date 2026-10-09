@@ -464,6 +464,52 @@ async function checkReadOnlyConsistencyWatch(channel){
   }});
   await page.close();
 }
+async function checkCharacterInventoryIdempotence(){
+  /* V8.342: same canonical v459 hub, no gameplay-state mutation or fake
+     replacement renderer. Verify two consecutive presentation passes retain
+     image nodes, while item-name and art changes still invalidate them. */
+  const page=await browser.newPage();
+  const errors=[];page.on('pageerror',e=>errors.push(e.message));
+  await page.setContent('<!doctype html><html><body><section id="character"><div id="inventory"><div class="inventory-grid"><div class="inv-item"><div class="item-name"></div></div></div></div></section></body></html>');
+  await page.evaluate(()=>{
+    window.s={playerClass:'grower',level:45,skillPoints:1,
+      inventory:[{id:'qa-item-a',name:'Legendär: Prüfschwert [Lv.45]',icon:'⚔️',art:'data:image/svg+xml,<svg/>',dropLevel:45}]};
+    window.v466ItemArtUri=it=>it.art;
+    window.qaOpenItem='';
+    window.v4103OpenItemCompare=it=>(window.qaOpenItem=it.id);
+    window.v8198ApplyItemFx=()=>{};
+  });
+  await page.addScriptTag({path:file('js/features/character/beta/v8009-s2-v459-character-hub.js')});
+  const result=await page.evaluate(()=>{
+    const card=document.querySelector('#character .inv-item');
+    window.v459CompactInventory();
+    const firstImg=card.querySelector('img.v466-item-art');
+    const firstLabel=card.querySelector('.v459-inv-name');
+    const name=card.querySelector('.item-name');
+    const originalNameNode=name.firstElementChild;
+    const oldDisplay=firstLabel.textContent;
+    window.v459CompactInventory();
+    const preserved=card.querySelector('img.v466-item-art')===firstImg &&
+       name.firstElementChild===originalNameNode;
+    s.inventory[0].name='Legendär: Anderes Schwert [Lv.45]';
+    window.v459CompactInventory();
+    const changedName=card.querySelector('.v459-inv-name').textContent;
+    const newNameNode=name.firstElementChild;
+    s.inventory[0].art='data:image/svg+xml,<svg id="changed"/>';
+    window.v459CompactInventory();
+    const artChanged=card.querySelector('img.v466-item-art').getAttribute('src')===s.inventory[0].art &&
+      name.firstElementChild!==newNameNode;
+    card.click();
+    return {preserved,oldDisplay,changedName,artChanged,clicked:window.qaOpenItem};
+  });
+  assert.deepEqual(errors,[],'V8.342 v459 canonical hub must load without errors');
+  assert.equal(result.preserved,true,'V8.342 unchanged inventory names and art must keep DOM nodes');
+  assert.notEqual(result.oldDisplay,result.changedName,'V8.342 item names must still update when changed');
+  assert.equal(result.artChanged,true,'V8.342 item art must still refresh when changed');
+  assert.equal(result.clicked,'qa-item-a','V8.342 tapping item must still open canonical compare');
+  scenarios.push({channel:'beta',inventoryIdempotence:result});
+  await page.close();
+}
 async function checkCharacterNavigationSingleDispatch(){
   /* V8.341: actual v4149 and v7119 wrappers run together. Only the
      character route is deduplicated; v7119 still defers listeners two frames. */
@@ -787,6 +833,7 @@ try{
   await checkPowerPaintEfficiency('beta');
   await checkPowerPaintEfficiency('server1');
   await checkCharacterNavigationSingleDispatch();
+  await checkCharacterInventoryIdempotence();
   await checkLongTaskDetailReporting();
   await checkSampledJsonProfile();
   await checkDiagnosticReadHotPaths();
