@@ -20,9 +20,16 @@
         root.setAttribute('data-hero-layout','reference-v526');
     }
   }
-  function apply(){
+  function apply(fromCharacterNavigation=false){
     if(!document.getElementById('character')?.classList.contains('active'))return false;
-    try{window.v525ApplyHero?.()}catch(e){}
+    /* v525 delegates to v7154, which rebuilds the hero. Original v510/v514
+       have already handled this navigation before the ornamental listener. */
+    const skipOldSettle=fromCharacterNavigation&&
+      String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta'&&
+      window.__v510GoWrapped==='v7119-event'&&
+      window.__v514GoWrapped==='v7119-event'&&
+      !!document.querySelector('#character #v510HeroRoot .v510-layout');
+    if(!skipOldSettle)try{window.v525ApplyHero?.()}catch(e){}
     ensureDecor();
   }
   window.v526ApplyHero=apply;
@@ -32,7 +39,7 @@
     if(String(e?.detail?.id||'')!=='character')return;
     const beta=String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta';
     const start=beta?(performance.now?.()||Date.now()):0;
-    apply();
+    apply(true);
     if(beta)navTime={at:Date.now(),cpuMs:Math.round((performance.now?.()||Date.now())-start)};
   },{passive:true});
   apply();
