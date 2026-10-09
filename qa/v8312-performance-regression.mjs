@@ -32,7 +32,7 @@ for(const entry of ['beta.html','server1.html']){
   }
   check(new Set(scriptPaths).size===scriptPaths.length,entry+' duplicate JS');
   check(new Set(cssPaths).size===cssPaths.length,entry+' duplicate CSS');
-  check(html.includes('v8009-home-renderer.js?v=8312-home-perf1'),entry+' home cache');
+  check(html.includes('v8009-home-renderer.js?v=8314-current-dom-stable'),entry+' home cache');
   check(html.includes('v6118-event-x2-worldboss-design-css.css?v=8312-home-perf1'),entry+' boss cache');
   scriptPaths.forEach(x=>scriptFiles.add(x));
   cssPaths.forEach(x=>cssFiles.add(x));
@@ -68,6 +68,8 @@ check(home.includes('i===17||i===18')&&home.includes('previous[17]'),'Event sign
 check(homeFit.includes('parts[24]=weekly')&&homeFit.includes('parts[25]'),'Home signature consumer changed');
 check(home.split('setTimeout(()=>repairHomeTitles(),450)').length===2,'Duplicate home title retries');
 check(home.includes('v366-panel v8310-cup-results-slot'),'Grow Cup tile contract changed');
+check(home.includes('diagnostics.currentGridRetentions++')&&home.includes('retainCurrentGridDuringRefresh'),'Stable Aktuelles owner missing');
+check(home.includes('world.dataset.v8314CurrentAccount'),'Account-safe grid invalidation missing');
 check(boss.includes('animation:none!important')&&boss.includes('animation:v6118LiveDot'),'Boss shadow paint fix regressed');
 check(bossCard.includes('flex:0 0 32px!important'),'Boss action-button contract changed');
 check(home.includes("if(!force&&!world.classList.contains('active'))"),'Inactive-world guard removed');
