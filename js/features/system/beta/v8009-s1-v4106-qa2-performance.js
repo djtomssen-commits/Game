@@ -128,25 +128,6 @@ function historicalScriptCount(){if(historicCountCache!=null)return historicCoun
      try{localStorage.removeItem(rkey())}catch(e){}
      old?.();const r=run();render(r);bind();paintSettings(r)
    };clear.__v4106=true}
-   /* V8.315: explicit developer-only real-device page profiler; dormant until
-      selected in Systemtest. Neither option performs purchases or game actions. */
-   let admin=false;
-   try{admin=typeof v093IsAdmin!=='undefined'&&v093IsAdmin===true&&!!v073User&&!v073User.is_anonymous}catch(_){}
-   const panel=document.getElementById('v4106TechPanel');
-   if(!admin||!panel||!window.GL_PAGE_AUDIT)return;
-   if(panel.querySelector('#v8315QaControls'))return;
-   const box=document.createElement('div');box.id='v8315QaControls';
-   box.style.cssText='padding:12px;margin-top:12px;border-top:1px solid #8e6b43;display:grid;gap:8px';
-   const title=document.createElement('strong');title.textContent='Performance pro Seite (Android / Browser)';
-   const info=document.createElement('small');
-   info.textContent='Messung nur bei Start aktiv. Es werden keine Spielernamen, Chats oder Käufe gespeichert.';
-   const row=document.createElement('div');row.style.cssText='display:flex;gap:8px;flex-wrap:wrap';
-   const make=(label,click)=>{const b=document.createElement('button');b.className='btn secondary';b.type='button';b.textContent=label;b.onclick=click;row.appendChild(b)};
-   const hide=()=>document.getElementById('v4102QaOverlay')?.classList.remove('show');
-   make('▶ Manuell messen',()=>{if(window.GL_PAGE_AUDIT.start())hide()});
-   make('▶ Alle 17 Seiten prüfen',()=>{hide();void window.GL_PAGE_AUDIT.sweep({dwellMs:2500}).catch(e=>{window.GL_PAGE_AUDIT.stop('navigation_error');console.warn('[V8.315 trace]',e)})});
-   make('Letzten Bericht öffnen',()=>window.GL_PAGE_AUDIT.showResult());
-   box.append(title,info,row);panel.appendChild(box);
  }
 
  function open(){if(typeof baseOpen==='function')baseOpen();setTimeout(()=>{const r=run();render(r);bind();paintSettings(r);document.querySelector('.v4102-qa-head small')?.replaceChildren(document.createTextNode('QA 2.0 · Flow + UI/Pixel + State + Performance/Legacy · Spielstand bleibt geschützt'))},0)}
