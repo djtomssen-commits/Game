@@ -52,7 +52,8 @@ function v127FreshShop(){
   return false;
 }
 
-function v127ServerOwned(){try{return !!(typeof v073User!=='undefined'&&v073User?.id&&(window.v7081UseAuthority?.('quest')||window.v7081UseAuthority?.('items')||window.v7081UseAuthority?.('shop')||window.v7081UseAuthority?.('worldboss')))}catch(_){return false}}
+/* V8.304: reject legacy midnight Dampf/worldboss/shop resets for logged-in players during authority boot. */
+function v127ServerOwned(){try{return !!(typeof v073User!=='undefined'&&v073User?.id)}catch(_){return false}}
 function v127ApplyDailyReset(options={}){
   if(v127ServerOwned()){v7173LegacyBlock('midnightResetBlocks');return false;}
   const today=v127LocalDayKey();
