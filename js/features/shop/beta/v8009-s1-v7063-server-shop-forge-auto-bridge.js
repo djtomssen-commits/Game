@@ -135,7 +135,10 @@
    try{window.v441PaintResources?.()}catch(_){}
    try{window.v488ForgeRender?.()}catch(_){}
   }
-  S.actions++;S.last={at:Date.now(),revision:Number(r.revision)||0};return true;
+  S.actions++;S.last={at:Date.now(),revision:Number(r.revision)||0};
+  /* V8.330: one confirmed shop mutation may update both currencies and items. */
+  try{window.v8330ObserveCanonical?.('shop',{gold:r.gold,harz:r.harz,inventory:r.inventory,equipment:r.equipment})}catch(_){}
+  return true;
  }
  function q(fn){const task=()=>Promise.resolve().then(fn);chain=chain.then(task,task);return chain}
  async function itemAuthorityActive(){
