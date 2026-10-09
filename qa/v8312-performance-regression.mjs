@@ -89,7 +89,7 @@ check(hudJs.includes("panel.classList.remove('open','show')")&&hudJs.includes("p
 check(hudJs.includes("legacy.style.setProperty('display','none','important')"),'V8.338 must eliminate old header inline-important layout footprint');
 const tech=read('js/features/system/beta/v8009-s1-v4107-systemtechnik.js');
 check(tech.includes("const basename=match[1].split('/').pop().split(/[?#]/)[0]"),'V8.338 must resolve JSON caller cache-query URLs and SDK bundles');
-check(beta.includes('v8009-s1-v4107-systemtechnik.js?v=8346-loaf-phases-navigation-beta'),'V8.344 profiler cache not updated');
+check(beta.includes('v8009-s1-v4107-systemtechnik.js?v=8347-navigation-boot-timing-beta'),'V8.344 profiler cache not updated');
 check(tech.includes('const longShort=long.filter(x=>x.ms>=50&&x.ms<100).length')&&
   tech.includes('...longPrint.map(x=>'),'V8.340 profiler must print measured 50-99ms long tasks');
 check(tech.includes("'LONGTASK-BEREICHE: 50–99 ms '"),'V8.340 profiler must explain longtask thresholds');
@@ -161,7 +161,7 @@ check(heroBuild.includes('v510CharacterNavDiagnostics')&&heroRef.includes('v514C
   'V8.344 character hero owner listener timing reporting missing');
 check(beta.includes('v8009-s10-v510-character-hero-rebuild.js?v=8344-nav-timing-beta')&&
   beta.includes('v8009-s1-v514-heldenquartier-reference.js?v=8344-nav-timing-beta')&&
-  beta.includes('v8009-s15-v7157-character-equipment-scroll-stability.js?v=8344-no-duplicate-hero-beta'),
+  beta.includes('v8009-s15-v7157-character-equipment-scroll-stability.js?v=8347-nav-root-diagnostics-beta'),
   'V8.344 character hero owners cache not updated');
 
 
@@ -196,6 +196,33 @@ check(beta.includes('v8009-s8-v460-char-ui.js?v=8346-donor-single-owner-beta')&&
   beta.includes('v8009-s16-v526-heldenquartier-final-ornament.js?v=8346-hero-layout-idempotent-beta')&&
   beta.includes('v8009-s2-v7124-character-scroll-summary-owner.js?v=8346-avatar-style-idempotent-beta'),
   'V8.346 character owner cache keys missing');
+
+/* V8.347: protect original Beta-only character text/DOM stability and
+   new read-only attribution of nav + post-login boot work. */
+const titleOwner=read('js/features/character/beta/v8009-s15-v6339-character-avatar-title.js');
+const nameOwner=read('js/features/character/beta/v8009-s16-v275-character-name-source-of-truth.js');
+const mobileHero=read('js/features/character/beta/v8009-s16-v515-heldenquartier-mobile-polish.js');
+const attrOwner=read('js/features/character/beta/v8009-s15-v537-attribute-reference.js');
+const inventoryOrder=read('js/features/character/beta/v8009-s1-v444-character-inventory-order.js');
+check(titleOwner.includes('badges[0]?.previousElementSibling===name')&&
+  titleOwner.includes('v6339CharacterNavDiagnostics')&&
+  nameOwner.includes('title.textContent!==expected')&&
+  nameOwner.includes('v275CharacterNavDiagnostics')&&
+  mobileHero.includes("label.textContent!==next")&&
+  attrOwner.includes('v537CharacterNavDiagnostics')&&
+  inventoryOrder.includes('v444CharacterNavDiagnostics')&&
+  heroStable.includes('missingRoot:!root'),
+  'V8.347 character original DOM idempotence / navigation attribution missing');
+check(tech.includes('V8.347 TITEL/NAME/ORDNUNG:')&&
+  tech.includes('V8.347 POST-LOGIN BOOT/EXTRAS')&&
+  tech.includes("window.v4147BootDiagnostics?.()"),
+  'V8.347 attribution for old navigation owners and safe boot durations missing');
+check(beta.includes('v8009-s15-v6339-character-avatar-title.js?v=8347-title-dom-stable-beta')&&
+  beta.includes('v8009-s16-v275-character-name-source-of-truth.js?v=8347-name-text-idempotent-beta')&&
+  beta.includes('v8009-s16-v515-heldenquartier-mobile-polish.js?v=8347-hero-text-idempotent-beta')&&
+  beta.includes('v8009-s15-v537-attribute-reference.js?v=8347-attr-marker-stable-beta')&&
+  beta.includes('v8009-s1-v444-character-inventory-order.js?v=8347-order-nav-metrics-beta'),
+  'V8.347 Beta-only cache activation missing');
 
 check(beta.includes('v8009-s12-v7081-account-capability-gate.js?v=8337-flat-diag-beta'),'Beta capability hotpath cache not updated');
 check(beta.includes('v8009-s1-v7042-unified-authority-bridge.js?v=8337-memo-diag-beta'),'Beta bridge hotpath cache not updated');
