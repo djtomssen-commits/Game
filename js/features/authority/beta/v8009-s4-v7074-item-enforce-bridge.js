@@ -90,6 +90,8 @@ function applyServer(row,{paint=true}={}){
   A.hydrations++;
   saveLocal();
   if(paint)repaint({attributesChanged});
+  /* V8.330 observes server-confirmed item ownership; never repairs inventory. */
+  try{window.v8330ObserveCanonical?.('items',{inventory:row.inventory,equipment:row.equipment})}catch(_){}
   return true;
 }
 async function rpc(name,args={}){
