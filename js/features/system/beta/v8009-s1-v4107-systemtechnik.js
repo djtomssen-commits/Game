@@ -297,24 +297,50 @@ function startRuntimeProfileObservers(){
    manual profile. They report only durations and method names. The browser's
    internal Response.json and SDK async work are NOT covered by these probes.
    Restore exact native functions at profile end. Do not record payloads. */
+/* V8.334 Beta: low-overhead sampling. Full interception and timing of
+   ~774,000 JSON calls added measurable profiler cost in V8.333. We now count
+   calls, time one in every 256 and identify bounded sampled callsites.
+   Never capture JSON args, payloads, player IDs, request URLs or tokens. */
 function startRuntimeCpuProbe(){
  if(String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()!=='beta')return null;
- const data={entries:{},slow:[],restore:[]};
- const setup=(target,name,label)=>{
+ const data={entries:{},slow:[],restore:[],mode:'sampled / 256',samplePeriod:256};
+ const extractOwner=()=>{
+  try{
+   const frames=String(new Error().stack||'').split('\n').slice(1);
+   const labels=[];
+   for(const line of frames){
+    const i=line.indexOf('.js:');
+    if(i<0||line.includes('extractOwner')||line.includes('wrapped'))continue;
+    let prefix=line.slice(0,i+3);
+    prefix=prefix.split('/').pop()||'unknown';
+    const label=prefix.slice(0,100).replace(/[^a-zA-Z0-9_.-]/g,'_');
+    if(label&&!labels.includes(label))labels.push(label);
+    if(labels.length===2)break;
+   }
+   return labels.join(' -> ')||'unknown';
+  }catch(_){return 'unknown'}
+ };
+ const setup=(target,name,label,samplePeriod=256)=>{
   try{
    const original=target?.[name];
    if(typeof original!=='function')return;
-   const metrics=data.entries[label]={calls:0,ms:0,maxMs:0,over50ms:0};
+   const metrics=data.entries[label]={calls:0,samples:0,sampledMs:0,maxSampleMs:0,owners:{},samplePeriod};
    const wrapped=function(){
+    const count=++metrics.calls;
+    if(count%samplePeriod!==0)return original.apply(this,arguments);
+    const owner=metrics.samples<100?extractOwner():null;
     const started=performance.now();
     try{return original.apply(this,arguments)}
     finally{
      const ms=Math.max(0,performance.now()-started);
-     metrics.calls++;metrics.ms+=ms;metrics.maxMs=Math.max(metrics.maxMs,ms);
-     if(ms>=50)metrics.over50ms++;
+     metrics.samples++;metrics.sampledMs+=ms;metrics.maxSampleMs=Math.max(metrics.maxSampleMs,ms);
+     if(owner){
+      const t=metrics.owners[owner]||(metrics.owners[owner]={calls:0,ms:0});
+      t.calls++;t.ms+=ms;
+     }
      if(ms>=25){
       data.slow.push({kind:label,ms,t:Math.max(0,Math.round(performance.now()-runtimeProfile.startPerf)),screen:currentScreenId()});
-      if(data.slow.length>30)data.slow.shift();
+      if(data.slow.length>20)data.slow.shift();
      }
     }
    };
@@ -324,9 +350,7 @@ function startRuntimeCpuProbe(){
  };
  setup(JSON,'parse','JSON.parse');
  setup(JSON,'stringify','JSON.stringify');
- /* Captures write CPU for existing local/session storage operations; it does
-    not invoke, skip, modify or replay writes. Never inspect keys or values. */
- try{if(typeof Storage!=='undefined')setup(Storage.prototype,'setItem','Storage.setItem')}catch(_){}
+ try{if(typeof Storage!=='undefined')setup(Storage.prototype,'setItem','Storage.setItem',1)}catch(_){}
  return data;
 }
 function stopRuntimeCpuProbe(){
@@ -465,15 +489,19 @@ function stopRuntimeProfiler(){
      'HYDRATE t+'+Math.max(0,Number(x.at)-runtimeProfile.startEpoch)+' ms | '+x.outcome+
      ' | '+x.reason+' | '+x.screen+' | wartende Listener '+x.queued),
    '',
-   'SYNCHRONE CPU-KOSTEN (V8.333, nur während dieser 30s; JSON/Storage-Probe):',
-   ...(cpuCost?Object.entries(cpuCost.entries||{}).map(([label,m])=>
-      'SYNC '+label+' | CPU '+Number(m.ms||0).toFixed(1)+' ms | Aufrufe '+m.calls+
-      ' | max '+Number(m.maxMs||0).toFixed(1)+' ms | >50ms '+m.over50ms
-   ):['Nicht verfügbar / nur Beta.']),
+   'JSON/STORAGE STICHPROBEN (V8.334, Opt-in 30s, keine Payloads):',
+   ...(cpuCost?Object.entries(cpuCost.entries||{}).flatMap(([label,m])=>[
+      'SYNC '+label+' | Aufrufe '+m.calls+' | Stichproben '+m.samples+
+      ' | Stichproben-CPU '+Number(m.sampledMs||0).toFixed(1)+' ms'+
+      ' | max Probe '+Number(m.maxSampleMs||0).toFixed(1)+' ms',
+      ...Object.entries(m.owners||{}).sort((x,y)=>y[1].calls-x[1].calls)
+       .slice(0,10).map(([caller,d])=>'SYNC-CALLER '+label+' | Proben '+d.calls+
+        ' | CPU der Proben '+Number(d.ms||0).toFixed(1)+' ms | '+caller)
+    ]):['Nicht verfügbar / nur Beta.']),
    ...(cpuCost?.slow?.length?cpuCost.slow.slice().sort((a,b)=>b.ms-a.ms).slice(0,12).map(x=>
       'SYNC-SLOW '+x.kind+' '+x.ms.toFixed(1)+' ms | t+'+x.t+' ms | '+x.screen
    ):['Keine einzeln messbare JSON/Storage-Operation über 25 ms.']),
-   'Hinweis: JS-Aufruf-CPU, nicht Netzwerk oder native Response.json()-Deserialisierung.',
+   'Hinweis: JSON-Aufrufzahl vollständig, CPU nur aus 1:256-Stichproben (keine Gesamt-CPU); Aufrufer sind gesampelte JS-Stackframes, keine Payloads. Storage 1:1. Native Response.json() nicht abgedeckt.',
    'KAMPFKRAFT REPAINT (V8.333, Beta):',
    'Aufrufe '+powerDelta.attempts+' | DOM-Schreibvorgänge '+powerDelta.writes+
       ' | zusammengefasste Repaints '+powerDelta.coalesced+
