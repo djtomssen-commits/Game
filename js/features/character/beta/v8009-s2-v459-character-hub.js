@@ -337,11 +337,10 @@
       let lv=card.querySelector('.v459-inv-level');if(!lv){lv=document.createElement('span');lv.className='v459-inv-level';card.appendChild(lv)}
       const levelText=`Lv.${Math.max(1,Number(it.dropLevel)||Number(s.level)||1)}`;
       if(lv.textContent!==levelText)lv.textContent=levelText;
-      if(card.dataset.v459Bound!=='1'){
-        card.onclick=e=>{if(e.target.closest('.v268-pick,input,button,label'))return;openInventory(Number(card.dataset.v459Index))};
-        card.onkeydown=e=>{if((e.key==='Enter'||e.key===' ')&&!e.target.closest('input,button')){e.preventDefault();openInventory(Number(card.dataset.v459Index))}};
-        card.dataset.v459Bound='1';
-      }
+      /* Rebind existing handlers as before: another legacy renderer might have
+         replaced them while retaining this item-card DOM node. */
+      card.onclick=e=>{if(e.target.closest('.v268-pick,input,button,label'))return;openInventory(i)};
+      card.onkeydown=e=>{if((e.key==='Enter'||e.key===' ')&&!e.target.closest('input,button')){e.preventDefault();openInventory(i)}};
     });
     updateHero();
   }
