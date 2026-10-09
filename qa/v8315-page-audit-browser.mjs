@@ -73,6 +73,45 @@ try{
  });
  assert.equal(systemtechSweep.totalScreens,17,'Systemtechnik must not count as an 18th gameplay screen');
  assert.equal(systemtechSweep.sweepDone,17,'sweep from Systemtechnik must cover 17 screens');
+ // V8.319: the 30-second profiler must read the real V477 counters
+ // rather than the retired __V4106_TECH__ store. Synthetic, no real account.
+ const profilerStart=systemtechSource.indexOf('/* V8.319: canonical opt-in');
+ const profilerEnd=systemtechSource.indexOf('const clone=v=>',profilerStart);
+ assert.ok(profilerStart>=0&&profilerEnd>profilerStart,'V8.319 canonical profiler owner missing');
+ const profilerModule=systemtechSource.slice(profilerStart,profilerEnd);
+ await page.evaluate(()=>{
+   window.currentScreenId=()=>document.querySelector('.screen.active')?.id||'unknown';
+   window.GROW_RELEASE_CHANNEL='server1';
+   window.__qaProfileIntervals=[{id:21,site:'qa-owner.js',callback:'tick',actualDelay:2000,
+     requestedDelay:2000,calls:2,cpuMs:10,maxMs:5,active:true}];
+   window.__qaProfileObservers=[{key:1,site:'qa-render.js',targets:['world'],batches:1,records:2,active:true}];
+   window.__V477_RUNTIME_PROFILE_SNAPSHOT__=()=>({
+     intervals:window.__qaProfileIntervals,observers:window.__qaProfileObservers
+   });
+   const box=document.createElement('div');box.id='glRuntimeProfiler';
+   box.innerHTML=['glProfilerStatus','glProfilerStart','glProfilerStop','glProfilerCopy','glProfilerBody']
+     .map(id=>'<div id="'+id+'"></div>').join('');
+   document.body.appendChild(box);
+ });
+ await page.addScriptTag({content:profilerModule});
+ const profilerSmoke=await page.evaluate(()=>{
+   const started=startRuntimeProfiler(),duplicate=startRuntimeProfiler();
+   window.__qaProfileIntervals[0].calls+=7;
+   window.__qaProfileIntervals[0].cpuMs+=450;
+   window.__qaProfileObservers[0].records+=175;
+   window.__qaProfileObservers[0].batches+=9;
+   const report=stopRuntimeProfiler();
+   return {started,duplicate,report,stopped:!runtimeProfile.running,
+     startReady:!document.getElementById('glProfilerStart').disabled,
+     stopDisabled:document.getElementById('glProfilerStop').disabled};
+ });
+ assert.ok(profilerSmoke.started&&!profilerSmoke.duplicate&&profilerSmoke.stopped);
+ assert.ok(profilerSmoke.startReady&&profilerSmoke.stopDisabled,'30s profiler buttons did not reset');
+ assert.ok(profilerSmoke.report.includes('SERVER1'),'Profiler report must use real release channel');
+ assert.ok(profilerSmoke.report.includes('CPU 450.0 ms | Aufrufe 7'),'V477 real timer delta missing');
+ assert.ok(profilerSmoke.report.includes('Records 175 | Batches 9'),'V477 real observer delta missing');
+ assert.ok(profilerSmoke.report.includes('Long-Task-Quelle:'),'Profiler must declare its long-task source');
+ await page.locator('#glRuntimeProfiler').evaluate(el=>el.remove());
  assert.ok(errors.length===0,errors.join('; '));
  fs.mkdirSync('qa/reports',{recursive:true});
  fs.writeFileSync('qa/reports/v8315-per-page-browser.json',JSON.stringify({
