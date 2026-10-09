@@ -44,10 +44,25 @@ function paint(){
     const need=needFor(lv),cur=Math.max(0,Number(s?.xp)||0),pct=Math.max(0,Math.min(100,cur/need*100));
     const beta=String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta';
     const text=`${Math.round(cur).toLocaleString('de-DE')} / ${need.toLocaleString('de-DE')}`;
-    const width=pct+'%';
+    /* V8.349 Beta: CSSOM rounds percentage strings. Comparing the original
+       full-precision JS float with CSSStyleDeclaration.width causes phantom
+       writes and visible bar animations despite identical XP text. */
+    const width=beta?(Math.round(pct*1000)/1000)+'%':pct+'%';
     const short=`${Math.round(cur)}/${need}`;
     const t=document.querySelector('#centerXpText');if(t&&(!beta||t.textContent!==text)){t.textContent=text;note('xpTextWrites')}
-    const f=document.querySelector('#centerXpFill');if(f&&(!beta||f.style.width!==width)){f.style.width=width;note('xpBarWrites')}
+    const f=document.querySelector('#centerXpFill');
+    if(f){
+      const previous=f.style.width;
+      const beforePct=parseFloat(previous);
+      const stable=beta&&Number.isFinite(beforePct)&&Math.abs(beforePct-pct)<0.00051;
+      if(beta&&previous!==width&&stable)note('xpBarPrecisionSkips');
+      if(!beta||(!stable&&previous!==width)){
+        if(beta&&previous&&Number.isFinite(beforePct)&&Math.abs(beforePct-pct)>0.01)
+          note('xpBarExternalOrRealChanges');
+        f.style.width=width;
+        note('xpBarWrites');
+      }
+    }
     const x=document.querySelector('#xp');if(x&&(!beta||x.textContent!==short))x.textContent=short;
   }catch(e){}
 }
