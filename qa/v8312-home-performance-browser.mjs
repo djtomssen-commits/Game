@@ -464,6 +464,55 @@ async function checkReadOnlyConsistencyWatch(channel){
   }});
   await page.close();
 }
+async function checkCharacterNavigationHubSinglePass(){
+  /* V8.343: actual character hub + Frost owner, in shipped order.
+     A single character event must refresh the hub once, retain equipment /
+     avatar paint, and preserve full refresh on explicit equip calls. */
+  const page=await browser.newPage();
+  const errors=[];page.on('pageerror',e=>errors.push(e.message));
+  await page.setContent('<!doctype html><html><body><div id="character" class="screen active"><div class="hero-card"></div><div class="equipment-grid"><div class="equip-col"><div class="slot" id="slot-weapon"><span class="slot-label">Waffe</span></div></div></div><div class="card"><div id="inventory"><div class="inventory-grid"></div></div></div></div></body></html>');
+  await page.evaluate(()=>{
+    window.GROW_RELEASE_CHANNEL='beta';
+    window.s={playerClass:'grower',level:30,points:0,skillPoints:0,inventory:[],equipment:{weapon:null},social:{}};
+    window.classes={grower:{name:'Grower'}};
+    window.skillDefs={grower:[]};
+    window.classSets={grower:{name:'Grower'}};
+    window.classGear={grower:[]};
+    window.allClassGear=[];
+    window.V080_AVATARS={grower:'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs='};
+    window.qaEquipment=0;window.qaDecoration=0;
+    window.v470PaintEquipmentSlots=()=>{window.qaEquipment++};
+    window.v4103DecorateItemSurfaces=()=>{window.qaDecoration++};
+  });
+  await page.addScriptTag({path:file('js/features/character/beta/v8009-s2-v459-character-hub.js')});
+  await page.addScriptTag({path:file('js/features/character/beta/v8009-s3-v4153-frost-class-avatar-authority.js')});
+  const result=await page.evaluate(()=>{
+    let extraLayouts=0,extraInventory=0;
+    window.v459ArrangeCharacter=()=>{extraLayouts++;return true};
+    window.v459CompactInventory=()=>{extraInventory++};
+    window.qaEquipment=0;window.qaDecoration=0;
+    const e=new CustomEvent('growlegends:navigation-open-v7119',{detail:{id:'character'}});
+    window.dispatchEvent(e);
+    const onNav={marked:e.__v8343CharacterHubRefreshed===true,
+      hub:window.v459CharacterNavDiagnostics?.(),
+      frost:window.v4153CharacterNavDiagnostics?.(),
+      extraLayouts,extraInventory,
+      equipment:window.qaEquipment,decorations:window.qaDecoration};
+    window.v4153RefreshFrostUi('equip');
+    return {onNav,equip:{extraLayouts,extraInventory,equipment:window.qaEquipment,decorations:window.qaDecoration}};
+  });
+  assert.deepEqual(errors,[],'V8.343 real character owners must not throw');
+  assert.equal(result.onNav.marked,true,'V8.343 canonical hub marks its completed pass');
+  assert.equal(result.onNav.frost?.skippedDuplicateHub,true,'V8.343 Frost listener skips duplicate hub');
+  assert.equal(result.onNav.extraLayouts,0,'V8.343 no second hub layout on navigation');
+  assert.equal(result.onNav.extraInventory,0,'V8.343 no second compactInventory on navigation');
+  assert.ok(result.onNav.equipment>=1&&result.onNav.decorations>=1,
+    'V8.343 equipment and item-decorations must still render on navigation');
+  assert.equal(result.equip.extraLayouts,1,'V8.343 explicit equipment refresh must keep full hub');
+  assert.equal(result.equip.extraInventory,1,'V8.343 explicit equipment refresh must keep full inventory');
+  scenarios.push({channel:'beta',characterNavigationHub:result});
+  await page.close();
+}
 async function checkCharacterInventoryIdempotence(){
   /* V8.342: same canonical v459 hub, no gameplay-state mutation or fake
      replacement renderer. Verify two consecutive presentation passes retain
@@ -834,6 +883,7 @@ try{
   await checkPowerPaintEfficiency('server1');
   await checkCharacterNavigationSingleDispatch();
   await checkCharacterInventoryIdempotence();
+  await checkCharacterNavigationHubSinglePass();
   await checkLongTaskDetailReporting();
   await checkSampledJsonProfile();
   await checkDiagnosticReadHotPaths();
