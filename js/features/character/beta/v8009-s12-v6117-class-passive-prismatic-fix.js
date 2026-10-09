@@ -3,12 +3,19 @@
 if(window.__V6117_CLASS_PASSIVE_PRISMATIC_FIX__)return;
 window.__V6117_CLASS_PASSIVE_PRISMATIC_FIX__=true;
 
-function repair(){
+function repair(fromCharacterNavigation=false){
   const character=document.getElementById('character');
   if(!character)return false;
 
-  try{window.v4156PaintClassPassive?.()}catch(e){}
-  try{window.v514ApplyHeroReference?.()}catch(e){}
+  /* V8.345 Beta: the prior v4156/v514 navigation listeners already painted
+     these exact surfaces. Keep full fallback for missing owner/DOM, and
+     preserve every non-navigation/equipment/account-ready repair. */
+  const hasPassive=!!document.getElementById('v4156ClassPassive');
+  const hasHeroHost=!!document.querySelector('#v510HeroRoot .v514-passive-host');
+  const skipPassive=fromCharacterNavigation&&window.__v4156Go==='v7119-event'&&hasPassive;
+  const skipHero=fromCharacterNavigation&&window.__v514GoWrapped==='v7119-event'&&hasHeroHost;
+  if(!skipPassive)try{window.v4156PaintClassPassive?.()}catch(e){}
+  if(!skipHero)try{window.v514ApplyHeroReference?.()}catch(e){}
 
   const root=document.getElementById('v510HeroRoot');
   const host=root?.querySelector('.v514-passive-host');
@@ -70,7 +77,18 @@ try{
 }catch(e){}
 
 /* V7.119: character entry joins the shared post-navigation refresh frame. */
-window.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')==='character')repair()});
+let navTime={at:0,cpuMs:0,skippedPassive:false,skippedHero:false};
+window.v6117CharacterNavDiagnostics=()=>({...navTime});
+window.addEventListener('growlegends:navigation-open-v7119',e=>{
+ if(String(e?.detail?.id||'')!=='character')return;
+ const beta=String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta';
+ if(!beta){repair();return}
+ const start=performance.now?.()||Date.now();
+ const skippedPassive=window.__v4156Go==='v7119-event'&&!!document.getElementById('v4156ClassPassive');
+ const skippedHero=window.__v514GoWrapped==='v7119-event'&&!!document.querySelector('#v510HeroRoot .v514-passive-host');
+ repair(true);
+ navTime={at:Date.now(),cpuMs:Math.round((performance.now?.()||Date.now())-start),skippedPassive,skippedHero};
+});
 window.__v6117Go='v7119-event';
 
 document.addEventListener('DOMContentLoaded',repair,{once:true});
