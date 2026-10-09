@@ -384,7 +384,7 @@ async function claimRank(){
  if(S.busy)return;S.busy=true;paint();
  try{
   const r=await rpc('v8210_growcup_claim_rank_reward',{p_request_id:rid('v8214_rank')});
-  if(r?.ok===false)throw new Error(String(r.reason||'CLAIM_REJECTED'));
+  if(!r?.ok)throw new Error(String(r?.reason||'CLAIM_NOT_CONFIRMED'));
   showRankReward(r);
   await refresh({paintNow:false});await loadRanking(true);
  }catch(e){
