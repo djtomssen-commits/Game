@@ -509,7 +509,7 @@ function stopRuntimeProfiler(){
       'SYNC-SLOW '+x.kind+' '+x.ms.toFixed(1)+' ms | t+'+x.t+' ms | '+x.screen
    ):['Keine einzeln messbare JSON/Storage-Operation über 25 ms.']),
    'Hinweis: JSON-Aufrufzahl vollständig, CPU nur aus 1:256-Stichproben (keine Gesamt-CPU); Aufrufer 1:4096 über gesamten Lauf und Sekunden-Buckets nur Näherungen. Storage 1:1. Native Response.json() nicht abgedeckt.',
-   'HOME-EVENT ÜBERLAGERUNG (V8.334, Geometrie/Hit-Test, keine DOM-Eingriffe):',
+   'HOME-EVENT ÜBERLAGERUNG (V8.335, Hit-Test + Schatten-Owner, keine DOM-Eingriffe):',
    eventTopDebug
     ?'Events oben '+eventTopDebug.eventTop+' px | World oben '+eventTopDebug.worldTop+
        ' px | Zwischenraum '+eventTopDebug.gapPx+' px'
@@ -517,6 +517,8 @@ function stopRuntimeProfiler(){
    ...(eventTopDebug?[
      'ELEMENTE ÜBER EVENTS: '+(eventTopDebug.above||[]).join(' > '),
      'ELEMENTE IM EVENTS-RAND: '+(eventTopDebug.inside||[]).join(' > '),
+     'ELEMENTE IM 8PX-BAND: '+(eventTopDebug.hitBands||[]).join(' | '),
+     'MÖGLICHE CSS-SCHATTEN / PSEUDOELEMENTE: '+(eventTopDebug.paintCandidates||[]).join(' | '),
      'WORLD-KINDER / GRID-REIHENFOLGE: '+(eventTopDebug.childOrder||[]).join(' | ')
    ]:[]),
    '',
