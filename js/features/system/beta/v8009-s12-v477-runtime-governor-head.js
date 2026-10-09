@@ -46,5 +46,27 @@
     const observers=[...runtime.observers.values()].filter(x=>x.active);
     return {version:'V7.174',activeIntervals:active.length,activeObservers:observers.length,fastActual:active.filter(x=>x.actualDelay>0&&x.actualDelay<500).length,fastNonCombat:active.filter(x=>x.actualDelay>0&&x.actualDelay<500&&!x.nativeBypass).length,nativeCombat:active.filter(x=>x.nativeBypass).length,calls:active.reduce((n,x)=>n+x.calls,0),cpuMs:Number(active.reduce((n,x)=>n+x.cpuMs,0).toFixed(2)),top:active.slice().sort((a,b)=>(b.cpuMs-a.cpuMs)||(b.calls-a.calls)).slice(0,12),observers:observers.slice(0,12)};
   };
+  /* V8.319: read-only full counter snapshot for the opt-in 30s profiler.
+     Reuses the existing timer/observer registry; no new wrappers or polling.
+     Includes jobs retired during a measurement for accurate deltas. */
+  window.__V477_RUNTIME_PROFILE_SNAPSHOT__=(since=0)=>{
+    const from=Math.max(0,Number(since)||0);
+    const intervals=[...runtime.intervals.values()]
+      .filter(x=>x.active||x.createdAt>=from||Number(x.clearedAt||0)>=from)
+      .map(x=>({
+        id:x.id,site:x.site,callback:x.callback,
+        requestedDelay:x.requestedDelay,actualDelay:x.actualDelay,
+        nativeBypass:x.nativeBypass,active:x.active,
+        calls:x.calls,cpuMs:x.cpuMs,maxMs:x.maxMs
+      }));
+    const observers=[...runtime.observers.values()]
+      .filter(x=>x.active||x.createdAt>=from||Number(x.disconnectedAt||0)>=from)
+      .map(x=>({
+        key:x.key,site:x.site,active:x.active,
+        targets:(x.targets||[]).slice(0,4),
+        observeCalls:x.observeCalls,batches:x.batches,records:x.records
+      }));
+    return {available:true,intervals,observers};
+  };
   window.__V477_RUNTIME_GOVERNOR__=true;
 })();
