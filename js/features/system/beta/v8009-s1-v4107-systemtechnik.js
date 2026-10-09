@@ -409,6 +409,16 @@ function stopRuntimeProfiler(){
    longSource='V7092 Watchdog (nur Tasks ab 350 ms)';
   }catch(_){}
  }
+ /* V8.340 Beta: PerformanceObserver records all tasks >=50ms. The
+    previous report counted them all but printed only >=100ms, making a
+    healthy run show "Long Tasks: 10" followed by zero details.
+    Keep the original count and show the longest 25 records with a clear
+    50-99ms / >=100ms distribution. This is report-only. */
+ const longPrint=long.slice().sort((a,b)=>b.ms-a.ms).slice(0,25)
+   .sort((a,b)=>a.t-b.t);
+ const longShort=long.filter(x=>x.ms>=50&&x.ms<100).length;
+ const longHundred=long.filter(x=>x.ms>=100).length;
+ const longMax=long.reduce((m,x)=>Math.max(m,x.ms),0);
  const loaf=runtimeProfile.loafFrames;
  /* V8.328 Beta: identify synchronous costs of deferred login listeners, and
     measure whether duplicate Home hydration requests are suppressed.
@@ -455,7 +465,10 @@ function stopRuntimeProfiler(){
   'Observerquelle: '+after.kind+' | Observer vor/nach: '+before.observers.size+'/'+after.observers.size,
   'Long-Task-Quelle: '+longSource,
   'Long Tasks: '+(runtimeProfile.longSupported||longSource.startsWith('V7092')?long.length:'NICHT MESSBAR'),
-  ...long.filter(x=>x.ms>=100).slice(-25).map(x=>
+  'LONGTASK-BEREICHE: 50–99 ms '+longShort+' | ab 100 ms '+longHundred+
+   ' | längste '+(long.length?longMax+' ms':'keine')+
+   ' | Detailzeilen: '+longPrint.length+' der '+long.length,
+  ...longPrint.map(x=>
    'LONGTASK '+x.ms+' ms | t+'+x.t+' ms | '+x.screen),
   '',
   'TIMER CPU-HOTSPOTS (Delta, vorhandener V477-Owner):',
