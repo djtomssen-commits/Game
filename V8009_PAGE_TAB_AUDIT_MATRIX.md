@@ -181,3 +181,9 @@ V8.287 – Aktive tägliche Verlustwache
 - Auf beiden Servern in Systemtechnik/Admin-Systemtest erreichbar. Default-Idle: null Tracer-Observer/Timer, nur auf ausdrückliche Aktivierung. Home-Owner liefert optional Full/Event/Repair-Render-Marker, erlaubt ein konkretes Aktuelles-Flackern zeitlich einzugrenzen. Kein Account-/Spielstands- oder Economy-Write.
 - V8.315 Playwright CI Run 37891681934 PASS: 17 synthetische Seiten, absichtlich entfernte Aktuelles-Kachel, Attribut-Visibility-Wechsel, Tabklick, Home-Render-Marker und Start/Stop-Lifecycle. Artefakt mit JSON/Screenshot vorhanden. Nicht gleichzusetzen mit 17 geprüften Live-Gameplayseiten.
 - Volle manuelle/Android-Testmatrix, P0/P1/P2-Bewertung und nächste Arbeitspakete in V8315_PER_PAGE_PERFORMANCE_PLAN.md. Live-Android-Ergebnis und Untertab-/Kampf-/RPC-Performance weiterhin OFFEN.
+
+### 09.10.2026 – V8.316: 17-Seiten-Profiler in sichtbarer Admin-Systemtechnik
+- UI-Owner-Fix: tatsächliche Systemtechnik js/features/system/beta/v8009-s1-v4107-systemtechnik.js enthält den neuen Bereich PERFORMANCE JE SEITE mit 3 Aktionsbuttons direkt nach 30-Sekunden-Profiler im bestehenden Code-Diagnose-Layout. Ursprüngliche nicht erreichbare Einbindung im v4106-TechPanel aus QA2-Owner entfernt.
+- Funktion: Manuell messen startet Profil und öffnet World; Alle 17 Seiten prüfen startet read-only 2,5s pro Spielseite; Bericht öffnen zeigt resultierendes JSON. Berichte enthalten keine personenbezogenen Spielerdaten. Normale Nutzung ohne aktive Trace-Observer.
+- Beta + Server 1 gezielte Cacheversion 8316-systemtech-profiler für Systemtechnik-Owner, QA2 und Trace. Trace zählt bei Aufruf aus Systemtechnik nur 17 Gameplay-Seiten, nicht 18.
+- CI v8315-per-page-audit Run 37893438839: PASS, inklusive QA-Check der neuen Systemtechnik-Bindings und 17-screen sweep ab Systemtechnik. Android-Sichttest noch offen.
