@@ -2,6 +2,21 @@
 'use strict';
 if(window.__V6321_COMPANION_ACTOR_RENDER_FIX__)return;
 window.__V6321_COMPANION_ACTOR_RENDER_FIX__=true;
+/* V8.320 Beta: the matching v6321 companion stylesheet already applies
+   every property that sanitizeActor wrote. Its CSS rules apply to future
+   summons automatically, so no document-wide MutationObserver/DOM restyler
+   is required. Server1 retains its existing path until mobile QA approval. */
+if(String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta'){
+ window.v6321CompanionActorDiagnostics=()=>({
+  version:'V8.320-CSS-OWNER',
+  actorCount:document.querySelectorAll('.v6287-summon-fx').length,
+  actorClipped:[...document.querySelectorAll('.v6287-summon-fx .v6303-spirit img')].every(
+   img=>(getComputedStyle(img).clipPath||getComputedStyle(img).webkitClipPath||'').includes('circle')
+  ),
+  globalObserverRetired:true
+ });
+ return;
+}
 function sanitizeActor(root=document){
   root.querySelectorAll('.v6287-summon-fx').forEach(el=>{
     try{
