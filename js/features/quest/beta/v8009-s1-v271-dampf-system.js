@@ -72,7 +72,7 @@ function v271PaintDampf(){
   v271EnsureRefillState();
   const cap=v271DampfCap();
   const e=Math.max(0,Math.min(cap,Math.floor(Number(s.energy)||0)));
-  if(Number(s.energy)!==e)s.energy=e;
+  if(!v271ServerOwned()&&Number(s.energy)!==e)s.energy=e;
 
   const energyEl=document.querySelector('#energy');
   if(energyEl)energyEl.textContent=`💨 ${e}/${cap}`;
@@ -191,6 +191,8 @@ function v271EffectiveQuestCost(q){
 /* Preserve every existing startQuest wrapper (Harz tracking, quest timer, etc.). */
 const v271BaseStartQuest=window.startQuest;
 window.startQuest=function(i){
+  /* The historic start handler must not deduct energy for a signed-in player. */
+  if(v271ServerOwned())return false;
   v271NormalizeQuestOffers();
   const q=s.quests?.offers?.[i];
   if(!q)return v271BaseStartQuest(i);
