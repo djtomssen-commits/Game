@@ -70,6 +70,8 @@ async function sync(force=false,paintNow=true){
       applyQuestState(q);persistLocal();
       if(paintNow&&before!==questSig())paint();
       else if(paintNow){try{window.v069SyncCurrencies?.();window.v271PaintDampf?.()}catch(_){}}
+      /* V8.330 read-only watch: authoritative Quest energy, not a local estimate. */
+      try{window.v8330ObserveCanonical?.('quest',{energy:q.energy})}catch(_){}
       return q;
     }catch(e){S.lastError=String(e?.message||e);console.warn('[V7.110] quest authority sync',e);return null}
     finally{S.syncing=null}
