@@ -276,11 +276,35 @@
    });
   }catch(e){}
  }
- function refreshAll(reason='refresh'){
+ /* V8.343 Beta: v459's navigation listener ran earlier in the same event
+    and already refreshed the visible character tab. Retain weapon2, identity,
+    avatar and item-decoration authorities, but do not reconstruct the hub
+    and compact the inventory again on that one navigation event. All other
+    refresh reasons (equip, login, startup, pageshow) keep the old path. */
+ let lastNav={at:0,totalMs:0,coreMs:0,equipmentMs:0,decorationsMs:0,hubMs:0,skippedDuplicateHub:false};
+ window.v4153CharacterNavDiagnostics=()=>({...lastNav});
+ function refreshAll(reason='refresh',skipDuplicateHub=false){
+  const measure=reason==='nav-character',begin=performance.now?.()||Date.now();
   ensureWeapon2Slot();
   if(!document.getElementById('character')?.classList.contains('active'))return false;
   paintWeapon2();paintIdentity();refreshAvatars();
-  try{window.v470PaintEquipmentSlots?.()}catch(e){}try{window.v4103DecorateItemSurfaces?.()}catch(e){}try{window.v459ArrangeCharacter?.()}catch(e){}try{window.v459CompactInventory?.()}catch(e){}
+  const coreMs=(performance.now?.()||Date.now())-begin;
+  const equipBegin=performance.now?.()||Date.now();
+  try{window.v470PaintEquipmentSlots?.()}catch(e){}
+  const equipmentMs=(performance.now?.()||Date.now())-equipBegin;
+  const decoBegin=performance.now?.()||Date.now();
+  try{window.v4103DecorateItemSurfaces?.()}catch(e){}
+  const decorationsMs=(performance.now?.()||Date.now())-decoBegin;
+  const hubBegin=performance.now?.()||Date.now();
+  if(!skipDuplicateHub){
+    try{window.v459ArrangeCharacter?.()}catch(e){}
+    try{window.v459CompactInventory?.()}catch(e){}
+  }
+  const hubMs=(performance.now?.()||Date.now())-hubBegin;
+  if(measure)lastNav={at:Date.now(),totalMs:Math.round((performance.now?.()||Date.now())-begin),
+    coreMs:Math.round(coreMs),equipmentMs:Math.round(equipmentMs),
+    decorationsMs:Math.round(decorationsMs),hubMs:Math.round(hubMs),
+    skippedDuplicateHub:!!skipDuplicateHub};
   /* V6.102: inventory already rendered by the active character renderer. */
   return true;
  }
@@ -297,7 +321,10 @@
 
  /* V8.009: shared character lifecycle owns repaint; no global render wrapper. */
  try{
-  window.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')==='character')refreshAll('nav-character')},{passive:true});window.__v4153Go='v7119-event';window.__v4153Render='retired'
+  window.addEventListener('growlegends:navigation-open-v7119',e=>{
+    if(String(e?.detail?.id||'')==='character')
+      refreshAll('nav-character',e.__v8343CharacterHubRefreshed===true);
+  },{passive:true});window.__v4153Go='v7119-event';window.__v4153Render='retired'
  }catch(e){}
 
  function stamp(){}
