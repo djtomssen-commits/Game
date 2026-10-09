@@ -75,8 +75,22 @@
     return shell;
   }
 
+  /* V8.338 Beta: the v372 body-level HUD is the only visible header.
+     Historical renderers still sometimes force .app > header to display:block
+     !important (15px of empty layout under this fixed HUD). Keep its hidden
+     original DOM IDs for compatibility, but remove its layout footprint via
+     the authoritative header owner rather than a new late CSS override. */
+  function retireLegacyHeader(){
+    const legacy=document.querySelector('.app > header');
+    if(!legacy)return;
+    if(legacy.style.getPropertyValue('display')==='none'&&
+       legacy.style.getPropertyPriority('display')==='important')return;
+    legacy.style.setProperty('display','none','important');
+  }
+
   function paint(){
     const shell=build();
+    retireLegacyHeader();
     shell.style.setProperty('display',gameIsVisible()?'block':'none','important');
     const g=shell.querySelector('#v372Gold'),h=shell.querySelector('#v372Harz'),d=shell.querySelector('#v372Dampf');
     if(g)g.textContent=num(s?.gold); if(h)h.textContent=num(s?.harzTaler); if(d)d.textContent=num(s?.energy)+'/'+num(cap());
