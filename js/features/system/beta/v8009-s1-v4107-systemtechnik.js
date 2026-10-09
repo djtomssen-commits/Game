@@ -309,13 +309,15 @@ function startRuntimeCpuProbe(){
    const frames=String(new Error().stack||'').split('\n').slice(1);
    const labels=[];
    for(const line of frames){
-    const i=line.indexOf('.js:');
-    if(i<0||line.includes('extractOwner')||line.includes('wrapped'))continue;
-    let prefix=line.slice(0,i+3);
-    prefix=prefix.split('/').pop()||'unknown';
-    const label=prefix.slice(0,100).replace(/[^a-zA-Z0-9_.-]/g,'_');
-    if(label&&!labels.includes(label))labels.push(label);
-    if(labels.length===2)break;
+    if(line.includes('extractOwner')||line.includes('wrapped'))continue;
+    /* V8.336: file+line, never a URL/query, and include the next caller.
+       JS filename alone is insufficient to distinguish clone() from
+       diagnostics() or to locate a repeated call chain. */
+    const match=line.match(/([a-zA-Z0-9_.-]+\.js):(\d+):\d+/);
+    if(!match)continue;
+    const label=(match[1]+':'+match[2]).slice(0,110);
+    if(!labels.includes(label))labels.push(label);
+    if(labels.length===3)break;
    }
    return labels.join(' -> ')||'unknown';
   }catch(_){return 'unknown'}
@@ -493,12 +495,12 @@ function stopRuntimeProfiler(){
      'HYDRATE t+'+Math.max(0,Number(x.at)-runtimeProfile.startEpoch)+' ms | '+x.outcome+
      ' | '+x.reason+' | '+x.screen+' | wartende Listener '+x.queued),
    '',
-   'JSON/STORAGE STICHPROBEN (V8.335, verteilt über 30s, keine Payloads):',
+   'JSON/STORAGE STICHPROBEN (V8.336, Callsite-Zeilen ohne Payloads):',
    ...(cpuCost?Object.entries(cpuCost.entries||{}).flatMap(([label,m])=>[
       'SYNC '+label+' | Aufrufe '+m.calls+' | Stichproben '+m.samples+
       ' | Stichproben-CPU '+Number(m.sampledMs||0).toFixed(1)+' ms'+
       ' | max Probe '+Number(m.maxSampleMs||0).toFixed(1)+' ms',
-      ...(label.startsWith('JSON.')?['SYNC-CALLER-SAMPLING '+label+' | '+Number(m.ownerSamples||0)+' verteilte Aufrufer-Stichproben (1:4096)']:[]),
+      ...(label.startsWith('JSON.')?['SYNC-CALLER-SAMPLING '+label+' | '+Number(m.ownerSamples||0)+' verteilte Callsite-Stichproben (1:4096)']:[]),
       ...Object.entries(m.buckets||{}).sort((a,b)=>b[1]-a[1]).slice(0,5)
        .map(([second,calls])=>'SYNC-HOT-SECOND '+label+' | t+'+second+'s | ca. '+calls+' Aufrufe (1:256 Zeitstempel)'),
       ...Object.entries(m.owners||{}).sort((x,y)=>y[1].calls-x[1].calls)
