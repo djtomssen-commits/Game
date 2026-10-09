@@ -64,8 +64,13 @@
       ['#power','#charPower','#v358Power','#v110Cp'].forEach(sel=>setText(document.querySelector(sel),cp));
 
       /* World layouts that already intend to show the player's own power. */
-      document.querySelectorAll('.v349-power b,.v366-power b,.v251-detail-bottom .v251-mini-stat:first-child b')
+      /* V8.325: V366 home power is displayed with German thousands grouping.
+         The integer CP and other existing power outputs remain unchanged. */
+      document.querySelectorAll('.v349-power b,.v251-detail-bottom .v251-mini-stat:first-child b')
         .forEach(el=>setText(el,cp));
+      const homePower=String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta'
+        ?cp.toLocaleString('de-DE'):cp;
+      document.querySelectorAll('.v366-power b').forEach(el=>setText(el,homePower));
 
       /* PvP: only the local/player side. Enemy power remains the opponent's synced value. */
       replacePowerText(document.querySelector('#v209PlayerSub'),cp);
