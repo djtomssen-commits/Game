@@ -30,18 +30,26 @@ function paint(){
     const lv=Math.max(1,Math.min(MAX,Math.floor(Number(s?.level)||1)));
     if(lv>=MAX){
       if(Number(s.xp)!==0)s.xp=0;
-      const t=document.querySelector('#centerXpText');if(t)t.textContent='MAX LEVEL · 300';
-      const f=document.querySelector('#centerXpFill');if(f)f.style.width='100%';
-      const x=document.querySelector('#xp');if(x)x.textContent='MAX';
+      const beta=String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta';
+      const t=document.querySelector('#centerXpText');if(t&&(!beta||t.textContent!=='MAX LEVEL · 300'))t.textContent='MAX LEVEL · 300';
+      const f=document.querySelector('#centerXpFill');if(f&&(!beta||f.style.width!=='100%'))f.style.width='100%';
+      const x=document.querySelector('#xp');if(x&&(!beta||x.textContent!=='MAX'))x.textContent='MAX';
       return;
     }
     const need=needFor(lv),cur=Math.max(0,Number(s?.xp)||0),pct=Math.max(0,Math.min(100,cur/need*100));
-    const t=document.querySelector('#centerXpText');if(t)t.textContent=`${Math.round(cur).toLocaleString('de-DE')} / ${need.toLocaleString('de-DE')}`;
-    const f=document.querySelector('#centerXpFill');if(f)f.style.width=pct+'%';
-    const x=document.querySelector('#xp');if(x)x.textContent=`${Math.round(cur)}/${need}`;
+    const beta=String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta';
+    const text=`${Math.round(cur).toLocaleString('de-DE')} / ${need.toLocaleString('de-DE')}`;
+    const width=pct+'%';
+    const short=`${Math.round(cur)}/${need}`;
+    const t=document.querySelector('#centerXpText');if(t&&(!beta||t.textContent!==text))t.textContent=text;
+    const f=document.querySelector('#centerXpFill');if(f&&(!beta||f.style.width!==width))f.style.width=width;
+    const x=document.querySelector('#xp');if(x&&(!beta||x.textContent!==short))x.textContent=short;
   }catch(e){}
 }
 
+/* V8.348 Beta: canonical XP display is callable after avatar-only redraws.
+   No new XP formula, gameplay write, watcher, interval or separate owner. */
+window.v6167PaintXp=paint;
 /* Existing render chain owns every other UI system. We only repaint XP after it. */
 try{
   if(typeof render==='function'&&!render.__v6167XpPaint){
