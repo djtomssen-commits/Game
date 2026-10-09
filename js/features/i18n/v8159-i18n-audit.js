@@ -41,8 +41,13 @@ function audit(){
 }
 window.v8159I18nAudit=audit;
 window.v8159I18nAuditGet=()=>window.__V8159_I18N_AUDIT_LAST__||collect();
-window.addEventListener('growlegends:language-changed',()=>setTimeout(audit,120),{passive:true});
-window.addEventListener('growlegends:navigation-open-v7119',()=>setTimeout(audit,180),{passive:true});
-window.addEventListener('growlegends:account-ready',()=>setTimeout(audit,500),{passive:true});
-document.addEventListener('DOMContentLoaded',()=>setTimeout(audit,700),{once:true});
+/* V8.321 Beta: developer-only full-DOM translation audit is manual.
+   Keep v8159I18nAudit() available for QA, but don't scan all 17 screens
+   on routine account boot and every navigation. Server 1 stays unchanged. */
+if(String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()!=='beta'){
+ window.addEventListener('growlegends:language-changed',()=>setTimeout(audit,120),{passive:true});
+ window.addEventListener('growlegends:navigation-open-v7119',()=>setTimeout(audit,180),{passive:true});
+ window.addEventListener('growlegends:account-ready',()=>setTimeout(audit,500),{passive:true});
+ document.addEventListener('DOMContentLoaded',()=>setTimeout(audit,700),{once:true});
+}
 })();
