@@ -13,10 +13,10 @@
   if(powerFrame){paintStats.coalesced++;return}
   powerFrame=requestAnimationFrame(()=>{powerFrame=0;repaintPower()});
  }
- function paintValue(el,val){
+ function paintValue(el,val,legacyAlways=false){
   if(!el)return;
   const next=String(val);
-  if(BETA&&el.textContent===next)return;
+  if(el.textContent===next&&(BETA||!legacyAlways))return;
   el.textContent=next;
   if(BETA)paintStats.writes++;
  }
@@ -50,7 +50,7 @@
   const begin=BETA?performance.now():0;
   if(BETA)paintStats.attempts++;
   const cp=stablePower();
-  ['#power','#charPower','#v358Power','#v110Cp'].forEach(sel=>paintValue(document.querySelector(sel),cp));
+  ['#power','#charPower','#v358Power','#v110Cp'].forEach(sel=>paintValue(document.querySelector(sel),cp,true));
   try{
    /* V8.325: canonical home V366 formats power with de-DE grouping.
       Keep Server 1's current presentation until separate approval. */
@@ -67,17 +67,17 @@
       const walker=document.createTreeWalker(sub,NodeFilter.SHOW_TEXT);
       while(walker.nextNode()){
        const n=walker.currentNode;
-       if(/Kampfkraft\s+\d+/i.test(n.nodeValue||'')){const next=(n.nodeValue||'').replace(/Kampfkraft\s+\d+/i,`Kampfkraft ${cp}`);if(n.nodeValue!==next){n.nodeValue=next;if(BETA)paintStats.writes++}break}
+       if(/Kampfkraft\s+\d+/i.test(n.nodeValue||'')){const next=(n.nodeValue||'').replace(/Kampfkraft\s+\d+/i,`Kampfkraft ${cp}`);if(!BETA||n.nodeValue!==next){n.nodeValue=next;if(BETA)paintStats.writes++}break}
       }
      }
     });
     document.querySelectorAll('#v072OwnProfile .v072-profile-stat').forEach(box=>{
-     if(/Kampf(?:kraft|wert)/i.test(box.textContent||'')){const b=box.querySelector('b');paintValue(b,cp)}
+     if(/Kampf(?:kraft|wert)/i.test(box.textContent||'')){const b=box.querySelector('b');paintValue(b,cp,true)}
     });
     const openProfile=document.querySelector('#v074ProfileContent');
     if(openProfile&&String(openProfile.dataset.profileId||'')===own){
      openProfile.querySelectorAll('.v326-profile-stat,.v072-profile-stat').forEach(box=>{
-      if(/Kampf(?:kraft|wert)/i.test(box.textContent||'')){const b=box.querySelector('b');paintValue(b,cp)}
+      if(/Kampf(?:kraft|wert)/i.test(box.textContent||'')){const b=box.querySelector('b');paintValue(b,cp,true)}
      });
     }
    }
