@@ -435,6 +435,9 @@ function stopRuntimeProfiler(){
  const authorityAfter=isBetaProfile?(window.v7133AuthorityDiagnostics?.()||{}):{};
  const consistencyAfter=isBetaProfile?(window.v8330DataConsistencyReport?.()||null):null;
  const eventTopDebug=isBetaProfile?(window.v8334HomeEventTopDiagnostics?.()||null):null;
+ const characterRender=isBetaProfile?(window.v7207CharacterRenderDiagnostics?.()||null):null;
+ const freshCharacterRender=characterRender&&Number(characterRender.at||0)>=runtimeProfile.startEpoch&&
+   Number(characterRender.at||0)<=Date.now();
  const consistencyIssues=(consistencyAfter?.issues||[]).filter(x=>Number(x.at||0)>=runtimeProfile.startEpoch);
  const progressBefore=runtimeProfile.progressBefore||{};
  const progressAfter=isBetaProfile?(window.v7077ProgressDiagnostics?.()||{}):{};
@@ -543,6 +546,14 @@ function stopRuntimeProfiler(){
      'MÖGLICHE CSS-SCHATTEN / PSEUDOELEMENTE: '+(eventTopDebug.paintCandidates||[]).join(' | '),
      'WORLD-KINDER / GRID-REIHENFOLGE: '+(eventTopDebug.childOrder||[]).join(' | ')
    ]:[]),
+   '',
+   'CHARAKTER RENDER-STUFEN (V8.342, nur letzter vollständiger Charakter-Render im Messfenster):',
+   freshCharacterRender
+    ?'CPU synchron: Avatar '+Number(characterRender.avatar||0)+' ms | Set '+Number(characterRender.set||0)+
+      ' ms | Klassen '+Number(characterRender.classes||0)+' ms | Talente '+Number(characterRender.skills||0)+
+      ' ms | Inventar '+Number(characterRender.inventory||0)+' ms | Verlauf bis fertig '+Number(characterRender.total||0)+
+      ' ms (enthält Wartezeit zwischen Frames)'
+    :'Kein vollständig protokollierter Charakter-Render im Messfenster.',
    '',
    'KAMPFKRAFT REPAINT (V8.333, Beta):',
    'Aufrufe '+powerDelta.attempts+' | DOM-Schreibvorgänge '+powerDelta.writes+
