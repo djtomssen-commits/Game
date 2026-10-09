@@ -1,7 +1,7 @@
 
 (function(){
   if(!['beta','server1'].includes(String(window.GROW_RELEASE_CHANNEL||'stable').toLowerCase()))return;
-  const diagnostics={fullRenders:0,eventPanelPatches:0,goldDirectOpens:0,mailDirectOpens:0,versionStyleInstalls:0,ownershipFinalizes:0,cleanSignatureHits:0,dirtySignatureRepairs:0,energyDirectPatches:0,inactiveWorldSkips:0,headerLegacyHideWrites:0,headerValueWrites:0};
+  const diagnostics={fullRenders:0,eventPanelPatches:0,goldDirectOpens:0,mailDirectOpens:0,versionStyleInstalls:0,ownershipFinalizes:0,cleanSignatureHits:0,dirtySignatureRepairs:0,energyDirectPatches:0,currentGridRetentions:0,currentGridRefreshes:0,inactiveWorldSkips:0,headerLegacyHideWrites:0,headerValueWrites:0};
   const BETA_VERSION='V8.009';
   function installBetaVersionStyle(){
     try{
@@ -596,6 +596,58 @@
     }catch(e){}
   }
 
+  /* V8.314: the Aktuelles row depends on a much smaller set of data than
+     the avatar/XP/quests. Keeping its mounted DOM avoids resetting the Cup
+     result tile, boss artwork and animations during unrelated full refreshes. */
+  function currentGridSignature(view){
+    const w=window.GL_WEATHER||{};
+    const ref=window.__V7129_REFERRAL_STATE__||{};
+    let bossReady=true,questReady=false,dungeonReady=false;
+    try{bossReady=view.bossActive?!!bossFree():true}catch(_){}
+    try{questReady=!!firstQuest()}catch(_){}
+    try{dungeonReady=!!dungeonFree()}catch(_){}
+    return JSON.stringify([
+      !!view.bossActive,!!view.cupActive,bossReady,questReady,dungeonReady,
+      Number(view.ac?.done)||0,Number(view.ac?.total)||0,
+      Number(ref.qualified_count)||0,!!ref.grand_claimed,
+      String(w.kind||''),String(w.icon||''),String(w.label||''),
+      String(w.temp??''),String(w.bonus?.text||''),
+      view.ev.map(e=>String(e?.t||'')+':'+String(e?.s||'')).join('|'),
+      String(document.documentElement.lang||'de')
+    ]);
+  }
+  function currentGridAccountKey(){
+    const uid=String(window.v073User?.id||s?.social?.playerId||'');
+    return uid?String(window.GROW_RELEASE_CHANNEL||'')+':'+uid:'';
+  }
+  function retainCurrentGridDuringRefresh(world,current,view,currentSig,accountKey){
+    if(!current||!accountKey||!ownedWorldClean(world,current))return false;
+    if(world.dataset.v8314CurrentSig!==currentSig||
+       world.dataset.v8314CurrentAccount!==accountKey)return false;
+    const oldChildren=[...current.children];
+    const template=document.createElement('template');
+    template.innerHTML=worldHtml(view);
+    const incoming=template.content.firstElementChild;
+    if(!incoming||!incoming.matches('.v366-world.v690-world'))return false;
+    const newChildren=[...incoming.children];
+    if(oldChildren.length!==newChildren.length)return false;
+    const kept=['v366-lower','v690-current-title'];
+    for(let i=0;i<oldChildren.length;i++){
+      const old=oldChildren[i],next=newChildren[i];
+      for(const name of kept){
+        if(old.classList.contains(name)!==next.classList.contains(name))return false;
+      }
+    }
+    /* Keep Aktuelles and its heading mounted; other sections can change.
+       All delegated and direct home click handlers are rebound by installWorld. */
+    for(let i=0;i<oldChildren.length;i++){
+      if(kept.some(name=>oldChildren[i].classList.contains(name)))continue;
+      oldChildren[i].replaceWith(newChildren[i]);
+    }
+    diagnostics.currentGridRetentions++;
+    return true;
+  }
+
   function installWorld(force){
     const world=document.querySelector('#world');
     if(!world)return false;
@@ -608,6 +660,8 @@
     }
     const view=homeViewSnapshot();
     const {name,power,dg,grow,ac,ev,hc,pets,bossActive}=view;
+    const currentSig=currentGridSignature(view);
+    const accountKey=currentGridAccountKey();
     const sigParts=[
       /* Wallet-only changes belong to the canonical resource header. Keep two
          stable placeholders so existing home signature consumers retain their
@@ -622,7 +676,9 @@
        If a historic renderer appended a sibling or disturbed owner styles, retain
        the old repair path and normalize ownership before returning. */
     const current=world.querySelector(':scope > .v366-world.v690-world');
-    if(current && world.dataset.v366Sig===sig){
+    if(current && world.dataset.v366Sig===sig &&
+       world.dataset.v8314CurrentSig===currentSig &&
+       world.dataset.v8314CurrentAccount===accountKey){
       if(ownedWorldClean(world,current)){diagnostics.cleanSignatureHits++;return}
       diagnostics.dirtySignatureRepairs++;
       finalizeOwnedWorld(world);
@@ -635,6 +691,8 @@
        its one visible home-card value in place; the authoritative header is owned
        independently. All other signature fields must be unchanged. */
     if(current&&previous.length===sigParts.length&&
+       world.dataset.v8314CurrentSig===currentSig &&
+       world.dataset.v8314CurrentAccount===accountKey &&
        sigParts.every((value,i)=>i===4||String(value??'')===previous[i])&&
        ownedWorldClean(world,current)){
       const energyLabel=world.querySelector('.v366-card.quest .v366-status b');
@@ -649,7 +707,11 @@
     /* HOME-14: an event-only change updates its two panels and counter without
        replacing the hero, navigation, weather or adventure cards. V366 remains
        the sole renderer and uses the same event functions for both paths. */
-    if(current&&previous.length===sigParts.length&&sigParts.every((value,i)=>i===17||i===18||String(value??'')===previous[i])&&patchEventPanels(world,ev,bossActive,previous[17]==='true')){
+    if(current&&previous.length===sigParts.length&&
+       world.dataset.v8314CurrentAccount===accountKey &&
+       sigParts.every((value,i)=>i===17||i===18||String(value??'')===previous[i])&&
+       patchEventPanels(world,ev,bossActive,previous[17]==='true')){
+      world.dataset.v8314CurrentSig=currentSig;
       world.dataset.v366Sig=sig;
       finalizeOwnedWorld(world);
       try{window.v8144GameplayI18n?.apply?.('world')}catch(_){}
@@ -657,8 +719,14 @@
       return;
     }
     world.dataset.v366Sig=sig;
+    const keptCurrent=retainCurrentGridDuringRefresh(world,current,view,currentSig,accountKey);
+    if(!keptCurrent){
+      world.innerHTML=worldHtml(view);
+      diagnostics.currentGridRefreshes++;
+    }
+    world.dataset.v8314CurrentSig=currentSig;
+    world.dataset.v8314CurrentAccount=accountKey;
     diagnostics.fullRenders++;
-    world.innerHTML=worldHtml(view);
     world.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>{const id=b.dataset.go;if(id!=='world')try{v032Go(id)}catch(e){}});
     world.querySelectorAll('[data-char-tab]').forEach(b=>b.onclick=()=>openCharacterTab(b.dataset.charTab));
     world.querySelectorAll('[data-pets]').forEach(b=>b.onclick=()=>{try{window.v686OpenPetAlbum?.()}catch(e){}});
