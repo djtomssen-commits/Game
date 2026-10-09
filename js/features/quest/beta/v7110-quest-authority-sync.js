@@ -11,6 +11,8 @@ const clone=v=>{try{return JSON.parse(JSON.stringify(v))}catch(_){return v}};
 const db=()=>{try{return (typeof v073Db!=='undefined'&&v073Db)||null}catch(_){return null}};
 const enforced=()=>{
   try{
+    /* V8.304: authenticated users never fall back to local Quest gameplay. */
+    if(typeof v073User!=='undefined'&&v073User?.id)return true;
     if(typeof window.v7081UseAuthority==='function'&&window.v7081UseAuthority('quest'))return true;
     return String(window.v7040AuthorityDiagnostics?.()?.domains?.quest||'')==='enforce';
   }catch(_){return false}
