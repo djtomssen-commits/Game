@@ -23,11 +23,21 @@
       const sub=document.createElement('span');sub.className='v537-set-sub';sub.textContent='Aktive Boni durch deine Ausrüstung';
       sm.append(title,sub);
     }
-    card.dataset.attributeLayout='reference-v537';
+    if(String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()!=='beta'||
+       card.dataset.attributeLayout!=='reference-v537')
+      card.dataset.attributeLayout='reference-v537';
     return true;
   }
   window.v537ApplyAttributes=apply;
-  window.addEventListener('growlegends:navigation-open-v7119',e=>{if(String(e?.detail?.id||'')==='character')apply()});
+  let navTime={at:0,cpuMs:0};
+  window.v537CharacterNavDiagnostics=()=>({...navTime});
+  window.addEventListener('growlegends:navigation-open-v7119',e=>{
+    if(String(e?.detail?.id||'')!=='character')return;
+    const beta=String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta';
+    const start=beta?(performance.now?.()||Date.now()):0;
+    apply();
+    if(beta)navTime={at:Date.now(),cpuMs:Math.round((performance.now?.()||Date.now())-start)};
+  });
   apply();
   document.addEventListener('DOMContentLoaded',apply,{once:true});
   window.addEventListener('pageshow',apply,{passive:true});
