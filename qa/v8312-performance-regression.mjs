@@ -89,7 +89,7 @@ check(hudJs.includes("panel.classList.remove('open','show')")&&hudJs.includes("p
 check(hudJs.includes("legacy.style.setProperty('display','none','important')"),'V8.338 must eliminate old header inline-important layout footprint');
 const tech=read('js/features/system/beta/v8009-s1-v4107-systemtechnik.js');
 check(tech.includes("const basename=match[1].split('/').pop().split(/[?#]/)[0]"),'V8.338 must resolve JSON caller cache-query URLs and SDK bundles');
-check(beta.includes('v8009-s1-v4107-systemtechnik.js?v=8347-navigation-boot-timing-beta'),'V8.344 profiler cache not updated');
+check(beta.includes('v8009-s1-v4107-systemtechnik.js?v=8348-xp-ring-profile-beta'),'V8.344 profiler cache not updated');
 check(tech.includes('const longShort=long.filter(x=>x.ms>=50&&x.ms<100).length')&&
   tech.includes('...longPrint.map(x=>'),'V8.340 profiler must print measured 50-99ms long tasks');
 check(tech.includes("'LONGTASK-BEREICHE: 50–99 ms '"),'V8.340 profiler must explain longtask thresholds');
@@ -193,7 +193,7 @@ check(tech.includes('LOAF-PHASEN Scripts gesamt')&&
   characterRenderer.includes('profile.secondFrameWaitMs='),
   'V8.346 LoAF phase or deferred inventory timing missing');
 check(beta.includes('v8009-s8-v460-char-ui.js?v=8346-donor-single-owner-beta')&&
-  beta.includes('v8009-s16-v526-heldenquartier-final-ornament.js?v=8346-hero-layout-idempotent-beta')&&
+  beta.includes('v8009-s16-v526-heldenquartier-final-ornament.js?v=8348-ornament-skip-settle-beta')&&
   beta.includes('v8009-s2-v7124-character-scroll-summary-owner.js?v=8346-avatar-style-idempotent-beta'),
   'V8.346 character owner cache keys missing');
 
@@ -223,6 +223,39 @@ check(beta.includes('v8009-s15-v6339-character-avatar-title.js?v=8347-title-dom-
   beta.includes('v8009-s15-v537-attribute-reference.js?v=8347-attr-marker-stable-beta')&&
   beta.includes('v8009-s1-v444-character-inventory-order.js?v=8347-order-nav-metrics-beta'),
   'V8.347 Beta-only cache activation missing');
+
+/* V8.348: original XP and ring painting owners must not fight over DOM.
+   Keep real item/XP changes, full hero repair and server1 fallback intact. */
+const xpOwner=read('js/features/progress/beta/v8009-s3-v6167-longterm-xp-balance.js');
+const coreOwner=read('js/features/core/beta/v8009-a1-legacy-state-core.js');
+const slotOwner=read('js/features/character/beta/v8009-s8-v6102-character-equipment-scroll-fix.js');
+const artOwner=read('js/features/character/beta/v8009-s4-v470-character-slot-art-canonical-comparison.js');
+const itemOwner=read('js/features/items/beta/v8009-s2-v4103-item-ui-consistency.js');
+const ringQualityOwner=read('js/features/character/beta/v8009-s7-v123-character-equipment-redesign.js');
+const xpLayoutOwner=read('js/features/legacy-extracted/beta/v511-character-reference-polish-js.js');
+const heroFrameOwner=read('js/features/legacy-extracted/beta/v7154-character-frame-stability.js');
+check(xpOwner.includes('window.v6167PaintXp=paint')&&
+  xpOwner.includes("t.textContent!==text")&&
+  coreOwner.includes("typeof window.v6167PaintXp==='function'")&&
+  coreOwner.includes("typeof window.v6102PaintEquipmentSlots==='function'"),
+  'V8.348 original core XP/slot owner conflicts still present');
+check(slotOwner.includes('el.dataset.v6102Rarity')&&
+  ringQualityOwner.includes('c!==quality&&el.classList.contains(c)')&&
+  itemOwner.includes("img.getAttribute('src')!==u")&&
+  artOwner.includes("current.getAttribute('src')===uri"),
+  'V8.348 ring quality or artwork DOM still churns');
+check(xpLayoutOwner.includes('el.nextElementSibling!==next')&&
+  heroFrameOwner.includes('skippedDuplicateHero:skip')&&
+  ornamentOwner.includes('apply(true)')&&
+  tech.includes('V8.348 XP / RING DOM-CHURN'),
+  'V8.348 XP layout stabilization or profiler diagnosis missing');
+check(beta.includes('v8009-a1-legacy-state-core.js?v=8348-core-xp-slot-owner-beta')&&
+  beta.includes('v8009-s3-v6167-longterm-xp-balance.js?v=8348-xp-single-painter-beta')&&
+  beta.includes('v8009-s8-v6102-character-equipment-scroll-fix.js?v=8348-equipment-ring-stable-beta')&&
+  beta.includes('v511-character-reference-polish-js.js?v=8348-xp-node-order-beta')&&
+  beta.includes('v7154-character-frame-stability.js?v=8348-hero-single-settle-beta')&&
+  beta.includes('v8009-s7-v123-character-equipment-redesign.js?v=8348-rarity-classes-stable-beta'),
+  'V8.348 Beta XP/ring owner caches not activated');
 
 check(beta.includes('v8009-s12-v7081-account-capability-gate.js?v=8337-flat-diag-beta'),'Beta capability hotpath cache not updated');
 check(beta.includes('v8009-s1-v7042-unified-authority-bridge.js?v=8337-memo-diag-beta'),'Beta bridge hotpath cache not updated');
