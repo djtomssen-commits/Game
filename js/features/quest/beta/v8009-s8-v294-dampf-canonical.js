@@ -80,9 +80,10 @@ v271PaintDampf=function(){
   if(!card)return;
 
   const active=v271DampfEventActive();
-  const cap=active?300:100;
-  /* V8.304: rendering must never overwrite confirmed server-owned Dampf. */
+  /* An already confirmed event balance may outlive stale event metadata on resume.
+     Display it against the event cap until the authoritative quest refresh arrives. */
   const current=Math.max(0,Math.floor(Number(s.energy)||0));
+  const cap=active||current>100?300:100;
 
   card.classList.toggle('v288-dampf-event-active',active);
 
