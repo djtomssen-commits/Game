@@ -1,7 +1,7 @@
 
 (function(){
   if(!['beta','server1'].includes(String(window.GROW_RELEASE_CHANNEL||'stable').toLowerCase()))return;
-  const diagnostics={fullRenders:0,eventPanelPatches:0,goldDirectOpens:0,mailDirectOpens:0,versionStyleInstalls:0,ownershipFinalizes:0,cleanSignatureHits:0,dirtySignatureRepairs:0,inactiveWorldSkips:0,headerLegacyHideWrites:0,headerValueWrites:0};
+  const diagnostics={fullRenders:0,eventPanelPatches:0,goldDirectOpens:0,mailDirectOpens:0,versionStyleInstalls:0,ownershipFinalizes:0,cleanSignatureHits:0,dirtySignatureRepairs:0,energyDirectPatches:0,inactiveWorldSkips:0,headerLegacyHideWrites:0,headerValueWrites:0};
   const BETA_VERSION='V8.009';
   function installBetaVersionStyle(){
     try{
@@ -609,7 +609,10 @@
     const view=homeViewSnapshot();
     const {name,power,dg,grow,ac,ev,hc,pets,bossActive}=view;
     const sigParts=[
-      name,s?.playerClass,s?.level,s?.xp,s?.energy,s?.gold,s?.harzTaler,
+      /* Wallet-only changes belong to the canonical resource header. Keep two
+         stable placeholders so existing home signature consumers retain their
+         documented indices (weekly chest/weather use positions 24–28). */
+      name,s?.playerClass,s?.level,s?.xp,s?.energy,'wallet-header','wallet-header',
       attr('staerke'),attr('ausdauer'),attr('geschick'),attr('intelligenz'),attr('glueck'),power,
       dg.d,dg.e,`${grow.active}:${grow.ready}`,pets,bossActive,ev.map(x=>`${x.t}:${x.s}`).join('|'),ac.done,hc.signature,Number(s?.tower?.season?.bestFloor)||0,Number(s?.tower?.season?.bestScore)||0,(s?.tower?.run?.active?Number(s.tower.run.floor)||1:0),window.v6239WeeklyChestSignature?.()||'',window.GL_WEATHER?.kind||'',window.GL_WEATHER?.label||'',Math.round(Number(window.GL_WEATHER?.temp)||0),window.GL_WEATHER?.bonus?.text||'',Number(window.__V7129_REFERRAL_STATE__?.qualified_count)||0,!!window.__V7129_REFERRAL_STATE__?.grand_claimed
     ];
@@ -627,10 +630,25 @@
       notifyWorldRendered('repair');
       return;
     }
+    const previous=String(world.dataset.v366Sig||'').split('~');
+    /* Wallet-only changes never rebuild the world. A Dampf-only change updates
+       its one visible home-card value in place; the authoritative header is owned
+       independently. All other signature fields must be unchanged. */
+    if(current&&previous.length===sigParts.length&&
+       sigParts.every((value,i)=>i===4||String(value??'')===previous[i])&&
+       ownedWorldClean(world,current)){
+      const energyLabel=world.querySelector('.v366-card.quest .v366-status b');
+      if(energyLabel){
+        const expected=`${num(s?.energy)}/${num(cap())} Dampf`;
+        if(energyLabel.textContent!==expected)energyLabel.textContent=expected;
+        world.dataset.v366Sig=sig;
+        diagnostics.energyDirectPatches++;
+        return;
+      }
+    }
     /* HOME-14: an event-only change updates its two panels and counter without
        replacing the hero, navigation, weather or adventure cards. V366 remains
        the sole renderer and uses the same event functions for both paths. */
-    const previous=String(world.dataset.v366Sig||'').split('~');
     if(current&&previous.length===sigParts.length&&sigParts.every((value,i)=>i===17||i===18||String(value??'')===previous[i])&&patchEventPanels(world,ev,bossActive,previous[17]==='true')){
       world.dataset.v366Sig=sig;
       finalizeOwnedWorld(world);
@@ -676,7 +694,8 @@
     installWorld(false);
     repairHomeTitles();
     setTimeout(()=>repairHomeTitles(),120);
-    setTimeout(()=>repairHomeTitles(),450);
+    /* The same startup title check already runs once outside DOMContentLoaded.
+       Do not schedule a second identical 450ms DOM walk. */
   },{once:true});
   /* Startup title integrity: some Android WebViews repaint the home shell after
      the first synchronous render. Re-assert only the canonical title nodes,
