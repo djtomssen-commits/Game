@@ -32,10 +32,14 @@
 }
 /* V8.308: compact result card inside the existing lower home-card grid on Beta and Server 1. */
 #world .v366-lower > .v8310-cup-results-slot{
- margin:0;min-width:0;min-height:205px;height:100%;align-self:stretch
+ /* V8.309: participate in the same auto-height grid row as the other home tiles.
+    height:100% on both levels previously made the inner button overflow its row. */
+ box-sizing:border-box;display:flex;align-self:stretch;
+ margin:0;min-width:0;min-height:0;height:auto
 }
 #world .v366-lower > .v8310-cup-results-slot > .v8310-cup-results-trigger{
- height:100%;min-height:205px;flex-direction:column;align-items:center;justify-content:space-between;
+ box-sizing:border-box;flex:1 1 auto;width:100%;height:auto;min-height:205px;
+ flex-direction:column;align-items:center;justify-content:space-between;
  gap:6px;padding:9px 6px;text-align:center;border-radius:10px
 }
 #world .v366-lower > .v8310-cup-results-slot .v8310-cup-results-art{
