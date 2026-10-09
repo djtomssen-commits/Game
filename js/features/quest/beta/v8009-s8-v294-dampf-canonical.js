@@ -55,8 +55,21 @@ async function v294CanonicalDampfRefill(){
     if(q.harz!=null&&Number.isFinite(Number(q.harz)))s.harzTaler=Math.max(0,Number(q.harz));
     s.v271DampfRefill??={day:typeof v271DayKey==='function'?v271DayKey():'',count:0};
     if(q.refills!=null&&Number.isFinite(Number(q.refills)))s.v271DampfRefill.count=Math.max(0,Number(q.refills));
+    /* V8.305: a confirmed server refill invalidates the old Quest snapshot and
+       repaints the visible Quest offers (including their start/affordability UI).
+       Currency HUDs may be owned by different screens; update each immediately. */
+    try{window.v7045InvalidateQuestState?.()}catch(_){}
     try{localStorage.setItem(KEY,JSON.stringify(s))}catch(_){}
-    try{v271PaintDampf();window.v069SyncCurrencies?.();window.v441PaintResources?.();window.v085InstallWorld?.(false)}catch(_){}
+    try{window.v069SyncCurrencies?.()}catch(_){}
+    try{window.v441PaintResources?.()}catch(_){}
+    try{
+      if(document.getElementById('quests')?.classList.contains('active')){
+        if(typeof window.renderQuests==='function')window.renderQuests();
+        else window.v321PaintQuestCosts?.();
+      }
+    }catch(e){console.warn('[V8.305] Quest repaint after refill',e)}
+    try{window.v443PaintDampf?.()}catch(_){}
+    try{v271PaintDampf()}catch(_){}
     return true;
   }catch(e){
     console.warn('[V8.303] server Dampf refill',e);
