@@ -13800,3 +13800,10 @@ Aktueller Release-Status:
 - Vorhandener CSS-Owner `css/features/events/beta/v8306-growcup-home-results.css`: unteren Slot passend zum Kartenraster kompakt/vertikal formatiert; Belohnungs-Popup-CSS und Claim-Owner bleiben unverändert.
 - **Release-Regel:** Ausschließlich `beta.html` wurde für die JS-/CSS-Owner auf `?v=8307-cup-lower-grid` cachebusted. Server-1-Entrypoint ist **nicht** geändert; innerhalb des gemeinsamen Home-Owners hält `GROW_RELEASE_CHANNEL==='server1'` ausdrücklich den bisherigen Platz außerhalb des unteren Rasters. Server 1 erst nach manueller Freigabe übernehmen.
 - **Codechecks PASS:** Home-JS Syntax, genau eine Slot-Definition, Beta-Platzierung im unteren Raster, Server-1-Originalplatzierung, CSS-Selektoren und Beta-/Server-1-Cacheversionen; bestehender RPC-Claim-Owner vorhanden. Echter Android-Beta-Sicht- und Ranglisten-/Claim-Klicktest noch offen.
+
+### 2026-10-09 – V8.308 – Grow-Cup-Ergebniskachel bei „Aktuelles“ auf beiden Servern
+- **Explizite Server-1-Freigabe** des Nutzers direkt nach V8.307: Grow-Cup-Ergebnis-Slot unten zu den vorhandenen Kacheln im Bereich „Aktuelles“ auf **Beta und Server 1**.
+- Kanonischer Home-Owner `js/features/home/beta/v8009-home-renderer.js`: V8.307-Beta-Bedingung wieder entfernt; der eine `v8310-cup-results-slot` wird auf beiden Welten ausschließlich in der bestehenden `.v366-lower`-Kartenreihe direkt nach dem dortigen Spezial-Event-Slot eingebunden, nicht mehr direkt unter dem oberen Eventpanel.
+- Vorhandener CSS-Owner `css/features/events/beta/v8306-growcup-home-results.css`: Kartenformat unten auf beide Server angewendet, Result-RPC und Claim-Popup nicht verändert.
+- `beta.html` und `server1.html` laden kanonische Home-JS und Cup-Ergebnis-CSS jetzt gezielt mit `?v=8308-cup-lower-both`; keine Änderungen an Server-Daten, Klassenbalance oder Reward-Logik.
+- Manuelle Android-/Cloudflare-Sichtprüfung auf Beta und Server 1 sowie Klickprüfung Rangliste/Claim noch offen.
