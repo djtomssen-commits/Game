@@ -428,6 +428,60 @@ async function checkReadOnlyConsistencyWatch(channel){
   }});
   await page.close();
 }
+async function checkPowerPaintEfficiency(channel){
+ const page=await browser.newPage();
+ await page.setContent('<!doctype html><html><body><main><div id="world" class="screen active"><div class="v366-power"><b>0</b></div></div></main><b id="power"></b><b id="charPower"></b><b id="v358Power"></b><b id="v110Cp"></b></body></html>');
+ await page.evaluate(channel=>{
+  window.GROW_RELEASE_CHANNEL=channel;
+  window.qaPower=1997;
+  window.combatPower=()=>window.qaPower;
+  window.render=()=>{window.qaRenderCount=(window.qaRenderCount||0)+1};
+  window.v032Go=()=>true;
+  window.qaPowerMutations=0;
+  const observer=new MutationObserver(records=>{window.qaPowerMutations+=records.length});
+  observer.observe(document.getElementById('charPower'),{childList:true,characterData:true,subtree:true});
+ },channel);
+ await page.addScriptTag({path:file('js/features/system/beta/v8009-s10-v4126-power-rpc-diagnostics.js')});
+ await page.waitForTimeout(50);
+ await page.evaluate(()=>{
+  const before=window.qaPowerMutations;
+  for(let i=0;i<16;i++)window.render();
+  window.v032Go('world');
+  window.qaRenderMutationsBefore=before;
+ });
+ await page.waitForTimeout(130);
+ const stable=await page.evaluate(()=>({
+  diagnostics:window.v4125PowerPaintDiagnostics(),
+  power:document.getElementById('charPower').textContent,
+  home:document.querySelector('.v366-power b').textContent,
+  mutations:window.qaPowerMutations
+ }));
+ if(channel==='beta'){
+  assert.ok(stable.diagnostics.coalesced>=15,'Beta should merge repeated rendering repaints into one animation frame');
+  assert.ok(stable.diagnostics.writes<=10,'Beta should not repaint unchanged power nodes after every render');
+  assert.equal(stable.mutations,1,'Repeated same-value power renders should not wake character MutationObserver');
+ }else{
+  assert.equal(stable.diagnostics.coalesced,0,'Server1 retains pre-existing render behavior');
+  assert.ok(stable.mutations>4,'Server1 remains unmodified');
+ }
+ await page.evaluate(()=>{
+  window.qaPower=2111;
+  window.v4125PaintStablePower();
+ });
+ const changed=await page.evaluate(()=>({
+  power:document.getElementById('charPower').textContent,
+  home:document.querySelector('.v366-power b').textContent,
+  diag:window.v4125PowerPaintDiagnostics()
+ }));
+ assert.equal(changed.power,'2111',channel+' must still update current power immediately');
+ assert.equal(changed.home,channel==='beta'?'2.111':'2111',channel+' home formatted power correctness');
+ scenarios.push({channel,powerPaint:{
+  coalesced:stable.diagnostics.coalesced,
+  writes:stable.diagnostics.writes,mutations:stable.mutations,
+  changed:changed.power,formatted:changed.home
+ }});
+ await page.close();
+}
 try{
   await run('beta');
   await run('server1');
@@ -440,6 +494,8 @@ try{
   await checkReadOnlyConsistencyWatch('beta');
   await checkReadOnlyConsistencyWatch('server1');
   await checkEnchantAliasConsistency();
+  await checkPowerPaintEfficiency('beta');
+  await checkPowerPaintEfficiency('server1');
   assert.deepEqual(failures,[],'uncaught browser errors');
   console.log(JSON.stringify({ok:true,scenarios},null,2));
 }catch(e){
