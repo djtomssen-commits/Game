@@ -277,7 +277,27 @@
 
  /* One build now contains all staged paths. Backend flags can be changed without another APK/index build. */
  window.v7040AuthorityRefresh=(paint=true)=>refresh({paint:paint!==false});
- window.v7040AuthorityDiagnostics=()=>clone({...S,domains:S.domains});
+ /* V8.337 Beta: preserve the complete diagnostics shape but avoid copying
+    the potentially large last RPC row on every read. This is diagnostics
+    only: gameplay state/authority and all write RPCs remain unchanged.
+    A new server row identity invalidates the cached, independent snapshot. */
+ let diagnosticRowSource=null,diagnosticRowSnapshot=null;
+ const freezeDiagnosticValue=value=>{
+  if(!value||typeof value!=='object'||Object.isFrozen(value))return value;
+  for(const child of Object.values(value))freezeDiagnosticValue(child);
+  return Object.freeze(value);
+ };
+ window.v7040AuthorityDiagnostics=()=>{
+  const source=S.lastRow;
+  if(source!==diagnosticRowSource){
+   diagnosticRowSource=source;
+   if(source&&typeof source==='object'){
+    try{diagnosticRowSnapshot=freezeDiagnosticValue(JSON.parse(JSON.stringify(source)))}
+    catch(_){diagnosticRowSnapshot=null}
+   }else diagnosticRowSnapshot=source;
+  }
+  return {...S,domains:{...S.domains},lastRow:diagnosticRowSnapshot};
+ };
  window.v7040RunServerDungeon=()=>runServerDungeon(false);
 
  async function boot(){await load();if(S.enabled){S.ready=true;scheduleCloud(450);if(enforce('quest')){try{await ensureQuestGuard();applyState(await load(true),{paint:true})}catch(e){console.warn('[V7042] quest guard boot',e)}}}}
