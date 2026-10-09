@@ -365,13 +365,39 @@ function ensureScreen(){
     <div class="v4107-panel" id="v4107Status"><div class="v4110-loading"><b>🧪 Systemtest wird vorbereitet…</b>Letzter gespeicherter Bericht wird geladen. Danach startet die Tiefenprüfung im Hintergrund.</div></div>
     <div class="v4107-panel" id="v4107Groups"><div class="v4110-loading"><b>🎮 Test-Matrix</b>Bereiche werden geladen…</div></div>
     <div class="v4107-panel" id="v4107Tests"><div class="v4110-loading"><b>🛡️ Fehlerdetails</b>Fehler und Warnungen werden hier immer sichtbar aufgelistet.</div></div>
-    <div class="v4107-panel gl-code-diag-shell" id="glCodeDiag"><div class="gl-code-diag-intro"><div><b>🔎 CODE-DIAGNOSE · NUR LESEN</b><span>Findet sichere Konflikte, Timer-/Observer-Hotspots und Owner-Ketten. Es wird nichts gelöscht, repariert oder am Spielstand verändert.</span></div><div class="gl-code-diag-actions"><button class="btn" id="glCodeDiagRun">Diagnose starten</button><button class="btn secondary" id="glCodeDiagCopy" disabled>📋 Bericht kopieren</button></div></div><div id="glCodeDiagBody" class="gl-code-diag-empty">Die Prüfung startet nur auf Knopfdruck, damit im normalen Spiel kein zusätzlicher Hintergrund-Scan läuft.</div><div class="gl-profiler" id="glRuntimeProfiler"><div class="gl-profiler-head"><div><b>⏱️ 30-SEKUNDEN LAUFZEIT-PROFILER · NUR MESSEN</b><span>Misst echte Timer-/MutationObserver-Aufrufe und zentrale Renderer. Während der Messung ruhig durch Startseite → Charakter → Quest → Dungeon → Gilde wechseln.</span></div><div class="gl-profiler-actions"><button class="btn" id="glProfilerStart">▶ 30 s Profil starten</button><button class="btn secondary" id="glProfilerStop" disabled>■ Stop</button><button class="btn secondary" id="glProfilerCopy" disabled>📋 Profil kopieren</button></div></div><div id="glProfilerStatus" class="gl-profiler-status">Noch keine Messung gestartet. Es wird nichts gestoppt, gelöscht oder am Spielstand verändert.</div><div id="glProfilerBody" class="gl-profiler-body"></div></div></div>
+    <div class="v4107-panel gl-code-diag-shell" id="glCodeDiag"><div class="gl-code-diag-intro"><div><b>🔎 CODE-DIAGNOSE · NUR LESEN</b><span>Findet sichere Konflikte, Timer-/Observer-Hotspots und Owner-Ketten. Es wird nichts gelöscht, repariert oder am Spielstand verändert.</span></div><div class="gl-code-diag-actions"><button class="btn" id="glCodeDiagRun">Diagnose starten</button><button class="btn secondary" id="glCodeDiagCopy" disabled>📋 Bericht kopieren</button></div></div><div id="glCodeDiagBody" class="gl-code-diag-empty">Die Prüfung startet nur auf Knopfdruck, damit im normalen Spiel kein zusätzlicher Hintergrund-Scan läuft.</div><div class="gl-profiler" id="glRuntimeProfiler"><div class="gl-profiler-head"><div><b>⏱️ 30-SEKUNDEN LAUFZEIT-PROFILER · NUR MESSEN</b><span>Misst echte Timer-/MutationObserver-Aufrufe und zentrale Renderer. Während der Messung ruhig durch Startseite → Charakter → Quest → Dungeon → Gilde wechseln.</span></div><div class="gl-profiler-actions"><button class="btn" id="glProfilerStart">▶ 30 s Profil starten</button><button class="btn secondary" id="glProfilerStop" disabled>■ Stop</button><button class="btn secondary" id="glProfilerCopy" disabled>📋 Profil kopieren</button></div></div><div id="glProfilerStatus" class="gl-profiler-status">Noch keine Messung gestartet. Es wird nichts gestoppt, gelöscht oder am Spielstand verändert.</div><div id="glProfilerBody" class="gl-profiler-body"></div></div><div class="gl-profiler" id="gl8315PagePerf"><div class="gl-profiler-head"><div><b>📊 PERFORMANCE JE SEITE · V8.316</b><span>Reale Render-, DOM-, Frame- und Tabwechsel messen. Die Messung ist nur bei Start aktiv und verändert weder Spielstand noch Währungen.</span></div><div class="gl-profiler-actions"><button class="btn" id="gl8315ManualStart" type="button">▶ Manuell messen</button><button class="btn" id="gl8315AllPages" type="button">▶ Alle 17 Seiten prüfen</button><button class="btn secondary" id="gl8315LastReport" type="button">📋 Bericht öffnen</button></div></div><div class="gl-profiler-status">Manuell: startet die Messung und öffnet die Startseite. Anschließend im Spiel auf STOP drücken. Automatisch: öffnet 17 Hauptseiten nacheinander, ohne Käufe oder Kämpfe.</div></div></div>
    </div>
    <aside class="v4107-right" id="v4107Right"></aside>
   </div>
   <div class="v4107-footerbar" id="v4107Footerbar"></div>
  </div>`;
  sec.addEventListener('click',e=>{
+  /* V8.316: controls live inside canonical Systemtechnik, not retired QA dialog. */
+  const profiler=window.GL_PAGE_AUDIT;
+  if(e.target.closest?.('#gl8315ManualStart')){
+   e.preventDefault();
+   if(!profiler){window.v063Toast?.('Performance-Test','error','Messmodul konnte nicht geladen werden.');return}
+   if(profiler.start()){
+    try{v032Go('world')}catch(_){}
+   }else window.v063Toast?.('Performance-Test','info','Eine Messung läuft bereits. Nutze STOP.');
+   return;
+  }
+  if(e.target.closest?.('#gl8315AllPages')){
+   e.preventDefault();
+   if(!profiler){window.v063Toast?.('Performance-Test','error','Messmodul konnte nicht geladen werden.');return}
+   void profiler.sweep({dwellMs:2500}).catch(err=>{
+    console.warn('[V8.316 systemtech page audit]',err);
+    profiler.stop('sweep_error');
+    window.v063Toast?.('Performance-Test','error','Seitentest fehlgeschlagen; Bericht öffnen.');
+   });
+   return;
+  }
+  if(e.target.closest?.('#gl8315LastReport')){
+   e.preventDefault();
+   if(profiler)profiler.showResult();
+   else window.v063Toast?.('Performance-Test','error','Messmodul nicht geladen.');
+   return;
+  }
   const b=e.target.closest?.('[data-v4107-jump]');if(b){const map={status:'v4107Status',groups:'v4107Groups',tests:'v4107Tests',performance:'v4107PerfCard',errors:'v4107ErrorCard',codedebug:'glCodeDiag'};document.getElementById(map[b.dataset.v4107Jump])?.scrollIntoView({behavior:'smooth',block:'start'});sec.querySelectorAll('.v4107-nav').forEach(x=>x.classList.toggle('active',x===b));return}
   const g=e.target.closest?.('[data-v4107-group]');if(g){selectedGroup=decodeURIComponent(g.dataset.v4107Group);renderPage(last||fullReport());document.getElementById('v4107Tests')?.scrollIntoView({behavior:'smooth',block:'start'});return}
   const f=e.target.closest?.('[data-v4107-filter]');if(f){filter=f.dataset.v4107Filter;renderPage(last||fullReport());return}
