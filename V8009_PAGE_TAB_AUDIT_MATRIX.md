@@ -156,3 +156,6 @@ V8.287 – Aktive tägliche Verlustwache
 
 ### 09.10.2026 – V8.308: Startseiten-Kartenposition auf Beta und Server 1
 - World / Startseite: Grow-Cup-Ergebnis-Slot steht auf beiden Servern im unteren `Aktuelles`-Kartenraster (`.v366-lower`) statt direkt nach dem oberen Eventpanel. Eine kanonische DOM-Kachel; gleicher Rank-/Claim-Owner. JavaScript-/CSS-Cache in beiden HTMLs `8308-cup-lower-both`. Manueller Android-Sicht-/Klicktest offen.
+
+### 09.10.2026 – V8.309: Grow-Cup-Ergebnis-Kartenhöhe
+- World / „Aktuelles“ auf Beta + Server 1: `.v8310-cup-results-slot` ist jetzt eine automatisch gestreckte Grid-Kachel wie ihre Nachbarn, ohne doppelte `height:100%`-Abhängigkeit im inneren Button. Bestehender CSS-Owner direkt geändert, Cache beidseitig `8309-cup-equal-size`; Live-Android-Sichttest offen.
