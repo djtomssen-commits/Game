@@ -67,6 +67,9 @@ async function run(channel){
     const currentRow=world.querySelector('.v366-lower');
     const currentHeading=world.querySelector('.v690-current-title');
     const currentCup=world.querySelector('.v8310-cup-results-slot');
+    hero.style.setProperty('--v7258-profile-width','188px');
+    hero.style.setProperty('height','490px','important');
+    hero.style.setProperty('min-height','490px','important');
     s.gold+=55;s.harzTaler+=12;
     v085InstallWorld(false);
     const wallet={sameHero:world.querySelector('.v366-hero')===hero,fullDelta:full()-begin};
@@ -77,10 +80,17 @@ async function run(channel){
       fullDelta:full()-begin};
     s.xp+=10;
     v085InstallWorld(false);
-    const xp={differentHero:world.querySelector('.v366-hero')!==hero,fullDelta:full()-begin,
+    const xpHero=world.querySelector('.v366-hero');
+    const xp={differentHero:xpHero!==hero,fullDelta:full()-begin,
+      fitTransferred:xpHero.style.getPropertyValue('--v7258-profile-width')==='188px'&&
+        xpHero.style.getPropertyValue('height')==='490px',
       sameCurrentRow:world.querySelector('.v366-lower')===currentRow,
       sameCurrentHeading:world.querySelector('.v690-current-title')===currentHeading,
       sameCupResults:world.querySelector('.v8310-cup-results-slot')===currentCup};
+    s.tower={season:{bestFloor:4,bestScore:0}};
+    v085InstallWorld(false);
+    const tower={sameHero:world.querySelector('.v366-hero')===xpHero,
+      heroRetentions:window.v8009HomeEventDiagnostics().heroRetentions};
     /* A true change inside Aktuelles must repaint its content, not freeze a
        retained card indefinitely. Account changes must replace stale results. */
     window.GL_WEATHER={kind:'sun',icon:'☀️',label:'Sonne',temp:23,bonus:{text:'Ertrag +5 %'}};
@@ -99,7 +109,7 @@ async function run(channel){
     const heights={boss:boss.getBoundingClientRect().height,cup:cup.getBoundingClientRect().height,
       buttonBottom:button.getBoundingClientRect().bottom,bossBottom:boss.getBoundingClientRect().bottom,
       buttonHeight:button.getBoundingClientRect().height};
-    return {wallet,energy,xp,weather,account,heights,diag:window.v8009HomeEventDiagnostics()};
+    return {wallet,energy,xp,tower,weather,account,heights,diag:window.v8009HomeEventDiagnostics()};
   });
   assert.equal(values.wallet.sameHero,true,channel+' wallet should not replace home hero');
   assert.equal(values.wallet.fullDelta,0,channel+' wallet should avoid full render');
@@ -107,6 +117,9 @@ async function run(channel){
   assert.equal(values.energy.text,'95/100 Dampf',channel+' Dampf should update quest card');
   assert.equal(values.energy.fullDelta,0,channel+' Dampf should avoid full render');
   assert.equal(values.xp.differentHero,true,channel+' XP should still refresh home');
+  assert.equal(values.xp.fitTransferred,channel==='beta',channel+' geometry transfer must be Beta-only');
+  assert.equal(values.tower.sameHero,channel==='beta',channel+' unrelated tower progress should preserve only the Beta home hero');
+  if(channel==='beta')assert.ok(values.tower.heroRetentions>0,'Beta must record a retained unchanged hero');
   assert.equal(values.xp.fullDelta,1,channel+' XP must trigger exactly one full render');
   assert.equal(values.xp.sameCurrentRow,true,channel+' XP must not repaint Aktuelles');
   assert.equal(values.xp.sameCurrentHeading,true,channel+' XP must not flash Aktuelles heading');
