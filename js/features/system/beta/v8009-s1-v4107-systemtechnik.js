@@ -477,15 +477,15 @@ function ensureScreen(){
   <div class="v4107-footerbar" id="v4107Footerbar"></div>
  </div>`;
  sec.addEventListener('click',e=>{
-  /* V8.318: initial rollout on Beta only; Server 1 remains release-gated. */
-  const betaRuntimeProfiler=String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta';
-  if(betaRuntimeProfiler&&e.target.closest?.('#glProfilerStart')){
+  /* V8.318: explicit Server-1 release approval; both production game worlds can profile. */
+  const runtimeProfilerAllowed=['beta','server1'].includes(String(window.GROW_RELEASE_CHANNEL||'').toLowerCase());
+  if(runtimeProfilerAllowed&&e.target.closest?.('#glProfilerStart')){
    e.preventDefault();startRuntimeProfiler();return;
   }
-  if(betaRuntimeProfiler&&e.target.closest?.('#glProfilerStop')){
+  if(runtimeProfilerAllowed&&e.target.closest?.('#glProfilerStop')){
    e.preventDefault();stopRuntimeProfiler();return;
   }
-  if(betaRuntimeProfiler&&e.target.closest?.('#glProfilerCopy')){
+  if(runtimeProfilerAllowed&&e.target.closest?.('#glProfilerCopy')){
    e.preventDefault();copyRuntimeProfiler();return;
   }
   /* V8.316: controls live inside canonical Systemtechnik, not retired QA dialog. */
