@@ -529,6 +529,32 @@
     return true;
   }
 
+  /* V8.334 Beta: identify any DOM surface sitting above the events board,
+     without touching layout or removing gameplay nodes. The screenshot shows
+     dark/wooden bars in the gap between the top bar and the Events panel.
+     A geometry/elementFromPoint sample names the real owner before changing CSS. */
+  function eventTopDiagnostic(){
+    if(String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()!=='beta')return null;
+    try{
+      const el=document.querySelector('#world.active .v366-world > .v690-events-card');
+      const world=document.querySelector('#world.active');
+      if(!el||!world)return null;
+      const rect=el.getBoundingClientRect();
+      const names=found=>Array.from(found||[]).slice(0,6).map(node=>{
+        const cls=typeof node.className==='string'?node.className.split(/\\s+/).filter(Boolean).slice(0,3).join('.'):'';
+        return (node.tagName||'?').toLowerCase()+(node.id?'#'+node.id:'')+(cls?'.'+cls:'');
+      });
+      const xy=[Math.max(8,Math.min(innerWidth-8,rect.left+rect.width*0.42)),Math.max(0,Math.round(rect.top-13))];
+      const above=names(document.elementsFromPoint(xy[0],xy[1]));
+      const inside=names(document.elementsFromPoint(xy[0],Math.round(rect.top+8)));
+      const childOrder=[...el.parentElement.children].slice(0,12).map(x=>
+        (x.className||'').split(' ').slice(0,3).join('.')+':'+getComputedStyle(x).order);
+      return {eventTop:Math.round(rect.top),worldTop:Math.round(world.getBoundingClientRect().top),
+        gapPx:Math.round(rect.top-world.getBoundingClientRect().top),above,inside,childOrder};
+    }catch(_){return null}
+  }
+  window.v8334HomeEventTopDiagnostics=eventTopDiagnostic;
+
   function finalizeOwnedWorld(world){
     if(!world)return false;
     diagnostics.ownershipFinalizes++;
