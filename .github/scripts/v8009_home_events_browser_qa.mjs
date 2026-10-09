@@ -134,6 +134,30 @@ try{
   await page.close();
  }
 
+ // V8.301 regression: an unfinished personal Thursday run must NEVER keep
+ // Friday's Grow Cup event tile 'AKTIV'. The personal run may remain in state.
+ const staleCupFriday=await fixture('2026-10-09T05:31:00+02:00');
+ await staleCupFriday.evaluate(()=>{
+  window.v8210GrowCupSnapshot=()=>({
+   ok:true,active:false,event_key:'2026-10-08',
+   run:{status:'active',event_key:'2026-10-08'}
+  });
+  v085InstallWorld(true);
+ });
+ assert.equal((await state(staleCupFriday)).renderer.growCupActive,false,'An unfinished Thursday run must not activate Friday Cup on the home page');
+ assert.equal(await staleCupFriday.evaluate(()=>!!document.querySelector('.vHome-event-tile.cup.active')),false,'Friday Cup event tile must not say AKTIV');
+ assert.equal(await staleCupFriday.evaluate(()=>!!document.querySelector('.v8210-cup-home-card')),false,'Friday special event card must not show active Grow Cup');
+ await staleCupFriday.close();
+ const liveCupThursday=await fixture('2026-10-08T23:30:00+02:00');
+ await liveCupThursday.evaluate(()=>{
+  window.v8210GrowCupSnapshot=()=>({ok:true,active:true,run:null});
+  v085InstallWorld(true);
+ });
+ assert.equal((await state(liveCupThursday)).renderer.growCupActive,true,'Thursday scheduled Grow Cup stays visible');
+ assert.equal(await liveCupThursday.evaluate(()=>!!document.querySelector('.vHome-event-tile.cup.active')),true,'Thursday Cup tile stays active');
+ await liveCupThursday.close();
+ checks.push('Grow Cup Thursday/Friday event badge uses schedule, not stale per-player run status');
+
  const dst=await fixture('2026-10-23T00:01:00+02:00');
  assert.equal((await state(dst)).scheduler.nextBoundaryAt,Date.parse('2026-10-26T00:00:00+01:00'),'DST weekend must end at Berlin midnight, after 73 hours');
  checks.push('Berlin DST boundary');
