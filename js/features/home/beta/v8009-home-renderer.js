@@ -511,6 +511,7 @@
         ['hud-topbar',document.querySelector('#v372TopbarShell > .v372-topbar')],
         ['legacy-header',document.querySelector('.app > header')],
         ['legacy-v366',document.querySelector('.app > header .v366-topbar')],
+        ['menu-panel',document.querySelector('#v032MenuPanel')],
         ['world',world],['world-grid',el.parentElement],['events',el]
       ];
       const paintCandidates=candidateNodes.filter(x=>!!x[1]).map(([label,node])=>{
