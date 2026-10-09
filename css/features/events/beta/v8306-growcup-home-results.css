@@ -35,7 +35,9 @@
 /* V8.310: the slot now also has .v366-panel, so the canonical World CSS
    assigns it exactly the same 190px / small-screen 174px tile height. */
 #world .v366-lower > .v8310-cup-results-slot{
- box-sizing:border-box;display:flex;align-self:stretch;
+ /* Match the existing .v366-panel content-box sizing including its border.
+    The previous border-box setting made the Cup 4px shorter than its neighbors. */
+ display:flex;align-self:stretch;
  margin:0;min-width:0;max-width:100%;
 }
 #world .v366-lower > .v8310-cup-results-slot > .v8310-cup-results-trigger{
