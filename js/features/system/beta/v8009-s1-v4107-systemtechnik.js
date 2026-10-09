@@ -719,12 +719,23 @@ function copyReport(r){
  const diag=typeof window.v4123TimerDiagnostics==='function'?window.v4123TimerDiagnostics().slice(0,8):[],slow=typeof window.v4123SlowRenders==='function'?window.v4123SlowRenders().slice(-6):[];const text=[`Grow Legends ${SHORT} – Systemtechnik`,`Tests: ${r.total} | Bestanden: ${r.passed} | Fehler: ${r.failed} | Warnungen: ${r.warnings}`,`Performance: ${p.state} ${Math.round(p.score)}% | DOM ${p.dom} | Intervalle ${p.ints} | Listener ${p.listeners} | Render max ${p.renderMax.toFixed(1)} ms`,`Reaktion: Netz P50 ${rs.network.p50} ms | P95 ${rs.network.p95} ms | Max ${rs.network.max} ms | UI P50 ${rs.ui.p50} ms | P95 ${rs.ui.p95} ms | Max ${rs.ui.max} ms`,`Aktionen: P50 ${as.p50} ms | P95 ${as.p95} ms | Max ${as.max} ms | Samples ${as.count}`,'',...groups.map(g=>`${g.name}: ${g.passed}/${g.total} | Fehler ${g.failed} | Warnungen ${g.warnings}`),'',...r.results.filter(x=>!x.pass).map(x=>`${x.severity==='warn'?'WARN':'FEHLER'} | ${x.category} | ${x.name}${x.detail?' | '+x.detail:''}`),'',...logs.slice(-20).map(x=>`RUNTIME | ${x.code} | ${x.detail}`),...(as.slow.length?['','LANGSAME AKTIONEN',...as.slow.map(x=>`AKTION | ${x.totalMs} ms | ${x.label} | ${x.cause} | Netz max ${x.networkMaxMs||0} ms | Paint ${x.firstPaintMs||0} ms | ${(x.endpoints||[]).join(', ')}`)]:[]),...(diag.length?['','TIMER-DIAGNOSE',...diag.map(x=>`TIMER | ${x.kind||'timer'} | ${x.count} aktiv | ${x.delay} ms | calls ${x.calls||0} | CPU ${Number(x.cpu||0).toFixed(1)} ms | max ${Number(x.max||0).toFixed(1)} ms${x.nativeBypass?' | NATIVE':''} | ${x.callback} | ${x.site}`)]:[]),...(slow.length?['','LANGSAME RENDER',...slow.map(x=>`RENDER | ${x.name} | ${Number(x.ms).toFixed(1)} ms | Seite ${x.screen}`)]:[])].join('\n');
  try{navigator.clipboard?.writeText(text).then(()=>window.v063Toast?.('QA-Bericht kopiert','success','Kann direkt geschickt werden.')).catch(()=>{})}catch(e){}
 }
+/* V8.324 Beta: opening the profiler must not implicitly run a deep QA/RPC
+   pass which was itself producing 600ms+ frames. A manual QA rerun is still
+   available through the existing #v4107Run button. */
+function betaLightSystemtech(){
+ const status=document.getElementById('v4107Status');
+ if(status)status.innerHTML='<div class="v4110-loading"><b>Systemtest bereit</b>Die vollständige Prüfung startet auf Beta nur nach Klick auf „Tests erneut starten“. So bleibt die 30-Sekunden-Messung unbeeinflusst.<p><button class="btn" id="v4107Run">↻ Tests erneut starten</button></p></div>';
+}
+function showSystemtechOnOpen(){
+ if(String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta'){betaLightSystemtech();return}
+ void runAndRender();
+}
 function openPage(){
  if(typeof v093IsAdmin==='undefined'||v093IsAdmin!==true)return false;
  const sec=ensureScreen();if(!sec)return false;
  lastNav=document.querySelector('section.screen.active')?.id||'world';
  try{v032Go('systemtech')}catch(e){document.querySelectorAll('section.screen').forEach(x=>x.classList.remove('active'));sec.classList.add('active')}
- runAndRender();return true
+ showSystemtechOnOpen();return true
 }
 function installMenu(){
  const admin=typeof v093IsAdmin!=='undefined'&&v093IsAdmin===true;
@@ -737,7 +748,7 @@ function installMenu(){
 function paintSettingsBadge(r=last){
  const b=document.getElementById('v4104QaStatus');if(!b||!r)return;b.className='';if(r.failed){b.classList.add('bad');b.textContent=`${r.failed} FEHLER`}else if(r.warnings){b.classList.add('warn');b.textContent=`${r.warnings} WARN.`}else{b.classList.add('ok');b.textContent='OK'}
 }
-function scheduleRender(){if(renderTimer)return;renderTimer=setTimeout(()=>{renderTimer=0;if(document.getElementById('systemtech')?.classList.contains('active'))renderPage(last||fullReport());paintSettingsBadge(last)},250)}
+function scheduleRender(){if(renderTimer)return;renderTimer=setTimeout(()=>{renderTimer=0;if(document.getElementById('systemtech')?.classList.contains('active')&&String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()!=='beta')renderPage(last||fullReport());paintSettingsBadge(last)},250)}
 /* Catch future browser/runtime errors. */
 window.addEventListener('error',e=>pushErr('JS_ERROR',`${e.message||'Fehler'}${e.filename?` · ${String(e.filename).split('/').pop()}:${e.lineno||0}`:''}`,'error'));
 window.addEventListener('unhandledrejection',e=>pushErr('UNHANDLED_REJECTION',String(e.reason?.message||e.reason||'Promise abgelehnt'),'error'));
@@ -780,7 +791,7 @@ try{navigator.storage?.estimate?.().then(x=>storageEstimate=x).catch(()=>{})}cat
 /* Make Systemtechnik the canonical QA destination. */
 window.v4107RunQA=fullReport;window.v4107OpenSystemtechnik=openPage;window.v4102OpenQA=openPage;window.v4102RunQA=(opts={})=>{const r=fullReport();if(opts.open)openPage();return r};
 /* Keep our page integrated with the many historical navigation wrappers. */
-try{if(typeof v032Go==='function'&&!window.__v4107Go){const base=v032Go;const wrap=function(id){ensureScreen();installMenu();if(id==='systemtech'&&(typeof v093IsAdmin==='undefined'||v093IsAdmin!==true))return base.call(this,'world');let p0=null,sig='';try{const pf=window.v4125StableCombatPower;p0=typeof pf==='function'?Number(pf()):(typeof combatPower==='function'?Number(combatPower()):null);sig=corePowerSignature()}catch(e){}const r=base.apply(this,arguments);if(id==='systemtech')setTimeout(runAndRender,0);else lastNav=id||lastNav;setTimeout(()=>{try{if(id!=='systemtech'&&p0!=null&&sig===corePowerSignature()){const pf=window.v4125StableCombatPower;const p1=typeof pf==='function'?Number(pf()):Number(combatPower());if(Number.isFinite(p1)&&p1!==p0)pushErr('POWER_NAVIGATION_DRIFT',`Kampfkraft änderte sich nur durch Seitenwechsel: ${p0} → ${p1}`,'warn')}}catch(e){}},180);return r};v032Go=wrap;window.v032Go=wrap;window.__v4107Go=true}}catch(e){}
+try{if(typeof v032Go==='function'&&!window.__v4107Go){const base=v032Go;const wrap=function(id){ensureScreen();installMenu();if(id==='systemtech'&&(typeof v093IsAdmin==='undefined'||v093IsAdmin!==true))return base.call(this,'world');let p0=null,sig='';try{const pf=window.v4125StableCombatPower;p0=typeof pf==='function'?Number(pf()):(typeof combatPower==='function'?Number(combatPower()):null);sig=corePowerSignature()}catch(e){}const r=base.apply(this,arguments);if(id==='systemtech')setTimeout(showSystemtechOnOpen,0);else lastNav=id||lastNav;setTimeout(()=>{try{if(id!=='systemtech'&&p0!=null&&sig===corePowerSignature()){const pf=window.v4125StableCombatPower;const p1=typeof pf==='function'?Number(pf()):Number(combatPower());if(Number.isFinite(p1)&&p1!==p0)pushErr('POWER_NAVIGATION_DRIFT',`Kampfkraft änderte sich nur durch Seitenwechsel: ${p0} → ${p1}`,'warn')}}catch(e){}},180);return r};v032Go=wrap;window.v032Go=wrap;window.__v4107Go=true}}catch(e){}
 /* V8.322: Beta-validated lean Systemtechnik refresh released on Server 1.
    Full sidebar is rendered on page entry/manual rerun and meaningful events;
    avoid unnecessary full DOM/source diagnostic work every six seconds. */
@@ -794,7 +805,7 @@ setInterval(()=>{try{
 }catch(e){}},6000);
 function stamp(){}
 ensureScreen();installMenu();stamp();
-setTimeout(()=>{try{const c=cachedReport();if(c){last=c;paintSettingsBadge(c);if(document.getElementById('systemtech')?.classList.contains('active'))renderPage(c)}}catch(e){pushErr('QA_CACHE_ERROR',e.message||String(e),'warn')}},2600); /* V4.159: never run ~3k QA tests during normal boot/login. */
+setTimeout(()=>{try{const c=cachedReport();if(c){last=c;paintSettingsBadge(c);if(document.getElementById('systemtech')?.classList.contains('active')&&String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()!=='beta')renderPage(c)}}catch(e){pushErr('QA_CACHE_ERROR',e.message||String(e),'warn')}},2600); /* V4.159: never run ~3k QA tests during normal boot/login. */
 window.addEventListener('growlegends:account-ready',()=>{stamp();installMenu()},{passive:true});
 window.addEventListener('pageshow',()=>{stamp();installMenu();setTimeout(()=>{try{const c=last||cachedReport();if(c){last=c;paintSettingsBadge(c)}}catch(e){}},700)},{passive:true}); /* V4.159: no full QA on pageshow. */
 document.addEventListener('visibilitychange',()=>{if(!document.hidden){stamp();installMenu();scheduleRender()}},{passive:true});
