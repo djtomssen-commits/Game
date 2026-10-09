@@ -6,12 +6,11 @@
   ['world','⌂','nav.world','Startseite'],['character','🧙','nav.character','Charakter'],['grow','🌱','nav.grow','Growroom'],['quests','📜','nav.quests','Quest & Schicht'],
   ['dungeon','⚔️','nav.dungeon','Dungeons'],['tower','🗼','nav.tower','Anbauturm'],['caravan','🚚','nav.caravan','Nebelkarawane'],['endgame','🌌','nav.endgame','Endgame'],['shop','🛒','nav.shop','Händler'],['forge','🔨','nav.forge','Harzschmiede'],
   ['harzDealer','🟢','nav.harzDealer','Harz & Gold & Rahmen Dealer'],['bagDealer','🏪','nav.bagDealer','Hinterhof-Dealer'],['pvp','⚔️','nav.pvp','PvP-Arena'],['guild','🏰','nav.guild','Gilde'],['hall','🏆','nav.hall','Hall of Haze'],
-  ['growcup','🏆','nav.growCup','Grow Cup'], ['friends','🤝','nav.friends','Nebel-Crew'],['mail','✉️','nav.mail','Nebel-Post']
+  ['friends','🤝','nav.friends','Nebel-Crew'],['mail','✉️','nav.mail','Nebel-Post']
  ]);
  let raf=0,lastBuildAt=0;
  function admin(){try{return typeof v093IsAdmin!=='undefined'&&v093IsAdmin===true&&!!v073User&&!v073User.is_anonymous}catch(e){return false}}
  function available(id){
-  if(id==='growcup')return typeof window.v8210OpenGrowCup==='function';
   if(id==='bagDealer')return !!document.getElementById(id);
   if(document.getElementById(id))return true;
   if(id==='endgame')return typeof window.v457RenderEndgame==='function'||typeof window.renderEndgame==='function';
@@ -34,7 +33,6 @@
  function sep(){const x=document.createElement('div');x.className='v4149-menu-separator v086-menu-separator';return x}
  function go(id){
   try{
-   if(id==='growcup')return window.v8210OpenGrowCup?.();
    if(id==='systemtech')return admin()?window.v4107OpenSystemtechnik?.():false;
    if(id==='admin'){
     if(!admin())return false;
