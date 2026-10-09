@@ -297,13 +297,13 @@ function startRuntimeProfileObservers(){
    manual profile. They report only durations and method names. The browser's
    internal Response.json and SDK async work are NOT covered by these probes.
    Restore exact native functions at profile end. Do not record payloads. */
-/* V8.334 Beta: low-overhead sampling. Full interception and timing of
-   ~774,000 JSON calls added measurable profiler cost in V8.333. We now count
-   calls, time one in every 256 and identify bounded sampled callsites.
-   Never capture JSON args, payloads, player IDs, request URLs or tokens. */
+/* V8.335 Beta: count every JSON call, time only 1:256, and sample callers
+   every 4096th call across the WHOLE 30-second window (not only the first
+   100 probes). Approximate 1-second call buckets use sampled call timestamps.
+   Never record arguments, payloads, player IDs, URLs or tokens. */
 function startRuntimeCpuProbe(){
  if(String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()!=='beta')return null;
- const data={entries:{},slow:[],restore:[],mode:'sampled / 256',samplePeriod:256};
+ const data={entries:{},slow:[],restore:[],mode:'sampled / 256 + distributed owner / 4096',samplePeriod:256};
  const extractOwner=()=>{
   try{
    const frames=String(new Error().stack||'').split('\n').slice(1);
@@ -324,17 +324,20 @@ function startRuntimeCpuProbe(){
   try{
    const original=target?.[name];
    if(typeof original!=='function')return;
-   const metrics=data.entries[label]={calls:0,samples:0,sampledMs:0,maxSampleMs:0,owners:{},samplePeriod};
+   const metrics=data.entries[label]={calls:0,samples:0,sampledMs:0,maxSampleMs:0,owners:{},buckets:{},ownerSamples:0,samplePeriod};
    const wrapped=function(){
     const count=++metrics.calls;
     if(count%samplePeriod!==0)return original.apply(this,arguments);
-    const owner=metrics.samples<100?extractOwner():null;
+    const owner=(samplePeriod===256&&count%4096===0)?extractOwner():null;
     const started=performance.now();
+    const second=Math.max(0,Math.min(60,Math.floor((started-runtimeProfile.startPerf)/1000)));
+    if(samplePeriod===256)metrics.buckets[second]=(metrics.buckets[second]||0)+samplePeriod;
     try{return original.apply(this,arguments)}
     finally{
      const ms=Math.max(0,performance.now()-started);
      metrics.samples++;metrics.sampledMs+=ms;metrics.maxSampleMs=Math.max(metrics.maxSampleMs,ms);
      if(owner){
+      metrics.ownerSamples++;
       const t=metrics.owners[owner]||(metrics.owners[owner]={calls:0,ms:0});
       t.calls++;t.ms+=ms;
      }
@@ -490,11 +493,14 @@ function stopRuntimeProfiler(){
      'HYDRATE t+'+Math.max(0,Number(x.at)-runtimeProfile.startEpoch)+' ms | '+x.outcome+
      ' | '+x.reason+' | '+x.screen+' | wartende Listener '+x.queued),
    '',
-   'JSON/STORAGE STICHPROBEN (V8.334, Opt-in 30s, keine Payloads):',
+   'JSON/STORAGE STICHPROBEN (V8.335, verteilt über 30s, keine Payloads):',
    ...(cpuCost?Object.entries(cpuCost.entries||{}).flatMap(([label,m])=>[
       'SYNC '+label+' | Aufrufe '+m.calls+' | Stichproben '+m.samples+
       ' | Stichproben-CPU '+Number(m.sampledMs||0).toFixed(1)+' ms'+
       ' | max Probe '+Number(m.maxSampleMs||0).toFixed(1)+' ms',
+      ...(label.startsWith('JSON.')?['SYNC-CALLER-SAMPLING '+label+' | '+Number(m.ownerSamples||0)+' verteilte Aufrufer-Stichproben (1:4096)']:[]),
+      ...Object.entries(m.buckets||{}).sort((a,b)=>b[1]-a[1]).slice(0,5)
+       .map(([second,calls])=>'SYNC-HOT-SECOND '+label+' | t+'+second+'s | ca. '+calls+' Aufrufe (1:256 Zeitstempel)'),
       ...Object.entries(m.owners||{}).sort((x,y)=>y[1].calls-x[1].calls)
        .slice(0,10).map(([caller,d])=>'SYNC-CALLER '+label+' | Proben '+d.calls+
         ' | CPU der Proben '+Number(d.ms||0).toFixed(1)+' ms | '+caller)
@@ -502,7 +508,7 @@ function stopRuntimeProfiler(){
    ...(cpuCost?.slow?.length?cpuCost.slow.slice().sort((a,b)=>b.ms-a.ms).slice(0,12).map(x=>
       'SYNC-SLOW '+x.kind+' '+x.ms.toFixed(1)+' ms | t+'+x.t+' ms | '+x.screen
    ):['Keine einzeln messbare JSON/Storage-Operation über 25 ms.']),
-   'Hinweis: JSON-Aufrufzahl vollständig, CPU nur aus 1:256-Stichproben (keine Gesamt-CPU); Aufrufer sind gesampelte JS-Stackframes, keine Payloads. Storage 1:1. Native Response.json() nicht abgedeckt.',
+   'Hinweis: JSON-Aufrufzahl vollständig, CPU nur aus 1:256-Stichproben (keine Gesamt-CPU); Aufrufer 1:4096 über gesamten Lauf und Sekunden-Buckets nur Näherungen. Storage 1:1. Native Response.json() nicht abgedeckt.',
    'HOME-EVENT ÜBERLAGERUNG (V8.334, Geometrie/Hit-Test, keine DOM-Eingriffe):',
    eventTopDebug
     ?'Events oben '+eventTopDebug.eventTop+' px | World oben '+eventTopDebug.worldTop+
