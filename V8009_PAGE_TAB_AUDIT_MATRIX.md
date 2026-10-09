@@ -153,3 +153,6 @@ V8.287 – Aktive tägliche Verlustwache
 - Klick: Cup-Overlay auf Tab **Rangliste**, bestehender serverbestätigter Platz/Score/Claimstatus. Rangbelohnung ausschließlich über vorhandenes `v8210_growcup_claim_rank_reward`, danach eigenes großes Medaillen-/Runen-/Fragment-Belohnungs-Popup; kein Toast als Erfolg, keine lokale Auszahlung.
 - Neue Datei `css/features/events/beta/v8306-growcup-home-results.css`; `beta.html` und `server1.html` laden 3 betroffene JS-Dateien cachebusted und CSS. Keine Backend-/Klassenänderung.
 - Verifiziert **PASS**: JS-Syntax 3/3, HTML-Referenzen 2/2, 8x Verhalten des tatsächlich geänderten Archiv-/Popup-Codes in Simulation. Live-WebView-Runde steht noch aus.
+
+### 09.10.2026 – V8.308: Startseiten-Kartenposition auf Beta und Server 1
+- World / Startseite: Grow-Cup-Ergebnis-Slot steht auf beiden Servern im unteren `Aktuelles`-Kartenraster (`.v366-lower`) statt direkt nach dem oberen Eventpanel. Eine kanonische DOM-Kachel; gleicher Rank-/Claim-Owner. JavaScript-/CSS-Cache in beiden HTMLs `8308-cup-lower-both`. Manueller Android-Sicht-/Klicktest offen.
