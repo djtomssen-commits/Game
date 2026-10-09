@@ -1,7 +1,7 @@
 
 (function(){
   if(!['beta','server1'].includes(String(window.GROW_RELEASE_CHANNEL||'stable').toLowerCase()))return;
-  const diagnostics={fullRenders:0,eventPanelPatches:0,goldDirectOpens:0,mailDirectOpens:0,versionStyleInstalls:0,ownershipFinalizes:0,cleanSignatureHits:0,dirtySignatureRepairs:0,energyDirectPatches:0,currentGridRetentions:0,currentGridRefreshes:0,eventNodesPreserved:0,inactiveWorldSkips:0,headerLegacyHideWrites:0,headerValueWrites:0};
+  const diagnostics={fullRenders:0,eventPanelPatches:0,goldDirectOpens:0,mailDirectOpens:0,versionStyleInstalls:0,ownershipFinalizes:0,cleanSignatureHits:0,dirtySignatureRepairs:0,energyDirectPatches:0,currentGridRetentions:0,currentGridRefreshes:0,heroRetentions:0,heroGeometryTransfers:0,eventNodesPreserved:0,inactiveWorldSkips:0,headerLegacyHideWrites:0,headerValueWrites:0};
   const BETA_VERSION='V8.009';
   function installBetaVersionStyle(){
     try{
@@ -629,11 +629,24 @@
       String(document.documentElement.lang||'de')
     ]);
   }
+  /* V8.326: The hero's adaptive CSS variables belong to its live element.
+     Retain the mounted hero when only other home cards have changed; replacing it
+     briefly reverts its character-check width to the narrow CSS fallback. */
+  function heroSignature(view){
+    return JSON.stringify([
+      String(window.GROW_RELEASE_CHANNEL||''),String(window.v073User?.id||''),
+      view.name,String(s?.playerClass||''),Number(s?.level)||1,
+      Number(s?.xp)||0,xpNeedSafe(),view.power,avatarSrc(),
+      view.hc?.signature,view.hc?.slotTotal,
+      String(window.v6239WeeklyChestSignature?.()||''),
+      String(document.documentElement.lang||'de')
+    ]);
+  }
   function currentGridAccountKey(){
     const uid=String(window.v073User?.id||s?.social?.playerId||'');
     return uid?String(window.GROW_RELEASE_CHANNEL||'')+':'+uid:'';
   }
-  function retainCurrentGridDuringRefresh(world,current,view,currentSig,accountKey){
+  function retainCurrentGridDuringRefresh(world,current,view,currentSig,accountKey,heroSig){
     if(!current||!accountKey||!ownedWorldClean(world,current))return false;
     if(world.dataset.v8314CurrentSig!==currentSig||
        world.dataset.v8314CurrentAccount!==accountKey)return false;
@@ -644,7 +657,11 @@
     if(!incoming||!incoming.matches('.v366-world.v690-world'))return false;
     const newChildren=[...incoming.children];
     if(oldChildren.length!==newChildren.length)return false;
+    const oldHero=oldChildren.find(el=>el.classList.contains('v366-hero'));
+    const keepHero=String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta' &&
+      !!oldHero && oldHero.dataset.v8326HeroSig===heroSig;
     const kept=['v366-lower','v690-current-title'];
+    if(keepHero)kept.push('v366-hero');
     for(let i=0;i<oldChildren.length;i++){
       const old=oldChildren[i],next=newChildren[i];
       for(const name of kept){
@@ -655,8 +672,24 @@
        All delegated and direct home click handlers are rebound by installWorld. */
     for(let i=0;i<oldChildren.length;i++){
       if(kept.some(name=>oldChildren[i].classList.contains(name)))continue;
+      /* On a real hero-state change, transfer the existing fit before attaching
+         the replacement; do not expose a frame at the generic narrow defaults. */
+      if(String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta' &&
+         oldChildren[i].classList.contains('v366-hero') &&
+         newChildren[i].classList.contains('v366-hero')){
+        const old=oldChildren[i],next=newChildren[i];
+        for(let j=0;j<old.style.length;j++){
+          const prop=old.style[j];
+          if(prop.startsWith('--v7258-')||prop==='height'||prop==='min-height'){
+            next.style.setProperty(prop,old.style.getPropertyValue(prop),old.style.getPropertyPriority(prop));
+          }
+        }
+        if(old.dataset.v7288Fit)next.dataset.v7288Fit=old.dataset.v7288Fit;
+        diagnostics.heroGeometryTransfers++;
+      }
       oldChildren[i].replaceWith(newChildren[i]);
     }
+    if(keepHero)diagnostics.heroRetentions++;
     diagnostics.currentGridRetentions++;
     return true;
   }
@@ -675,6 +708,7 @@
     const {name,power,dg,grow,ac,ev,hc,pets,bossActive}=view;
     const currentSig=currentGridSignature(view);
     const accountKey=currentGridAccountKey();
+    const heroSig=heroSignature(view);
     const sigParts=[
       /* Wallet-only changes belong to the canonical resource header. Keep two
          stable placeholders so existing home signature consumers retain their
@@ -732,13 +766,15 @@
       return;
     }
     world.dataset.v366Sig=sig;
-    const keptCurrent=retainCurrentGridDuringRefresh(world,current,view,currentSig,accountKey);
+    const keptCurrent=retainCurrentGridDuringRefresh(world,current,view,currentSig,accountKey,heroSig);
     if(!keptCurrent){
       world.innerHTML=worldHtml(view);
       diagnostics.currentGridRefreshes++;
     }
     world.dataset.v8314CurrentSig=currentSig;
     world.dataset.v8314CurrentAccount=accountKey;
+    const liveHero=world.querySelector(':scope > .v366-world > .v366-hero');
+    if(liveHero)liveHero.dataset.v8326HeroSig=heroSig;
     diagnostics.fullRenders++;
     world.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>{const id=b.dataset.go;if(id!=='world')try{v032Go(id)}catch(e){}});
     world.querySelectorAll('[data-char-tab]').forEach(b=>b.onclick=()=>openCharacterTab(b.dataset.charTab));
