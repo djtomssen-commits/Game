@@ -5,6 +5,8 @@
    Refill: +20 for 1 Harz, maximum 10 refills/day, never above current cap
 */
 let v271EventDataReady=false;
+/* Authenticated quests/Dampf are server-only, even before the authority bridge loads. */
+function v271ServerOwned(){try{return !!(typeof v073User!=='undefined'&&v073User?.id)}catch(_){return false}}
 
 function v271DayKey(){
   if(typeof v127LocalDayKey==='function')return v127LocalDayKey();
@@ -12,7 +14,7 @@ function v271DayKey(){
   return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
 }
 function v271DampfEventActive(){
-  if(!v271EventDataReady)return !!s.v271DampfEventWasActive;
+  if(!v271EventDataReady)return !v271ServerOwned()&&!!s.v271DampfEventWasActive;
   const now=Date.now();
   return (v093Events||[]).some(ev=>{
     if(!ev?.is_active)return false;
@@ -39,7 +41,7 @@ function v271DampfCap(){return v271DampfEventActive()?300:100}
 function v271EnsureRefillState(){
   const day=v271DayKey();
   s.v271DampfRefill??={day,count:0};
-  if(s.v271DampfRefill.day!==day){
+  if(s.v271DampfRefill.day!==day&&!v271ServerOwned()){
     s.v271DampfRefill={day,count:0};
   }
   s.v271DampfRefill.count=Math.max(0,Math.min(10,Number(s.v271DampfRefill.count)||0));
@@ -47,7 +49,8 @@ function v271EnsureRefillState(){
 }
 
 function v271SyncDampfEvent(){
- if(!v271EventDataReady)return false;
+ /* Event bonus and expiration belong to v7044_ensure_quest_day, not this UI cache. */
+ if(v271ServerOwned()||!v271EventDataReady)return false;
  const ev=v271ActiveDampfEvent(), active=!!ev;
  const owner=String(v073User?.id||s.social?.playerId||s.characterName||'local');
  const eventKey=ev?`${ev.id||ev.name}|${ev.starts_at||''}`:'';
@@ -95,24 +98,10 @@ function v271PaintDampf(){
 }
 
 async function v271RefillDampf(){
-  v271EnsureRefillState();
-  const cap=v271DampfCap();
-  const state=s.v271DampfRefill;
-  const current=Math.max(0,Number(s.energy)||0);
-
-  if(state.count>=10)return v115Alert('Du hast heute bereits 10× Dampf aufgefüllt.');
-  if(current>=cap)return v115Alert(`Dein Dampf ist bereits voll: ${cap}/${cap}.`);
-  if((Number(s.harzTaler)||0)<1)return v115Alert('Du hast keinen Harz-Taler mehr.');
-
-  const add=Math.min(20,cap-current);
-  if(!confirm(`1 Harz-Taler einsetzen und +${add} Dampf erhalten?\n\nAuffüllungen heute: ${state.count}/10`))return;
-
-  s.harzTaler=(Number(s.harzTaler)||0)-1;
-  s.energy=Math.min(cap,current+20);
-  state.count++;
-  try{persist(false)}catch(e){localStorage.setItem(KEY,JSON.stringify(s))}
-  try{render()}catch(e){}
-  v271PaintDampf();
+  /* Retained compatibility entry: never pay or credit locally on any account. */
+  if(typeof v294CanonicalDampfRefill==='function')return v294CanonicalDampfRefill();
+  try{v115Alert?.('Dampf-Kauf wird geladen. Bitte erneut versuchen.')}catch(_){}
+  return false;
 }
 
 v026PaintDampf=v271PaintDampf;
@@ -126,7 +115,7 @@ if(v271BaseDailyReset){
   v127ApplyDailyReset=function(options={}){
     /* V7.177: keep the shared reset fail-closed after this later Dampf wrapper. */
     try{
-      if(typeof v127ServerOwned==='function'&&v127ServerOwned()){
+      if(v271ServerOwned()||(typeof v127ServerOwned==='function'&&v127ServerOwned())){
         try{v7173LegacyBlock?.('midnightResetBlocks')}catch(_){}
         return false;
       }
@@ -154,7 +143,7 @@ if(v271BaseDailyReset){
 }
 v026DailyReset=function(forceRender=false){
   try{
-    if(typeof v127ServerOwned==='function'&&v127ServerOwned()){
+    if(v271ServerOwned()||(typeof v127ServerOwned==='function'&&v127ServerOwned())){
       try{v7173LegacyBlock?.('dampfResetBlocks')}catch(_){}
       return false;
     }
@@ -181,7 +170,8 @@ makeQuest=function(){
   return q;
 };
 function v271NormalizeQuestOffers(){
-  if(!Array.isArray(s.quests?.offers))return;
+  /* Server offer energy/cost must never be rewritten by the old 7–8 Dampf curve. */
+  if(v271ServerOwned()||!Array.isArray(s.quests?.offers))return;
   s.quests.offers.forEach((q,i)=>{
     if(!q)return;
     if(!q.v271DampfCost || Number(q.energy)<7 || Number(q.energy)>8){
@@ -288,7 +278,7 @@ v093AdminLoadLists=async function(){
 v271EnsureRefillState();
 v271NormalizeQuestOffers();
 if(!s.v271DampfMigration){
-  if(!s.v271DampfEventWasActive)s.energy=Math.min(100,Math.max(0,Number(s.energy)||0));
+  if(!v271ServerOwned()&&!s.v271DampfEventWasActive)s.energy=Math.min(100,Math.max(0,Number(s.energy)||0));
   s.v271DampfMigration=true;
   try{localStorage.setItem(KEY,JSON.stringify(s))}catch(e){}
 }
