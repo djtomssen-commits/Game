@@ -272,10 +272,16 @@
     let talents=Math.max(0,Number(s?.skillPoints)||0);try{if(typeof v314Available==='function')talents=Math.max(0,Number(v314Available())||0)}catch(e){}
     const box=document.getElementById('v459SetSummary');
     if(box && !window.__V7124_CHARACTER_SUMMARY_OWNER__)box.innerHTML=cls?`🧩 ${esc(setName||'Klassen-Set')} <b>${count}/6</b> · 🌳 Talentpunkte <b>${talents}</b>`:'🧬 Wähle zuerst deine Klasse';
-    const ap=document.getElementById('v459AttrPoints');if(ap)ap.textContent=`${Math.max(0,Number(s?.points)||0)} Punkte`;
-    const invBtn=document.querySelector('#v459CharacterTabs [data-tab="inventory"] em');if(invBtn)invBtn.textContent=`Inventar · ${(s?.inventory||[]).length}`;
-    const talBtn=document.querySelector('#v459CharacterTabs [data-tab="talents"] em');if(talBtn)talBtn.textContent=`Talente · ${talents}`;
-    const matBtn=document.querySelector('#v459CharacterTabs [data-tab="materials"] em');if(matBtn)matBtn.textContent=`Materialien · ${(s?.materials||[]).length}`;
+    /* V8.371 Beta: v459 refreshes the same four labels on each tab.
+       Preserve the DOM text node when its visible value is already correct. */
+    const paintCount=(el,next)=>{
+      if(el&&(String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()!=='beta'||el.textContent!==next))
+        el.textContent=next;
+    };
+    const ap=document.getElementById('v459AttrPoints');paintCount(ap,`${Math.max(0,Number(s?.points)||0)} Punkte`);
+    const invBtn=document.querySelector('#v459CharacterTabs [data-tab="inventory"] em');paintCount(invBtn,`Inventar · ${(s?.inventory||[]).length}`);
+    const talBtn=document.querySelector('#v459CharacterTabs [data-tab="talents"] em');paintCount(talBtn,`Talente · ${talents}`);
+    const matBtn=document.querySelector('#v459CharacterTabs [data-tab="materials"] em');paintCount(matBtn,`Materialien · ${(s?.materials||[]).length}`);
   }
 
   function layout(){
