@@ -75,7 +75,7 @@
    box.classList.add('v6108-quality-artbox');
    ['gray','green','blue','purple','orange','cyan','prismatic'].forEach(x=>box.classList.toggle('v6108-q-'+x,x===q));
 
-   const beta=String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta';
+   const beta=String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta'||(window.__GROW_SERVER1_PERFORMANCE_V8376__===true&&String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='server1');
    const cur=box.querySelector(beta
      ?':scope > img.v6107-item-art,:scope > img.v466-item-art'
      :':scope > img.v6107-item-art');
