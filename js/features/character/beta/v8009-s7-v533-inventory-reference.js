@@ -21,7 +21,7 @@
     }
     const count=head.querySelector('.v533-inv-count');
     const n=Array.isArray(s?.inventory)?s.inventory.length:0;
-    if(count){const value=`${n} Item${n===1?'':'s'}`;if(String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()!=='beta'||count.textContent!==value)count.textContent=value}
+    if(count){const value=`${n} Item${n===1?'':'s'}`;if(!(String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta'||(window.__GROW_SERVER1_PERFORMANCE_V8376__===true&&String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='server1'))||count.textContent!==value)count.textContent=value}
     return head;
   }
 
@@ -43,12 +43,12 @@
     const srcBtn=original?.querySelector('button');
     const sub=bar?.querySelector('.v533-auto-copy span');
     const btn=bar?.querySelector('.v533-auto-btn');
-    if(sub&&src?.textContent){const value=src.textContent.trim();if(String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()!=='beta'||sub.textContent!==value)sub.textContent=value}
+    if(sub&&src?.textContent){const value=src.textContent.trim();if(!(String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta'||(window.__GROW_SERVER1_PERFORMANCE_V8376__===true&&String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='server1'))||sub.textContent!==value)sub.textContent=value}
     if(btn){
       const disabled=!!srcBtn?.disabled;
       btn.disabled=disabled;
       btn.dataset.upgradeAvailable=disabled?'false':'true';
-      if(srcBtn?.textContent){const value=srcBtn.textContent.trim();if(String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()!=='beta'||btn.textContent!==value)btn.textContent=value}
+      if(srcBtn?.textContent){const value=srcBtn.textContent.trim();if(!(String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta'||(window.__GROW_SERVER1_PERFORMANCE_V8376__===true&&String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='server1'))||btn.textContent!==value)btn.textContent=value}
       if(disabled&&!String(btn.textContent||'').includes('optimal'))btn.textContent='✓ Ausrüstung optimal';
     }
   }
@@ -76,7 +76,7 @@
       card.dataset.v533Category=category(it);
       card.hidden=filter!=='all'&&card.dataset.v533Category!==filter;
     });
-    const beta=String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta';
+    const beta=String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta'||(window.__GROW_SERVER1_PERFORMANCE_V8376__===true&&String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='server1');
     const visible=cards.filter(c=>!c.hidden).length;
     const target=visible<6?6-visible:0;
     if(beta){
