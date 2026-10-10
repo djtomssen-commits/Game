@@ -616,6 +616,14 @@ function stopRuntimeProfiler(){
      ' | XP-Layout-Verschiebungen '+visualCount('xpNodeMoves')+
      ' | Ring-Slot-Neuaufbauten '+visualCount('ringRebuilds')+
      ' | Ring-Bild-Ersetzungen '+visualCount('ringImageReplaces'),
+   'V8.355 MATERIALIEN BUTTON-PAINT: Tabs ohne sanften Scroll '+visualCount('materialInstantScrolls')+
+     ' | gesammelte Frame-Stichproben '+(isBetaProfile?(visualNow.materialButtonPaintTrace||[]).filter(x=>Number(x.at||0)>=runtimeProfile.startEpoch).length:0),
+   ...(isBetaProfile?(visualNow.materialButtonPaintTrace||[]).filter(x=>Number(x.at||0)>=runtimeProfile.startEpoch)
+     .slice(-9).map(x=>'V8.355 BUTTON-PAINT t+'+Math.max(0,Math.round(Number(x.at)-runtimeProfile.startEpoch))+
+       ' ms | Frame '+Number(x.step||0)+' | Top '+Number(x.top||0)+' px | Breite '+Number(x.width||0)+' px | Höhe '+Number(x.height||0)+
+       ' px | Scroll '+Number(x.scrollY||0)+' px | Deckkraft '+String(x.opacity??'n/v')+
+       ' | CSS-Animation '+String(x.animation??'n/v')+' | Transition '+String(x.transition??'n/v')+
+       ' | Transform '+String(x.transform??'n/v')+' | Filter '+String(x.filter??'n/v')):[]),
    'V8.354 MATERIALIEN VOR-EINBLENDEN: Hidden-Vorbereitungen '+visualCount('autoMaterialBarHiddenPrepares')+
      ' | erste Auto-Sockeln-Montagen '+visualCount('autoMaterialBarFirstMounts'),
    'V8.353 AUTO-SOCKELN-BUTTON (Delta im Profil): Aktualisierungsanfragen '+visualCount('autoMaterialBarRefreshCalls')+
