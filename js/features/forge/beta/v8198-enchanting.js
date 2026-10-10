@@ -43,7 +43,7 @@ const V8368_ITEM_FX_QA={calls:0,noopRenders:0,fullRenders:0};
 window.__V8368_ITEM_FX_QA__=()=>({...V8368_ITEM_FX_QA});
 function applyItemFx(root,it){
  if(!root)return;
- const beta=String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta';
+ const beta=String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta'||(window.__GROW_SERVER1_PERFORMANCE_V8376__===true&&String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='server1');
  if(beta){
   V8368_ITEM_FX_QA.calls++;
   const n=levelOf(it),old=Number(root.dataset.v8198Enchant||0);
