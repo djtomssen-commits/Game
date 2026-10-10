@@ -8,7 +8,7 @@
     if(!box||!it)return false;
     const uri=artUri(it);if(!uri)return false;
     const current=box.querySelector(':scope > img.v466-item-art');
-    const beta=String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta';
+    const beta=String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta'||(window.__GROW_SERVER1_PERFORMANCE_V8376__===true&&String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='server1');
     /* V8.376: src resolves relative artwork URLs to absolute URLs.
        Compare the actual src attribute as well; don't destroy a correct
        picture merely because the browser expanded its URL. */
@@ -34,7 +34,7 @@
         setArt(card.querySelector('.v459-inv-icon'),it);
         /* Preserve the one useful V466 inventory decoration while keeping a single art owner. */
         let mark=card.querySelector('.v466-set-mark');
-        const beta=String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta';
+        const beta=String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta'||(window.__GROW_SERVER1_PERFORMANCE_V8376__===true&&String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='server1');
         const hasSet=!!(it.setName||it.setId||it.mysticSetId);
         if(beta){
           /* V8.373: a set marker is a persistent item node, not a repaint. */
