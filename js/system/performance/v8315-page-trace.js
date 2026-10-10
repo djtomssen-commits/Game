@@ -576,7 +576,7 @@ function report(){
  const findings=qaState.extended?rankedFindings(pages):[];
  const counts={high:0,medium:0,low:0};
  for(const f of findings)if(counts[f.severity]!==undefined)counts[f.severity]++;
- return {version:betaAudit()?'V8.371':'V8.360',mode:'opt-in-device',server:state.channel,
+ return {version:betaAudit()?'V8.372':'V8.360',mode:'opt-in-device',server:state.channel,
   running:state.running,sweeping:state.sweeping,elapsedMs:Math.round((state.stoppedAt||clock())-state.startedAt),
   pages,totalScreens:pages.length,primaryScreens:pages.filter(p=>SCREENS.includes(p.screen)).length,
   linkedScreens:pages.filter(p=>LINKED_SCREENS.includes(p.screen)).map(p=>p.screen),slowTasks:state.slowTasks,layoutShiftEvents:state.shiftCount,
