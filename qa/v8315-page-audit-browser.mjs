@@ -152,7 +152,7 @@ try{
  });
  assert.equal(qaCenter.restored,true,'opt-in fetch instrumentation was not restored');
  assert.equal(qaCenter.restoredText,true,'V8.371 textContent instrumentation was not restored');
- assert.equal(qaCenter.result.version,'V8.371','QA Center version missing');
+ assert.equal(qaCenter.result.version,'V8.372','QA Center version missing');
  assert.ok(qaCenter.result.qaCenter.mutationDetail?.character?.identicalText>=1,
   'V8.370 same-text childList replacement classification missing');
  assert.ok(qaCenter.result.qaCenter.mutationDetail?.character?.textWriters?.some(x=>x.attempts>=1),
@@ -484,6 +484,84 @@ try{
   await forgePage.close();
 
 
+
+
+ // V8.372: execute the original shared Dampf renderer in Chromium.
+ // Beta must not cause childList replacements in completely unrelated
+ // Harz-Dealer and Forge leaves; real label changes must still render.
+ const dampfPage=await browser.newPage();
+ dampfPage.on('pageerror',e=>errors.push('dampf: '+String(e.message||e)));
+ await dampfPage.setContent('<!doctype html><html><body>'+
+  '<div id="resources">Energie <b id="energy">old</b></div>'+
+  '<section id="quests"><span id="qaQuest">⚡ Energie 3</span></section>'+
+  '<button id="v026RefillBtn">Refill</button>'+
+  '<section id="forge"><span class="v488-leg">Legendär</span></section>'+
+  '<section id="harzDealer"><span class="v567-pack-main">Harz Paket</span></section>'+
+  '<span id="qaDynamic">Energie 7</span></body></html>');
+ await dampfPage.evaluate(()=>{
+  window.GROW_RELEASE_CHANNEL='beta';
+  window.s={energy:91};window.__renderCalls=0;
+  window.render=function(){window.__renderCalls++};
+  window.v026PaintDampf=function(){};
+ });
+ await dampfPage.addScriptTag({path:path.join(process.cwd(),'js/features/anonymous-extracted/beta/anon-0002.js')});
+ const dampfResult=await dampfPage.evaluate(()=>{
+  const target=[document.querySelector('.v488-leg'),document.querySelector('.v567-pack-main')];
+  const observer=new MutationObserver(()=>{});
+  observer.observe(document.body,{subtree:true,childList:true});
+  render();render();render();
+  const betaWrites=observer.takeRecords().filter(r=>target.includes(r.target)).length;
+  document.getElementById('qaDynamic').textContent='Energie 9';
+  render();
+  const dynamicText=document.getElementById('qaDynamic').textContent;
+  s.energy=142;v026PaintDampf();
+  const energyText=document.getElementById('energy').textContent;
+  observer.takeRecords();
+  window.GROW_RELEASE_CHANNEL='server1';
+  render();
+  const legacyWrites=observer.takeRecords().filter(r=>target.includes(r.target)).length;
+  observer.disconnect();
+  return {betaWrites,legacyWrites,dynamicText,energyText,questText:document.getElementById('qaQuest').textContent};
+ });
+ assert.equal(dampfResult.betaWrites,0,'V8.372 Beta Dampf pass still replaces unrelated labels');
+ assert.ok(dampfResult.legacyWrites>=2,'V8.372 Server1 historical Dampf writes changed');
+ assert.equal(dampfResult.dynamicText,'Dampf 9','V8.372 dynamic Energie label is not converted');
+ assert.equal(dampfResult.energyText,'💨 142/300','V8.372 Dampf balance did not refresh');
+ assert.ok(dampfResult.questText.includes('Dampf'),'V8.372 Quest energy localization lost');
+ await dampfPage.close();
+
+ // Original rarity owner: unchanged label keeps its text node, but a real
+ // quality change still replaces it. Server1 retains the legacy behavior.
+ const rarityPage=await browser.newPage();
+ rarityPage.on('pageerror',e=>errors.push('rarity: '+String(e.message||e)));
+ await rarityPage.setContent('<!doctype html><html><body><section id="character">'+
+  '<div id="inventory"><div class="inventory-grid"><div class="inv-item" data-v459-index="0">'+
+  '<span class="rarity-badge">Episch</span></div></div></div></section></body></html>');
+ await rarityPage.evaluate(()=>{
+  window.GROW_RELEASE_CHANNEL='beta';
+  window.s={inventory:[{name:'Prüfitem',quality:'purple'}],equipment:{}};
+ });
+ await rarityPage.addScriptTag({path:path.join(process.cwd(),'js/features/character/beta/v8009-s8-v684-inventory-rarity-final-core.js')});
+ const rarityResult=await rarityPage.evaluate(()=>{
+  const badge=document.querySelector('.rarity-badge');
+  const observer=new MutationObserver(()=>{});
+  observer.observe(badge,{childList:true});
+  window.v240RepairInventoryRarity();window.v240RepairInventoryRarity();
+  const identical=observer.takeRecords().length;
+  s.inventory[0].quality='orange';
+  window.v240RepairInventoryRarity();
+  const changed=observer.takeRecords().length;
+  const value=badge.textContent;
+  window.GROW_RELEASE_CHANNEL='server1';
+  window.v240RepairInventoryRarity();
+  const legacy=observer.takeRecords().length;
+  observer.disconnect();
+  return {identical,changed,value,legacy};
+ });
+ assert.equal(rarityResult.identical,0,'V8.372 original rarity owner still rewrites same label on Beta');
+ assert.ok(rarityResult.changed>=1&&rarityResult.value==='Legendär','V8.372 rarity change was suppressed');
+ assert.ok(rarityResult.legacy>=1,'V8.372 Server1 original rarity logic changed');
+ await rarityPage.close();
 
  assert.ok(errors.length===0,errors.join('; '));
  fs.mkdirSync('qa/reports',{recursive:true});
