@@ -616,6 +616,19 @@ function stopRuntimeProfiler(){
      ' | XP-Layout-Verschiebungen '+visualCount('xpNodeMoves')+
      ' | Ring-Slot-Neuaufbauten '+visualCount('ringRebuilds')+
      ' | Ring-Bild-Ersetzungen '+visualCount('ringImageReplaces'),
+   'V8.353 AUTO-SOCKELN-BUTTON (Delta im Profil): Aktualisierungsanfragen '+visualCount('autoMaterialBarRefreshCalls')+
+     ' | sichtbare Änderungen '+visualCount('autoMaterialBarVisibleUpdates')+
+     ' | unveränderte Updates vermieden '+visualCount('autoMaterialBarNoopRefreshes')+
+     ' | Textänderungen '+visualCount('autoMaterialBarLabelChanges')+
+     ' | Belegungs-Hinweis geändert '+visualCount('autoMaterialBarDescriptionChanges')+
+     ' | Deaktiviert-Status geändert '+visualCount('autoMaterialBarDisabledChanges')+
+     ' | erste Einfügung '+visualCount('autoMaterialBarFirstMounts')+
+     ' | spätere Positionskorrekturen '+visualCount('autoMaterialBarMoves'),
+   ...(isBetaProfile?(visualNow.autoMaterialBarTrace||[]).filter(x=>Number(x.at||0)>=runtimeProfile.startEpoch)
+     .slice(-10).map(x=>'V8.353 AUTO-SOCKELN-BUTTON t+'+Math.max(0,Math.round(Number(x.at)-runtimeProfile.startEpoch))+
+       ' ms | Änderungen '+((x.reasons||[]).join(',')||'keine')+
+       ' | gesperrt '+!!x.disabled+
+       ' | im Tab '+!!x.mounted):[]),
    'V8.352 MATERIALIEN DOM-CHURN (Delta im Profil): Render-Anfragen '+visualCount('materialRenderCalls')+
      ' | Kachel-Neuaufbauten '+visualCount('materialGridRebuilds')+
      ' | unnötige Kachel-Neuaufbauten vermieden '+visualCount('materialGridNoopSkips')+
