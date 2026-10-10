@@ -152,7 +152,7 @@ try{
  });
  assert.equal(qaCenter.restored,true,'opt-in fetch instrumentation was not restored');
  assert.equal(qaCenter.restoredText,true,'V8.371 textContent instrumentation was not restored');
- assert.equal(qaCenter.result.version,'V8.372','QA Center version missing');
+ assert.equal(qaCenter.result.version,'V8.373','QA Center version missing');
  assert.ok(qaCenter.result.qaCenter.mutationDetail?.character?.identicalText>=1,
   'V8.370 same-text childList replacement classification missing');
  assert.ok(qaCenter.result.qaCenter.mutationDetail?.character?.textWriters?.some(x=>x.attempts>=1),
@@ -562,6 +562,67 @@ try{
  assert.ok(rarityResult.changed>=1&&rarityResult.value==='Legendär','V8.372 rarity change was suppressed');
  assert.ok(rarityResult.legacy>=1,'V8.372 Server1 original rarity logic changed');
  await rarityPage.close();
+
+
+ // V8.373: authentic inventory V468 set-marker owner keeps node identity
+ // across renders and updates/removes it when underlying item state changes.
+ const markerPage=await browser.newPage();
+ markerPage.on('pageerror',e=>errors.push('v468: '+String(e.message||e)));
+ await markerPage.setContent('<!doctype html><html><body><section id="character" class="active"><div id="inventory">'+
+   '<div class="inventory-grid"><div class="inv-item"><div class="v459-inv-icon"></div></div></div>'+
+   '</div></section></body></html>');
+ await markerPage.evaluate(()=>{
+   window.GROW_RELEASE_CHANNEL='beta';window.s={inventory:[{name:'Set-Item',quality:'purple',setId:'set-a'}]};
+   window.renderInventory=()=>{};window.v466ItemArtUri=()=>'';window.v459CompactInventory=()=>{};
+ });
+ await markerPage.addScriptTag({path:path.join(process.cwd(),'js/features/items/beta/v8009-s13-v468-single-item-art-owner.js')});
+ const markerResult=await markerPage.evaluate(()=>{
+   const card=document.querySelector('.inv-item'),first=card.querySelector('.v466-set-mark');
+   const obs=new MutationObserver(()=>{});obs.observe(card,{subtree:true,childList:true});
+   renderInventory();renderInventory();
+   const stable=!!first&&card.querySelector('.v466-set-mark')===first&&obs.takeRecords().length===0;
+   s.inventory[0].quality='cyan';renderInventory();
+   const upgraded=card.querySelector('.v466-set-mark')===first&&first.textContent==='MYTHIC SET';
+   obs.takeRecords();delete s.inventory[0].setId;renderInventory();
+   const removed=!card.querySelector('.v466-set-mark')&&obs.takeRecords().length>0;
+   s.inventory[0].setId='set-a';renderInventory();obs.takeRecords();
+   window.GROW_RELEASE_CHANNEL='server1';renderInventory();
+   const legacy=obs.takeRecords().length>=2;
+   obs.disconnect();return{stable,upgraded,removed,legacy};
+ });
+ assert.ok(markerResult.stable&&markerResult.upgraded&&markerResult.removed&&markerResult.legacy,
+  'V8.373 original V468 set marker stable/update/removal/Server1: '+JSON.stringify(markerResult));
+ await markerPage.close();
+
+ // V8.373: original V533 empty-slot owner preserves placeholder node identity.
+ // A real filter change must add/remove placeholders; Server1 still rebuilds.
+ const emptyPage=await browser.newPage();
+ emptyPage.on('pageerror',e=>errors.push('v533: '+String(e.message||e)));
+ await emptyPage.setContent('<!doctype html><html><body><section id="character" class="active">'+
+   '<div class="card"><div id="inventory"><div class="inventory-grid">'+
+   '<div class="inv-item">Item</div></div></div></div></section></body></html>');
+ await emptyPage.evaluate(()=>{
+   window.GROW_RELEASE_CHANNEL='beta';window.s={inventory:[{name:'Helm',slot:'head'}]};
+ });
+ await emptyPage.addScriptTag({path:path.join(process.cwd(),'js/features/character/beta/v8009-s7-v533-inventory-reference.js')});
+ const emptyResult=await emptyPage.evaluate(()=>{
+   const grid=document.querySelector('.inventory-grid');
+   v533ApplyInventory();
+   const before=[...grid.querySelectorAll(':scope > .v533-empty-slot')];
+   const obs=new MutationObserver(()=>{});obs.observe(grid,{childList:true,subtree:true});
+   v533ApplyInventory();v533ApplyInventory();
+   const stable=before.length===5&&before.every((x,i)=>grid.querySelectorAll(':scope > .v533-empty-slot')[i]===x)&&obs.takeRecords().length===0;
+   const btn=grid.querySelector('[data-v533-filter="weapon"]');btn.click();
+   const filtered=grid.querySelectorAll(':scope > .v533-empty-slot').length===6;
+   obs.takeRecords();v533ApplyInventory();
+   const filteredStable=obs.takeRecords().length===0;
+   window.GROW_RELEASE_CHANNEL='server1';v533ApplyInventory();
+   const legacy=obs.takeRecords().length>0;
+   obs.disconnect();return{stable,filtered,filteredStable,legacy};
+ });
+ assert.ok(emptyResult.stable&&emptyResult.filtered&&emptyResult.filteredStable&&emptyResult.legacy,
+  'V8.373 original V533 empty-slot stable/filter/Server1 regression: '+JSON.stringify(emptyResult));
+ await emptyPage.close();
 
  assert.ok(errors.length===0,errors.join('; '));
  fs.mkdirSync('qa/reports',{recursive:true});
