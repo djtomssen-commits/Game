@@ -29,6 +29,9 @@ function artHtml(it,fallback){
   }catch(e){}
   return esc(it.icon||fallback||'🎁');
 }
+/* V8.350 Beta: visual icon and authoritative item record are separate.
+   Preserve an art-backed DOM node when only its unused emoji fallback changes. */
+const ringVisualSnapshot=new WeakMap();
 function move(parent,node){
   if(parent&&node&&node.parentElement!==parent)parent.appendChild(node);
 }
@@ -73,9 +76,26 @@ function paintSlots(){
       if(el.className!==cls)el.className=cls;
     }
     const enchant=(Array.isArray(it?.enchants)&&it.enchants.length?it.enchants[0]:it?.enchant);
+    const beta=String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta';
+    let visibleArtUri='';
+    if(beta&&it){
+      try{visibleArtUri=String(window.v466ItemArtUri?.(it)||'')}catch(_){}
+    }
+    const rawIcon=it?.icon||'';
+    const visualIcon=beta&&visibleArtUri?visibleArtUri:rawIcon;
+    if(beta&&slot==='ring'){
+      const prev=ringVisualSnapshot.get(el);
+      if(prev&&prev.icon!==rawIcon&&prev.artUri===visibleArtUri&&visibleArtUri){
+        const metrics=window.__V8348_VISUAL_METRICS__||(window.__V8348_VISUAL_METRICS__={});
+        metrics.ringIconOnlyChangesSkipped=(Number(metrics.ringIconOnlyChangesSkipped)||0)+1;
+      }
+      ringVisualSnapshot.set(el,{icon:rawIcon,artUri:visibleArtUri});
+    }
     const sig=JSON.stringify({
       slot,name:it?.name||'',rarity:it?.rarity||'',quality:it?.quality||'',level:it?itemLevel(it):0,
-      icon:it?.icon||'',bonus:it?.bonus||null,gem:it?.gem||null,enchant:enchant||null,
+      /* A canonical image, if present, is the actual visible icon. On
+         emoji-only items the raw icon remains the paint signature. */
+      icon:visualIcon,bonus:it?.bonus||null,gem:it?.gem||null,enchant:enchant||null,
       setName:it?.setName||'',mysticSpecial:it?.mysticSpecial||null,
       sell:it&&typeof sellValue==='function'?sellValue(it):0
     });
