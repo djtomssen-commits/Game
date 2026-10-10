@@ -322,8 +322,19 @@ check(tech.includes('V8.352 MATERIALIEN DOM-CHURN')&&
   tech.includes('V8.352 MATERIALIEN-NEUAUFBAU t+')&&
   tech.includes('materialImageNodesRemovedByRebuild'),
   'V8.352 Materials profiler counters and reasons missing');
+const materialSellOwner=read('js/features/materials/beta/v8009-s3-v681-material-sell-core.js');
+const materialMultiOwner=read('js/features/materials/beta/v8009-s2-v683-material-multisell-core.js');
+check(materialSellOwner.includes('if(!beta||value.innerHTML!==valueHtml)value.innerHTML=valueHtml')&&
+  materialSellOwner.includes('if(!beta||btn.innerHTML!==buttonHtml)btn.innerHTML=buttonHtml'),
+  'V8.352 material price / sell-button no-op guards missing');
+check(materialMultiOwner.includes('summary.innerHTML!==summaryHtml')&&
+  materialMultiOwner.includes('note.textContent!==noteText')&&
+  materialMultiOwner.includes("check.getAttribute('aria-pressed')!==pressed"),
+  'V8.352 selection card no-op guards missing');
 check(beta.includes('v8009-s1-v546-materials-grow-legends.js?v=8352-stable-gem-grid-beta')&&
   beta.includes('v8009-s1-v4107-systemtechnik.js?v=8352-material-grid-churn-profile-beta')&&
+  beta.includes('v8009-s3-v681-material-sell-core.js?v=8352-stable-material-price-ui-beta')&&
+  beta.includes('v8009-s2-v683-material-multisell-core.js?v=8352-stable-material-select-ui-beta')&&
   !read('server1.html').includes('8352-stable-gem-grid-beta')&&
   !read('server1.html').includes('8352-material-grid-churn-profile-beta'),
   'V8.352 Materials Beta cache separation missing');
