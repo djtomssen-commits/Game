@@ -1267,7 +1267,7 @@ window.addEventListener('unhandledrejection',e=>pushErr('UNHANDLED_REJECTION',St
 /* Network timing without changing request semantics. */
 try{if(typeof window.fetch==='function'&&!window.fetch.__v4107){
  const nf=window.fetch.bind(window),w=async function(){
-  const started=performance.now();let ok=false,status=0,url='',retried=false,expectedRpcReject=false,action=null;
+  const started=performance.now(),startedAt=Date.now(),startedScreen=currentScreenId();let ok=false,status=0,url='',retried=false,expectedRpcReject=false,action=null;
   const input=arguments[0],init=arguments[1]||{};
   let method=String(init?.method||input?.method||'GET').toUpperCase();
   try{
@@ -1291,7 +1291,7 @@ try{if(typeof window.fetch==='function'&&!window.fetch.__v4107){
    const ms=performance.now()-started;
    network.calls.push({at:Date.now(),url,ms,status,ok,retried,actionId:action?.id||0});while(network.calls.length>120)network.calls.shift();
    /* V8.383: use existing actual fetch completion; no second transport wrapper. */
-   try{window.__GL_FLIGHT_RECORDER__?.network?.({url,ms,status,method,failed:!ok&&status===0,expectedReject:expectedRpcReject})}catch(_){};
+   try{window.__GL_FLIGHT_RECORDER__?.network?.({url,ms,status,method,screen:startedScreen,startedAt,failed:!ok&&status===0,expectedReject:expectedRpcReject})}catch(_){};
    actionNetworkDone(action,ms,status);
    if(ms>2500){network.slow++;pushErr('SLOW_NETWORK',`${Math.round(ms)} ms · ${url}`,'warn')}
    if(status>=400&&!expectedRpcReject){network.errors++;pushErr('HTTP_'+status,url,'warn')}

@@ -55,4 +55,24 @@ assert.equal(monitor.snapshot().warnings,1,'Slow successful RPC classified as wa
 monitor.watchdog({kind:'stalled_action',severity:'error',details:{action:'attribute_point',elapsedMs:5000}});
 assert.equal(monitor.snapshot().errors,4,'Existing watchdog incident incorporated');
 assert.ok(monitor.report().includes('ZEITLICHER VERLAUF'),'Copy report provides ordered incident history');
+
+const baselineWarnings=monitor.snapshot().warnings;
+monitor.watchdog({kind:'startup_playable',severity:'warn',details:{}});
+monitor.watchdog({kind:'character_render_profile',severity:'warn',details:{}});
+monitor.watchdog({kind:'character_postnav_profile',severity:'warn',details:{}});
+assert.equal(monitor.snapshot().warnings,baselineWarnings,'Normal startup/profiler signals are not warnings');
+monitor.watchdog({kind:'slow_action',severity:'warn',details:{action:'dungeon_fight'}});
+monitor.watchdog({kind:'slow_action_complete',severity:'warn',details:{action:'dungeon_fight'}});
+const slowGroup=monitor.snapshot().groups.find(g=>g.kind==='WATCHDOG_slow_action');
+assert.equal(slowGroup.count,2,'Slow and completed phase reports combine to one issue group');
+monitor.network({url:'https://supabase.example/rest/v1/rpc/test_route',ms:6000,status:200,method:'POST',screen:'guild',startedAt:Date.now()-500});
+assert.equal(monitor.snapshot().groups[0].screen,'guild','Network incidents retain request-start screen');
+const legacy=read('js/features/core/beta/v8009-a1-legacy-state-core.js');
+assert.ok(legacy.includes("if(vCoreShopGold)vCoreShopGold.textContent=s.gold"),'Retired legacy HUD must be null-safe');
+assert.ok(legacy.includes("if(!vCoreShopGrid)return"),'Retired shop grid must not throw on missing mount');
+assert.ok(legacy.includes("if(vCoreRefreshShop)vCoreRefreshShop.onclick"),'Retired refresh button must be null-safe');
+assert.equal(beta.includes('v8009-a1-legacy-state-core.js?v=8384-retired-shop-null-guards-beta'),true,'Beta core script cache refreshed');
+assert.equal(server1.includes('v8009-a1-legacy-state-core.js?v=8384-retired-shop-null-guards-beta'),false,'Server1 entry not explicitly switched');
+assert.ok(tech.includes('screen:startedScreen,startedAt'),'Network completion retains request-start context');
+
 console.log('V8.383 PASS: Beta-only, syntax, single transport owner, watchdog integration, incident dedup, export and sensitive-URL redaction');

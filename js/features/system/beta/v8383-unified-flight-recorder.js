@@ -37,7 +37,7 @@
  function escapeHtml(x){return String(x==null?'':x).replace(/[&<>"']/g,function(v){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[v]})}
  function fire(kind,level,message,meta){
   try{
-   var at=Date.now(),msg=scrub(message,260),place=screen();
+   var at=Date.now(),msg=scrub(message,260),place=scrub(meta&&meta.screen||screen(),45);
    var path=meta&&meta.path?safePath(meta.path):'';
    var type=scrub(kind,42),sev=level==='error'?'error':'warning';
    var unique=meta&&meta.group?scrub(meta.group,90):
@@ -51,10 +51,11 @@
     item={key:key,kind:type,severity:sev,message:msg,screen:place,path:path,first:at,last:at,count:1};
     groups.unshift(item);if(groups.length>MAX_GROUPS)groups.pop();
    }
-   var action=recentAction(at);
-   if(action){item.action=action.label;item.actionAgeMs=at-action.at}
+   var contextAt=Number(meta&&meta.startedAt)||at;
+   var action=recentAction(contextAt);
+   if(action){item.action=action.label;item.actionAgeMs=Math.max(0,contextAt-action.at)}
    var entry={at:at,kind:type,severity:sev,screen:place,detail:msg,path:path,action:action?action.label:null,
-    actionAgeMs:action?at-action.at:null,elapsedMs:Math.max(0,Math.round(Number(meta&&meta.elapsedMs)||0))};
+    actionAgeMs:action?Math.max(0,contextAt-action.at):null,elapsedMs:Math.max(0,Math.round(Number(meta&&meta.elapsedMs)||0))};
    events.push(entry);if(events.length>MAX_EVENTS)events.shift();
    revision++;renderSoon();
   }catch(_){}
@@ -63,21 +64,25 @@
   try{
    var ms=Math.round(Number(input&&input.ms)||0),status=Number(input&&input.status)||0;
    var path=safePath(input&&input.url),method=String(input&&input.method||'GET').toUpperCase();
+   var ctx={path:path,elapsedMs:ms,status:status,screen:input&&input.screen,startedAt:input&&input.startedAt};
    var isApi=/\/(?:rest\/v1|auth\/v1|functions\/v1)\//.test(path);
    if(!isApi)return;
    var detail=method+' '+path+' · '+(status||'Netzwerkfehler')+' · '+ms+' ms';
-   if(input.failed||status===0||status>=500)fire('NETWORK_FAILURE','error',detail,{path:path,elapsedMs:ms,status:status});
-   else if(status===401||status===403||status===429)fire('NETWORK_REJECTED','warning',detail,{path:path,elapsedMs:ms,status:status});
-   else if(status>=400&&!input.expectedReject)fire('RPC_REJECTED','warning',detail,{path:path,elapsedMs:ms,status:status});
-   else if(ms>=3000)fire('SLOW_NETWORK','warning',detail,{path:path,elapsedMs:ms,status:status});
+   if(input.failed||status===0||status>=500)fire('NETWORK_FAILURE','error',detail,ctx);
+   else if(status===401||status===403||status===429)fire('NETWORK_REJECTED','warning',detail,ctx);
+   else if(status>=400&&!input.expectedReject)fire('RPC_REJECTED','warning',detail,ctx);
+   else if(ms>=3000)fire('SLOW_NETWORK','warning',detail,ctx);
   }catch(_){}
  }
  function watchdog(row){
   try{
    if(!row||!row.kind||row.kind==='javascript_error'||row.kind==='unhandled_rejection')return;
+   /* Profiling and startup-ready signals are not actual defects. */
+   if(['startup_playable','character_render_profile','character_postnav_profile'].includes(row.kind))return;
    var details=row.details||{};
    var detail=scrub(row.kind,80)+' · '+scrub(details.action||details.rpc||details.elapsedMs||details.durationMs||details.message||details.lastError||'',140);
-   fire('WATCHDOG_'+row.kind,row.severity==='error'?'error':'warning',detail,{group:row.kind+'|'+scrub(details.action||details.rpc||'',70)});
+   var family=['slow_action','slow_action_complete'].includes(row.kind)?'slow_action':row.kind;
+   fire('WATCHDOG_'+family,row.severity==='error'?'error':'warning',detail,{group:family+'|'+scrub(details.action||details.rpc||'',70)});
   }catch(_){}
  }
  function summary(){
