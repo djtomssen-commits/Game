@@ -229,7 +229,7 @@ function ensureButton(){
   }
   const host=book.closest('.v514-book-host');
   if(host){
-    if(String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta'){
+    if(String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta'||(window.__GROW_SERVER1_PERFORMANCE_V8376__===true&&String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='server1')){
       /* V8.374: ensureButton runs at login, book install and navigation.
          Appending a node to its existing parent still moves it. Preserve
          both button identities and their focus whenever already ordered. */
