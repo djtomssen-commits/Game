@@ -359,7 +359,8 @@
       if(reasons.length){
         v8353MaterialMetric('autoMaterialBarVisibleUpdates');
         const trace=m.autoMaterialBarTrace||(m.autoMaterialBarTrace=[]);
-        trace.push({at:Date.now(),reasons,disabled:!!btn?.disabled,mounted:bar.parentElement===panel});
+        trace.push({at:Date.now(),reasons,disabled:!!btn?.disabled,mounted:bar.parentElement===panel,
+          panelActive:!!panel.classList?.contains?.('active')});
         if(trace.length>12)trace.shift();
       }else v8353MaterialMetric('autoMaterialBarNoopRefreshes');
       return bar;
