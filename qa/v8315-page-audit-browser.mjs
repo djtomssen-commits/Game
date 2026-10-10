@@ -152,7 +152,7 @@ try{
  });
  assert.equal(qaCenter.restored,true,'opt-in fetch instrumentation was not restored');
  assert.equal(qaCenter.restoredText,true,'V8.371 textContent instrumentation was not restored');
- assert.equal(qaCenter.result.version,'V8.375','QA Center version missing');
+ assert.equal(qaCenter.result.version,'V8.376','QA Center version missing');
  assert.ok(qaCenter.result.qaCenter.mutationDetail?.character?.identicalText>=1,
   'V8.370 same-text childList replacement classification missing');
  assert.ok(qaCenter.result.qaCenter.mutationDetail?.character?.textWriters?.some(x=>x.attempts>=1),
@@ -711,6 +711,82 @@ try{
   coreInventory.metrics?.noops>=1&&coreInventory.metrics?.fullRenders>=4,
   'V8.375 authentic core inventory stable/change/reset/Server1: '+JSON.stringify(coreInventory));
  await corePage.close();
+
+ // V8.376: exercise real V468 and V6107 item-image painters against
+ // browser-normalized relative URLs. Verify existing node identity, artwork
+ // changes, same-node quality update and the preserved Server1 behavior.
+ const artMarkup='<html><head><base href="https://images.example.test/"></head><body>'+
+  '<section id="character" class="screen active"><div id="inventory">'+
+  '<div class="inventory-grid"><div class="inv-item">'+
+  '<div class="item-name"><span class="v459-inv-icon">'+
+  '<img class="v466-item-art" src="assets/a.webp" alt="Test Helm"></span>'+
+  '<span class="v459-inv-name">Test Helm</span></div></div></div>'+
+  '</div></section></body></html>';
+ const imgPage=await browser.newPage();
+ imgPage.on('pageerror',e=>errors.push('v8376-v468: '+String(e.message||e)));
+ await imgPage.route('https://images.example.test/**',route=>route.abort());
+ await imgPage.setContent(artMarkup,{waitUntil:'domcontentloaded'});
+ await imgPage.evaluate(()=>{
+   window.GROW_RELEASE_CHANNEL='beta';
+   window.s={inventory:[{name:'Test Helm',art:'assets/a.webp',quality:'blue'}]};
+   window.v466ItemArtUri=it=>it.art;
+   window.renderInventory=()=>{};
+ });
+ await imgPage.addScriptTag({path:path.join(process.cwd(),
+  'js/features/items/beta/v8009-s13-v468-single-item-art-owner.js')});
+ const v468Result=await imgPage.evaluate(()=>{
+   const box=document.querySelector('.v459-inv-icon'),initial=box.querySelector('img');
+   const normalized=initial.getAttribute('src')!==initial.src;
+   const obs=new MutationObserver(()=>{});obs.observe(box,{childList:true});
+   renderInventory();renderInventory();
+   const stable=initial===box.querySelector('img')&&obs.takeRecords().length===0;
+   s.inventory[0].art='assets/b.webp';renderInventory();
+   const changed=box.querySelector('img')!==initial&&box.querySelector('img')?.getAttribute('src')==='assets/b.webp';
+   obs.takeRecords();
+   const standalone=document.createElement('img');
+   standalone.className='v466-item-art';standalone.src='assets/b.webp';
+   box.replaceChildren(standalone);obs.takeRecords();
+   window.GROW_RELEASE_CHANNEL='server1';renderInventory();
+   const legacy=box.querySelector('img')!==standalone&&obs.takeRecords().length>0;
+   obs.disconnect();
+   return {normalized,stable,changed,legacy,counts:window.__V8376_V468_ART_QA__?.()};
+ });
+ assert.ok(v468Result.normalized&&v468Result.stable&&v468Result.changed&&v468Result.legacy&&
+  v468Result.counts?.kept>0,'V8.376 V468 relative URL reuse/source change/Server1: '+JSON.stringify(v468Result));
+ await imgPage.close();
+
+ const globalArtPage=await browser.newPage();
+ globalArtPage.on('pageerror',e=>errors.push('v8376-v6107: '+String(e.message||e)));
+ await globalArtPage.route('https://images.example.test/**',route=>route.abort());
+ await globalArtPage.setContent(artMarkup,{waitUntil:'domcontentloaded'});
+ await globalArtPage.evaluate(()=>{
+   window.GROW_RELEASE_CHANNEL='beta';
+   window.s={inventory:[{name:'Test Helm',art:'assets/a.webp',quality:'blue'}],equipment:{}};
+   window.v6106RealItemArt=it=>it.art;
+ });
+ await globalArtPage.addScriptTag({path:path.join(process.cwd(),
+  'js/features/items/beta/v8009-s4-v6107-global-item-art-authority.js')});
+ const v6107Result=await globalArtPage.evaluate(()=>{
+   const box=document.querySelector('.v459-inv-icon'),initial=box.querySelector('img');
+   const obs=new MutationObserver(()=>{});obs.observe(box,{childList:true});
+   v6107PaintItemSurfaces();v6107PaintItemSurfaces();
+   const stable=box.querySelector('img')===initial&&obs.takeRecords().length===0&&
+     initial.classList.contains('v6107-item-art');
+   s.inventory[0].quality='cyan';v6107PaintItemSurfaces();
+   const quality=box.querySelector('img')===initial&&initial.dataset.v6108Quality==='cyan';
+   s.inventory[0].art='assets/b.webp';v6107PaintItemSurfaces();
+   const changed=box.querySelector('img')!==initial&&box.querySelector('img')?.getAttribute('src')==='assets/b.webp';
+   const standalone=document.createElement('img');
+   standalone.className='v466-item-art';standalone.src='assets/b.webp';
+   box.replaceChildren(standalone);obs.takeRecords();
+   window.GROW_RELEASE_CHANNEL='server1';v6107PaintItemSurfaces();
+   const legacy=box.querySelector('img')!==standalone&&obs.takeRecords().length>0;
+   obs.disconnect();
+   return {stable,quality,changed,legacy,counts:window.__V8376_GLOBAL_ART_QA__?.()};
+ });
+ assert.ok(v6107Result.stable&&v6107Result.quality&&v6107Result.changed&&v6107Result.legacy&&
+  v6107Result.counts?.kept>0,'V8.376 V6107 V459 node adoption/quality/source/Server1: '+JSON.stringify(v6107Result));
+ await globalArtPage.close();
 
  assert.ok(errors.length===0,errors.join('; '));
  fs.mkdirSync('qa/reports',{recursive:true});
