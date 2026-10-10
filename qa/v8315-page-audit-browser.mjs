@@ -146,7 +146,7 @@ try{
   return {result,restored};
  });
  assert.equal(qaCenter.restored,true,'opt-in fetch instrumentation was not restored');
- assert.equal(qaCenter.result.version,'V8.367','QA Center version missing');
+ assert.equal(qaCenter.result.version,'V8.368','QA Center version missing');
  assert.ok(qaCenter.result.qaCenter.network.errors>=1,'QA network errors were not collected');
  assert.ok(qaCenter.result.qaCenter.network.endpoints.some(x=>x.endpoint==='REST qa_probe'&&x.failures>=1),
   'sanitized failed REST request missing: '+JSON.stringify(qaCenter.result.qaCenter.network.endpoints));
@@ -388,6 +388,41 @@ try{
   assert.ok(forgeOwner.before?.lightNebelforgeShells>=1&&
    forgeOwner.after?.enchantPanelsBuilt>forgeOwner.before?.enchantPanelsBuilt,
    'V8.367 lightweight forge shell counters failed: '+JSON.stringify(forgeOwner));
+  // V8.368: exercise the actual runic FX owner on a real Character item
+  // surface, including unchanged item, changed enchant level and unenchanted.
+  await forgePage.addScriptTag({path:path.join(process.cwd(),'js/features/forge/beta/v8198-enchanting.js')});
+  const itemFx=await forgePage.evaluate(()=>{
+   const card=document.createElement('div');
+   card.className='inv-item v460-worse';
+   document.getElementById('character').appendChild(card);
+   const make=n=>({v8198Enchant:{level:n}});
+   const paint=window.v8198ApplyItemFx;
+   paint(card,make(2));
+   const badge=card.querySelector(':scope > .v8198-plus-badge');
+   const effect=card.querySelector(':scope > .v8198-item-fx');
+   const observe=new MutationObserver(()=>{});
+   observe.observe(card,{subtree:true,attributes:true,childList:true,characterData:true});
+   paint(card,make(2));
+   const steady=badge===card.querySelector(':scope > .v8198-plus-badge')&&
+     effect===card.querySelector(':scope > .v8198-item-fx')&&
+     observe.takeRecords().length===0;
+   paint(card,make(3));
+   const changed=card.querySelector(':scope > .v8198-plus-badge')?.textContent==='+3'&&
+    card.classList.contains('v8198-e3')&&!card.classList.contains('v8198-e2');
+   paint(card,make(0));
+   const clean=!card.querySelector(':scope > .v8198-plus-badge')&&
+    !card.querySelector(':scope > .v8198-item-fx')&&
+    !card.hasAttribute('data-v8198-enchant');
+   const before=window.__V8368_ITEM_FX_QA__?.();
+   paint(card,make(0));
+   const noopClear=window.__V8368_ITEM_FX_QA__?.().noopRenders>before.noopRenders;
+   observe.disconnect();
+   return {steady,changed,clean,noopClear,qa:window.__V8368_ITEM_FX_QA__?.()};
+  });
+  assert.ok(itemFx.steady&&itemFx.changed&&itemFx.clean&&itemFx.noopClear,
+   'V8.368 item FX stable render or enchanted level transition failed: '+JSON.stringify(itemFx));
+  assert.ok(itemFx.qa?.noopRenders>=2&&itemFx.qa?.fullRenders>=3,
+   'V8.368 character item FX counter mismatch: '+JSON.stringify(itemFx));
   await forgePage.close();
 
 
