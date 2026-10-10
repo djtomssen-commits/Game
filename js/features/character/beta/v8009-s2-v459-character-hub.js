@@ -124,6 +124,27 @@
       }
     }catch(e){console.warn('V4.67 character tab refresh',name,e)}
   }
+  /* V8.355: two frame-local, event-driven paint samples. No MutationObserver,
+     interval, persistent CPU probe, or writes to the material/player DOM. */
+  function v8355MaterialPaintFrames(){
+    if(typeof requestAnimationFrame!=='function'||typeof getComputedStyle!=='function')return;
+    const m=window.__V8348_VISUAL_METRICS__||(window.__V8348_VISUAL_METRICS__={});
+    const trace=m.materialButtonPaintTrace||(m.materialButtonPaintTrace=[]);
+    let step=0;
+    const sample=()=>{
+      const btn=document.querySelector('#v459PanelMaterials.active #v480MaterialAutoBar .v480-auto-btn');
+      if(!btn)return;
+      const cs=getComputedStyle(btn),r=btn.getBoundingClientRect();
+      const y=Number(document.scrollingElement?.scrollTop||window.scrollY||0);
+      trace.push({at:Date.now(),step:++step,top:Math.round(r.top*10)/10,
+        width:Math.round(r.width*10)/10,height:Math.round(r.height*10)/10,
+        scrollY:Math.round(y),opacity:cs.opacity,animation:cs.animationName,
+        transition:cs.transitionDuration,transform:cs.transform,filter:cs.filter});
+      if(trace.length>18)trace.splice(0,trace.length-18);
+      if(step<3)requestAnimationFrame(sample);
+    };
+    requestAnimationFrame(sample);
+  }
   function activateNow(name,scroll=false){
     const shell=document.getElementById('v459CharacterShell');if(!shell)return false;
     /* V8.354 Beta: mount the original Material grid and Auto-Sockeln bar
@@ -146,7 +167,21 @@
     shell.querySelectorAll('.v459-panel').forEach(p=>p.classList.toggle('active',p.dataset.panel===name));
     try{sessionStorage.setItem('growLegends:v459CharacterTab',name)}catch(e){}
     refreshTab(name);
-    if(scroll)try{shell.scrollIntoView({behavior:'smooth',block:'start'})}catch(e){}
+    /* V8.355 Beta: the only remaining programmed movement of the stable
+       material auto-action was a smooth scroll of the whole character shell.
+       Avoid animating the newly revealed green button through the viewport.
+       All other tabs and Server1 retain historical smooth scrolling. */
+    const betaMaterial=name==='materials'&&String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta';
+    if(scroll)try{
+      shell.scrollIntoView({behavior:betaMaterial?'instant':'smooth',block:'start'});
+      if(betaMaterial){
+        const m=window.__V8348_VISUAL_METRICS__||(window.__V8348_VISUAL_METRICS__={});
+        m.materialInstantScrolls=(Number(m.materialInstantScrolls)||0)+1;
+      }
+    }catch(e){
+      try{shell.scrollIntoView({behavior:betaMaterial?'auto':'smooth',block:'start'})}catch(_){}
+    }
+    if(betaMaterial&&scroll)try{v8355MaterialPaintFrames()}catch(_){}
     return true;
   }
 
