@@ -278,7 +278,11 @@ function updateDot(){
   if(b){
     b.classList.toggle('v688-unseen',unseen>0);
     const info=b.querySelector('.info');
-    if(info)info.textContent=unseen?`${unseen} neuer Fund${unseen===1?'':'e'} · 20 Begleiter · Boni + Titel`:'20 Begleiter · 6 Qualitäten · Boni + Titel';
+    if(info){
+      const next=unseen?`${unseen} neuer Fund${unseen===1?'':'e'} · 20 Begleiter · Boni + Titel`:'20 Begleiter · 6 Qualitäten · Boni + Titel';
+      /* V8.373 Beta: do not replace the unchanged Pet Album label. */
+      if(String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()!=='beta'||info.textContent!==next)info.textContent=next;
+    }
     let count=b.querySelector('.v688-book-count');
     if(unseen>0){
       if(!count){count=document.createElement('span');count.className='v688-book-count';b.appendChild(count)}
