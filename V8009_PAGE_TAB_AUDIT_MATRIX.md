@@ -277,3 +277,6 @@ V8.287 – Aktive tägliche Verlustwache
 
 ### V8.381 – Server1 Quest Einzelzeit (10.10.2026)
 - Quest-Abhol-Owner protokolliert in höchstens sechs server1-only In-Memory-Messungen die tatsächliche RPC-, Animations-, Popup- und ACK/State-Zeit. Systemtechnik zeigt eigene Karte und QA-Copy-Zeilen; keine neuen Requests/Timer, keine Spielmechanik oder Beta-Cache verändert. Echte Server1-Android-Abnahme offen.
+
+### V8.381 – Server1 Android-Abnahme Quest-Einzelmessung (10.10.2026)
+- Nutzer bestätigte zwei echte Server1-Quest-Claims mit Kampfanimation **AUS**: Serverclaim 411/172 ms, Belohnungs-Popup-Aufruf t+455/t+229 ms, Folgeframe t+507/t+281 ms, gesamter Claim t+997/t+557 ms, jeweils `Claim bestätigt`. Der generische Klickmonitor zeigte max 1.350 ms, enthält aber zusätzlich zeitlich überlappende Gilden- und Authority-RPCs und ist nicht gleich Popup-Wartezeit. Keine mehrsekündige Quest-Popup-Latenz in diesen zwei Fällen. V8.380/381 damit gezielt live auf Android abgenommen; keine weiteren Quest-Codeänderungen, nächste Latenzuntersuchung Attributpunkte getrennt.
