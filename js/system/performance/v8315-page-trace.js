@@ -14,6 +14,48 @@ const betaAudit=()=>String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='bet
    are read or stored. All instrumentation is cleaned up at STOP. */
 const qaState={extended:false,requests:[],rpcStats:{},networkErrors:0,slowRequests:0,layoutChecks:0,visualChecks:0,findings:[],coverage:[]};
 let originalFetch=null,wrappedFetch=null,xhrOpen=null,xhrSend=null,wrappedXhrOpen=null,wrappedXhrSend=null;
+/* V8.371 Beta extended QA: temporarily inspect calls that rewrite the same
+   leaf text. Capture only script path + line (strictly whitelisted), DOM
+   component class, and counts; never text, URLs, character state or stacks. */
+let textOriginDescriptor=null,wrappedTextOrigin=null;
+function installTextOriginTrace(){
+ if(!betaAudit()||!qaState.extended||wrappedTextOrigin)return;
+ const d=Object.getOwnPropertyDescriptor(Node.prototype,'textContent');
+ if(!d?.get||!d?.set||!d.configurable)return;
+ textOriginDescriptor=d;
+ wrappedTextOrigin=function(next){
+  try{
+   if(state.running&&qaState.extended&&['character','forge','harzDealer'].includes(current)&&
+      this?.nodeType===1&&this.childNodes?.length===1&&this.firstChild?.nodeType===3&&
+      this.firstChild.nodeValue===String(next??'')){
+    const root=document.getElementById(current);
+    if(root?.contains(this)&&!isOwn(this)){
+     /* Stack is inspected transiently; only a fixed js/*.js path and numeric
+        line survive. Querystrings, origins, parameters and message text do not. */
+     let caller='unclassified';
+     for(const line of String(new Error().stack||'').split('\n').slice(1,9)){
+      const m=line.match(/(?:^|\/)\b((?:js\/[a-zA-Z0-9_./-]+\.js)|beta\.html):([0-9]{1,6}):[0-9]{1,6}/);
+      if(m&&!m[1].includes('v8315-page-trace.js')){caller=m[1]+':'+m[2];break}
+     }
+     const p=createPage(current),name=safeDomOwner(this,root),key=caller+' @ '+name;
+     p.textWriteOwners[key]=(p.textWriteOwners[key]||0)+1;
+    }
+   }
+  }catch(_){}
+  return d.set.call(this,next);
+ };
+ try{Object.defineProperty(Node.prototype,'textContent',{...d,set:wrappedTextOrigin})}
+ catch(_){wrappedTextOrigin=null;textOriginDescriptor=null}
+}
+function teardownTextOriginTrace(){
+ if(!wrappedTextOrigin)return;
+ try{
+  if(Object.getOwnPropertyDescriptor(Node.prototype,'textContent')?.set===wrappedTextOrigin)
+   Object.defineProperty(Node.prototype,'textContent',textOriginDescriptor);
+ }catch(_){}
+ wrappedTextOrigin=null;textOriginDescriptor=null;
+}
+
 const state={running:false,sweeping:false,startedAt:0,stoppedAt:0,channel:'',pages:{},log:[],slowTasks:0,shiftCount:0,stopReason:'',sweepDone:0,tabResults:[],tabSkipped:[],tabSweepDone:0,tabSweepDiscovered:0,tabSweepLimited:false};
 let observer=null,perfObserver=null,ticker=0,raf=0,lastFrame=0,tracked=null,sweepCancelled=false,dock=null,watched=[];
 const clock=()=>performance.now();
@@ -29,7 +71,7 @@ function createPage(id){
    added:0,removed:0,mutations:0,rootReplacements:0,currentReplacements:0,
    visibilityChanges:0,layoutShifts:0,longTasks:0,longestTaskMs:0,
    frames:0,jankFrames:0,maxFrameGapMs:0,frameGaps:[],renderMarks:{},
-   navMeasuredMs:[],tabClicks:{},imageErrors:0,brokenImageHints:[],mutationTargets:{},layoutShiftTargets:{},mutationTypes:{records:0,textOnly:0,identicalText:0,elementChanged:0,elementAdded:0,elementRemoved:0,owners:{}}
+   navMeasuredMs:[],tabClicks:{},imageErrors:0,brokenImageHints:[],mutationTargets:{},layoutShiftTargets:{},mutationTypes:{records:0,textOnly:0,identicalText:0,elementChanged:0,elementAdded:0,elementRemoved:0,owners:{}},textWriteOwners:{}
  });
 }
 let current='unknown',screenAt=0;
@@ -430,7 +472,7 @@ function cleanup(){
  window.removeEventListener('growlegends:navigation-open-v7119',onNav);
  window.removeEventListener('error',onError);
  window.removeEventListener('unhandledrejection',onError);
- teardownNetwork();
+ teardownNetwork();teardownTextOriginTrace();
  observer?.disconnect();observer=null;
  perfObserver?.disconnect();perfObserver=null;
  for(const w of watched)w.disconnect();watched=[];
@@ -534,7 +576,7 @@ function report(){
  const findings=qaState.extended?rankedFindings(pages):[];
  const counts={high:0,medium:0,low:0};
  for(const f of findings)if(counts[f.severity]!==undefined)counts[f.severity]++;
- return {version:betaAudit()?'V8.370':'V8.360',mode:'opt-in-device',server:state.channel,
+ return {version:betaAudit()?'V8.371':'V8.360',mode:'opt-in-device',server:state.channel,
   running:state.running,sweeping:state.sweeping,elapsedMs:Math.round((state.stoppedAt||clock())-state.startedAt),
   pages,totalScreens:pages.length,primaryScreens:pages.filter(p=>SCREENS.includes(p.screen)).length,
   linkedScreens:pages.filter(p=>LINKED_SCREENS.includes(p.screen)).map(p=>p.screen),slowTasks:state.slowTasks,layoutShiftEvents:state.shiftCount,
@@ -551,7 +593,7 @@ function report(){
       for(const screen of ['character','harzDealer','forge']){
        const d=state.pages[screen]?.mutationTypes;if(!d)continue;
        const {owners,...totals}=d;
-       out[screen]={...totals,hotspots:Object.entries(owners)
+       out[screen]={...totals,textWriters:Object.entries(state.pages[screen]?.textWriteOwners||{}).sort((a,b)=>b[1]-a[1]).slice(0,12).map(([callerAndComponent,attempts])=>({callerAndComponent,attempts})),hotspots:Object.entries(owners)
         .sort((a,b)=>b[1].records-a[1].records).slice(0,12)
         .map(([component,counts])=>({component,...counts}))};
       }
@@ -698,7 +740,7 @@ async function sweep(options={}){
  const dwell=Math.max(150,Math.min(10000,Number(options.dwellMs)||2200));
  const withTabs=options.includeTabs===true&&String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta';
  qaState.extended=withTabs&&options.extended===true;
- if(qaState.extended)setupNetwork();
+ if(qaState.extended){setupNetwork();installTextOriginTrace();}
  state.sweeping=true;sweepCancelled=false;
  const restore=active();
  for(const id of ids){
