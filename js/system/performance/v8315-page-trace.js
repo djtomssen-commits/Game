@@ -5,6 +5,10 @@
 'use strict';
 if(window.GL_PAGE_AUDIT)return;
 const SCREENS=['world','character','grow','quests','dungeon','tower','caravan','endgame','shop','forge','harzDealer','bagDealer','pvp','guild','hall','friends','mail'];
+/* V8.361: navigable secondary pages are not counted as extra primary routes. */
+const LINKED_SCREENS=['goldShop'];
+const EXPECTED_TAB_ROUTES={'harzDealer:gold':'goldShop'};
+const betaAudit=()=>String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta';
 const state={running:false,sweeping:false,startedAt:0,stoppedAt:0,channel:'',pages:{},log:[],slowTasks:0,shiftCount:0,stopReason:'',sweepDone:0,tabResults:[],tabSkipped:[],tabSweepDone:0,tabSweepDiscovered:0,tabSweepLimited:false};
 let observer=null,perfObserver=null,ticker=0,raf=0,lastFrame=0,tracked=null,sweepCancelled=false,dock=null,watched=[];
 const clock=()=>performance.now();
@@ -20,7 +24,7 @@ function createPage(id){
    added:0,removed:0,mutations:0,rootReplacements:0,currentReplacements:0,
    visibilityChanges:0,layoutShifts:0,longTasks:0,longestTaskMs:0,
    frames:0,jankFrames:0,maxFrameGapMs:0,frameGaps:[],renderMarks:{},
-   navMeasuredMs:[],tabClicks:{},imageErrors:0
+   navMeasuredMs:[],tabClicks:{},imageErrors:0,brokenImageHints:[]
  });
 }
 let current='unknown',screenAt=0;
@@ -46,13 +50,45 @@ function summaryImageErrors(root){
  }
  return count;
 }
+/* V8.361: no account/player names or full external image URLs in reports.
+   Local asset paths are safe to report; third-party URLs are only categorized. */
+function brokenImageHints(root){
+ const out=[];
+ for(const img of root?.querySelectorAll?.('img')||[]){
+  if(!(img.complete&&img.naturalWidth===0))continue;
+  let source='missing-or-invalid-src';
+  try{
+   const raw=img.getAttribute('src')||'';
+   if(raw){
+    const url=new URL(raw,location.href);
+    source=url.origin===location.origin&&url.pathname.startsWith('/assets/')
+      ?url.pathname.slice(0,150)
+      :url.origin===location.origin?'local-nonasset':'external-image';
+   }
+  }catch(_){}
+  const visible=!!img.getClientRects?.().length;
+  if(!out.some(x=>x.source===source&&x.visible===visible))out.push({source,visible});
+  if(out.length>=6)break;
+ }
+ return out;
+}
+function relevantMutation(r,root){
+ if(!root||isOwn(r.target))return false;
+ if(r.target===root||root.contains(r.target))return true;
+ /* Includes direct replacement of the active root by another owner. */
+ return [...r.addedNodes,...r.removedNodes].some(n=>n.nodeType===1&&(n===root||n.contains?.(root)));
+}
 function observeChanges(records){
  if(!state.running)return;
- const p=createPage(current);
- let changed=false;
+ const p=createPage(current),root=document.getElementById(current);
+ let relevant=0;
  for(const r of records){
-  if(isOwn(r.target))continue;
   if(r.type!=='childList')continue;
+  /* V8.361 Beta: do NOT charge inactive pages' DOM work to the visible
+     Forge/Dealer/Guild. Preserve old recorder semantics on Server1. */
+  if(betaAudit()&&!relevantMutation(r,root))continue;
+  if(isOwn(r.target))continue;
+  relevant++;
   let added=0,removed=0;
   for(const n of r.addedNodes)if(n.nodeType===1&&!isOwn(n))added++;
   for(const n of r.removedNodes){
@@ -67,9 +103,12 @@ function observeChanges(records){
      tracked=null;
    }
   }
-  if(added||removed){p.added+=added;p.removed+=removed;changed=true}
+  if(added||removed){p.added+=added;p.removed+=removed}
  }
- if(changed){p.mutations+=records.length;}
+ /* Beta records reflect only childList mutations within the current screen;
+    earlier versions used the entire global batch size instead. */
+ if(betaAudit())p.mutations+=relevant;
+ else if(relevant&&records.some(x=>x.addedNodes.length||x.removedNodes.length))p.mutations+=records.length;
  if(current==='world'&&!tracked)tracked=document.querySelector('#world .v366-lower');
 }
 function watchCritical(){
@@ -131,6 +170,7 @@ function inspect(){
   p.domNodesMax=Math.max(p.domNodesMax,count);
   p.domNodesMin=Math.min(p.domNodesMin,count);
   p.imageErrors=Math.max(p.imageErrors,summaryImageErrors(el));
+  if(betaAudit()&&p.imageErrors)p.brokenImageHints=brokenImageHints(el);
  }
  if(current==='world'&&!tracked)tracked=document.querySelector('#world .v366-lower');
 }
@@ -248,11 +288,13 @@ function report(){
   aktuellesReplacements:p.currentReplacements,visibilityChanges:p.visibilityChanges,
   layoutShifts:p.layoutShifts,longTasks:p.longTasks,longestTaskMs:p.longestTaskMs,
   frameCount:p.frames,jankFrames:p.jankFrames,maxFrameGapMs:p.maxFrameGapMs,
-  p95FrameGapMs:percentile(p.frameGaps,0.95),renderMarks:{...p.renderMarks},tabClicks:{...p.tabClicks},brokenImages:p.imageErrors
- })).filter(p=>p.visits>0&&SCREENS.includes(p.screen));
- return {version:'V8.360',mode:'opt-in-device',server:state.channel,
+  p95FrameGapMs:percentile(p.frameGaps,0.95),renderMarks:{...p.renderMarks},tabClicks:{...p.tabClicks},brokenImages:p.imageErrors,
+  ...(betaAudit()?{brokenImageHints:p.brokenImageHints||[]}:{} )
+ })).filter(p=>p.visits>0&&(SCREENS.includes(p.screen)||(betaAudit()&&LINKED_SCREENS.includes(p.screen))));
+ return {version:betaAudit()?'V8.361':'V8.360',mode:'opt-in-device',server:state.channel,
   running:state.running,sweeping:state.sweeping,elapsedMs:Math.round((state.stoppedAt||clock())-state.startedAt),
-  pages,totalScreens:pages.length,slowTasks:state.slowTasks,layoutShiftEvents:state.shiftCount,
+  pages,totalScreens:pages.length,primaryScreens:pages.filter(p=>SCREENS.includes(p.screen)).length,
+  linkedScreens:pages.filter(p=>LINKED_SCREENS.includes(p.screen)).map(p=>p.screen),slowTasks:state.slowTasks,layoutShiftEvents:state.shiftCount,
   sweepDone:state.sweepDone,stopReason:state.stopReason,tabSweepDone:state.tabSweepDone,tabSweepDiscovered:state.tabSweepDiscovered,tabSweepLimited:state.tabSweepLimited,tabResults:state.tabResults,tabSkipped:state.tabSkipped,events:state.log.slice(-220),
   note:'UI navigation and tab timing/DOM metrics only. Visual GPU flicker, gameplay functionality, server persistence and transaction correctness are not automatically proven.'};
 }
@@ -336,7 +378,11 @@ async function auditTabs(id,opts){
   try{candidate.button.click()}catch(_){status='click_error'}
   await pause(status==='tested'?dwell:30);
   inspect();
-  if(active()!==id)status='unexpected_navigation';
+  if(active()!==id){
+   const dest=active();
+   status=betaAudit()&&EXPECTED_TAB_ROUTES[id+':'+candidate.tab]===dest?'linked_screen':'unexpected_navigation';
+   if(status==='linked_screen')inspect();
+  }
   const last=probeSnapshot(id),warnings=[];
   const delta={};for(const [key,value]of Object.entries(old))delta[key]=Math.max(0,p[key]-value);
   const errors=Math.max(0,state.log.filter(e=>e.kind==='runtime_error'&&e.screen===id).length-errorBefore);
@@ -344,14 +390,14 @@ async function auditTabs(id,opts){
   if(delta.layoutShifts>=2)warnings.push('multiple_layout_shifts');
   if(delta.removed>=100)warnings.push('heavy_dom_rebuild');
   if(errors)warnings.push('javascript_error');
-  if(status!=='tested')warnings.push(status);
+  if(status!=='tested'&&status!=='linked_screen')warnings.push(status);
   state.tabResults.push({screen:id,tab:candidate.tab,group:candidate.group,status,durationMs:Math.round(clock()-started),
    domNodesBefore:first.nodes,domNodesAfter:last.nodes,imagesBefore:first.images,imagesAfter:last.images,
    brokenImages:last.broken,mutationRecords:delta.mutations,nodesAdded:delta.added,nodesRemoved:delta.removed,
    layoutShifts:delta.layoutShifts,longTasks:delta.longTasks,jankFrames:delta.jankFrames,javascriptErrors:errors,warnings});
   log('tab_probe',id,{tab:candidate.tab,status,warnings});
-  if(status==='tested')state.tabSweepDone++;
-  else if(status==='unexpected_navigation')break;
+  if(status==='tested'||status==='linked_screen')state.tabSweepDone++;
+  if(status==='unexpected_navigation'||status==='linked_screen')break;
  }
  if(count>=limit||state.tabSweepDone>=globalLimit)state.tabSweepLimited=true;
  for(const candidate of availableTabs(id)){
@@ -372,10 +418,14 @@ async function sweep(options={}){
   if(sweepCancelled||!state.running)break;
   const t=clock();
   try{
-   window.v032Go(id);
+   /* Nebelkarawane owns its own async page navigation, not v7119. */
+   const go=id==='caravan'&&betaAudit()&&typeof window.v7240OpenCaravan==='function'
+     ?window.v7240OpenCaravan():window.v032Go(id);
+   if(go&&typeof go.then==='function')await Promise.race([go,pause(3500)]);
    log('sweep_route',id);
    showProgress('SEITE '+id+' ('+(state.sweepDone+1)+'/'+ids.length+')');
    await pause(dwell);
+   if(betaAudit())inspect(); /* ensure a short lived but active page is counted */
    const p=createPage(id);p.navMeasuredMs.push(Math.round(clock()-t));
    if(active()!==id)log('route_inactive',id,{actual:active()});
    else{
