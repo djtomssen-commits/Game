@@ -147,20 +147,31 @@
   }
   function activateNow(name,scroll=false){
     const shell=document.getElementById('v459CharacterShell');if(!shell)return false;
-    /* V8.354 Beta: mount the original Material grid and Auto-Sockeln bar
-       while its panel is still hidden, before exposing the Material tab.
-       This eliminates the observed V8.353 late first-mount (t+3733ms)
-       without a new renderer, timer, observer or gameplay-state change.
-       Keep the existing post-activation refresh for real state changes. */
+    /* V8.359 Beta: a remembered Materials tab can already have .active
+       when the Character page is reopened (v504 final layout owner).
+       If its Auto-Sockeln bar has not yet mounted, prepare it with the
+       panel temporarily hidden in the SAME synchronous turn, before paint.
+       Preserve V8.354 prewarm for ordinary tab switches. Only do this
+       while Character is visible: v480 intentionally refuses hidden-page
+       updates. The original renderer/actions and post-activation refresh stay. */
     if(name==='materials'&&String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta'){
       const panel=document.getElementById('v459PanelMaterials');
-      if(panel&&!panel.classList.contains('active')){
+      const bar=document.getElementById('v480MaterialAutoBar');
+      const wasActive=!!panel?.classList.contains('active');
+      const needsFirstMount=!bar||bar.parentElement!==panel;
+      if(panel&&document.getElementById('character')?.classList.contains('active')&&
+         (!wasActive||needsFirstMount)){
         try{
+          if(wasActive)panel.classList.remove('active');
           window.v030RenderMaterials?.();
           window.v480UpdateAutoBars?.('materials');
-          const m=window.__V8348_VISUAL_METRICS__||(window.__V8348_VISUAL_METRICS__={});
-          m.autoMaterialBarHiddenPrepares=(Number(m.autoMaterialBarHiddenPrepares)||0)+1;
-        }catch(e){console.warn('V8.354 hidden material preparation',e)}
+          if(document.getElementById('v480MaterialAutoBar')?.parentElement===panel){
+            const m=window.__V8348_VISUAL_METRICS__||(window.__V8348_VISUAL_METRICS__={});
+            m.autoMaterialBarHiddenPrepares=(Number(m.autoMaterialBarHiddenPrepares)||0)+1;
+            if(wasActive)m.materialRememberedTabFirstMountPrepares=(Number(m.materialRememberedTabFirstMountPrepares)||0)+1;
+          }
+        }catch(e){console.warn('V8.359 hidden material first mount',e)}
+        finally{if(wasActive)panel.classList.add('active')}
       }
     }
     shell.querySelectorAll('#v459CharacterTabs button').forEach(b=>b.classList.toggle('active',b.dataset.tab===name));
