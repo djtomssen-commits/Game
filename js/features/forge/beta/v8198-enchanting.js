@@ -47,8 +47,8 @@ function applyItemFx(root,it){
  if(beta){
   V8368_ITEM_FX_QA.calls++;
   const n=levelOf(it),old=Number(root.dataset.v8198Enchant||0);
-  const wanted=fxClass(it).split(/\\s+/).filter(Boolean);
-  const present=[...root.classList].filter(c=>/^v8198-e\\d+$/.test(c)||c==='v8198-e-glow'||c==='v8198-e-flash');
+  const wanted=fxClass(it).split(/\s+/).filter(Boolean);
+  const present=[...root.classList].filter(c=>/^v8198-e\d+$/.test(c)||c==='v8198-e-glow'||c==='v8198-e-flash');
   const badges=root.querySelectorAll(':scope > .v8198-plus-badge');
   const effects=root.querySelectorAll(':scope > .v8198-item-fx');
   const matching=old===n&&present.length===wanted.length&&
