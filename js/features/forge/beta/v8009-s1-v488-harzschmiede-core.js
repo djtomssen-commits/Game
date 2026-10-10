@@ -172,7 +172,7 @@
     /* V8.367 Beta: a Nebelschmied entry only needs its navigation shell.
        Do not construct the previously active Enchant/Craft/Dismantle view
        underneath a different, server-owned panel. */
-    const nebelLight=String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta'&&options?.nebelforge===true;
+    const nebelLight=(String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta'||(window.__GROW_SERVER1_PERFORMANCE_V8376__===true&&String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='server1'))&&options?.nebelforge===true;
     /* V7.273 Beta: while Nebelschmied owns the forge, the legacy renderer
        must not rebuild the entire forge DOM. Those rebuilds caused flicker. */
     if(document.getElementById('forge')?.classList.contains('v7240-nebel-open'))return;
