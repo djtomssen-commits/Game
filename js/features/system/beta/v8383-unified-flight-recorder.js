@@ -40,7 +40,11 @@
    var at=Date.now(),msg=scrub(message,260),place=screen();
    var path=meta&&meta.path?safePath(meta.path):'';
    var type=scrub(kind,42),sev=level==='error'?'error':'warning';
-   var key=type+'|'+place+'|'+(path||msg.slice(0,90));
+   var unique=meta&&meta.group?scrub(meta.group,90):
+    (/^(?:NETWORK_FAILURE|NETWORK_REJECTED|RPC_REJECTED|SLOW_NETWORK)$/.test(type)
+      ?path+'|'+String(Number(meta&&meta.status)||0)
+      :(path?path+'|':'')+msg.slice(0,90));
+   var key=type+'|'+place+'|'+unique;
    var item=groups.find(function(v){return v.key===key});
    if(item){item.count++;item.last=at;item.message=msg;}
    else{
@@ -62,18 +66,18 @@
    var isApi=/\/(?:rest\/v1|auth\/v1|functions\/v1)\//.test(path);
    if(!isApi)return;
    var detail=method+' '+path+' · '+(status||'Netzwerkfehler')+' · '+ms+' ms';
-   if(input.failed||status===0||status>=500)fire('NETWORK_FAILURE','error',detail,{path:path,elapsedMs:ms});
-   else if(status===401||status===403||status===429)fire('NETWORK_REJECTED','warning',detail,{path:path,elapsedMs:ms});
-   else if(status>=400&&!input.expectedReject)fire('RPC_REJECTED','warning',detail,{path:path,elapsedMs:ms});
-   else if(ms>=3000)fire('SLOW_NETWORK','warning',detail,{path:path,elapsedMs:ms});
+   if(input.failed||status===0||status>=500)fire('NETWORK_FAILURE','error',detail,{path:path,elapsedMs:ms,status:status});
+   else if(status===401||status===403||status===429)fire('NETWORK_REJECTED','warning',detail,{path:path,elapsedMs:ms,status:status});
+   else if(status>=400&&!input.expectedReject)fire('RPC_REJECTED','warning',detail,{path:path,elapsedMs:ms,status:status});
+   else if(ms>=3000)fire('SLOW_NETWORK','warning',detail,{path:path,elapsedMs:ms,status:status});
   }catch(_){}
  }
  function watchdog(row){
   try{
-   if(!row||!row.kind)return;
+   if(!row||!row.kind||row.kind==='javascript_error'||row.kind==='unhandled_rejection')return;
    var details=row.details||{};
    var detail=scrub(row.kind,80)+' · '+scrub(details.action||details.rpc||details.elapsedMs||details.durationMs||details.message||details.lastError||'',140);
-   fire('WATCHDOG_'+row.kind,row.severity==='error'?'error':'warning',detail,{});
+   fire('WATCHDOG_'+row.kind,row.severity==='error'?'error':'warning',detail,{group:row.kind+'|'+scrub(details.action||details.rpc||'',70)});
   }catch(_){}
  }
  function summary(){
