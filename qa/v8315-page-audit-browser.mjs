@@ -146,7 +146,7 @@ try{
   return {result,restored};
  });
  assert.equal(qaCenter.restored,true,'opt-in fetch instrumentation was not restored');
- assert.equal(qaCenter.result.version,'V8.364','QA Center version missing');
+ assert.equal(qaCenter.result.version,'V8.365','QA Center version missing');
  assert.ok(qaCenter.result.qaCenter.network.errors>=1,'QA network errors were not collected');
  assert.ok(qaCenter.result.qaCenter.network.endpoints.some(x=>x.endpoint==='REST qa_probe'&&x.failures>=1),
   'sanitized failed REST request missing: '+JSON.stringify(qaCenter.result.qaCenter.network.endpoints));
@@ -257,6 +257,55 @@ try{
  assert.ok(ownerCheck.changedQuestCards,'changed quest offers did not rerender');
  assert.ok(ownerCheck.sameOrders,'identical server-authoritative Grow orders were remounted');
  await ownerPage.close();
+
+ // V8.365: run the actual v492 Growroom source in an isolated Beta page.
+ // Multiple identical render() calls must retain the same DOM; changed
+ // server resources must rebuild; stage/timer livePaint remains functional.
+ const growPage=await browser.newPage({viewport:{width:390,height:844}});
+ const growErrors=[];growPage.on('pageerror',e=>growErrors.push(String(e.stack||e.message||e)));
+ await growPage.setContent('<!doctype html><html><body>'+
+  '<section id="grow" class="screen active"></section>'+
+  '<section id="character" class="screen"></section><section id="world" class="screen"></section></body></html>');
+ await growPage.evaluate(()=>{
+  window.GROW_RELEASE_CHANNEL='beta';window.renderGrow=()=>{};window.seedTypes={};
+  window.s={level:20,gold:1500,playerClass:'scout',grow:{
+   roomLevel:1,equipment:{lamp:0,pots:0},seeds:{moss:2},
+   plants:[{uid:'qa_plant',seed:'moss',start:Date.now()-20000,duration:100000,care:[false,false,false,false]}],
+   v492:{selectedSeed:'moss',selectedPlantUid:'qa_plant'}
+  },v488Forge:{fragments:8}};
+  window.persist=()=>{};
+  window.v7081UseAuthority=()=>false;
+  window.GL_WEATHER={bonus:{growMul:1,yieldMul:1}};
+  window.__qaRefresh=0;
+  window.v6163GrowTabs={active:'orders',mountNow:()=>{},refresh:()=>{window.__qaRefresh++}};
+  window.v8144GameplayI18n={apply:()=>{}};
+ });
+ await growPage.addScriptTag({path:path.join(process.cwd(),'js/features/grow/beta/v8009-s1-v492-growroom2.js')});
+ const growOwner=await growPage.evaluate(()=>{
+  const before=document.querySelector('#grow .v492-grow'),diagBefore=window.__V8365_GROW_RENDER_QA__?.();
+  window.renderGrow();
+  const noOpStable=before===document.querySelector('#grow .v492-grow');
+  const diagNoop=window.__V8365_GROW_RENDER_QA__?.();
+  window.s.grow.seeds.moss=3;
+  window.renderGrow();
+  const after=document.querySelector('#grow .v492-grow');
+  const stockChanged=after!==before&&after.querySelector('[data-v492-seed="moss"] .stock')?.textContent==='×3';
+  window.v6163GrowTabs.active='grow';
+  const beforeTime=after.querySelector('[data-v492-time]')?.textContent;
+  window.renderGrow();
+  const liveStable=after===document.querySelector('#grow .v492-grow');
+  const afterTime=after.querySelector('[data-v492-time]')?.textContent;
+  return {noOpStable,stockChanged,liveStable,liveTimer:!!beforeTime&&!!afterTime,
+   diagBefore,diagNoop,diagEnd:window.__V8365_GROW_RENDER_QA__?.(),refreshes:window.__qaRefresh};
+ });
+ assert.deepEqual(growErrors,[],'Growroom canonical renderer boot error');
+ assert.ok(growOwner.noOpStable&&growOwner.stockChanged&&growOwner.liveStable&&growOwner.liveTimer,
+  'V8.365 Grow source stability failed: '+JSON.stringify(growOwner));
+ assert.ok(growOwner.diagNoop?.noopRenders>growOwner.diagBefore?.noopRenders&&
+   growOwner.diagEnd?.fullRenders>=2&&growOwner.diagEnd?.livePaints>=1,
+  'V8.365 Growroom full-vs-live render accounting failed: '+JSON.stringify(growOwner));
+ await growPage.close();
+
  assert.ok(errors.length===0,errors.join('; '));
  fs.mkdirSync('qa/reports',{recursive:true});
  fs.writeFileSync('qa/reports/v8315-per-page-browser.json',JSON.stringify({
