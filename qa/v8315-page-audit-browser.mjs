@@ -146,7 +146,7 @@ try{
   return {result,restored};
  });
  assert.equal(qaCenter.restored,true,'opt-in fetch instrumentation was not restored');
- assert.equal(qaCenter.result.version,'V8.365','QA Center version missing');
+ assert.equal(qaCenter.result.version,'V8.366','QA Center version missing');
  assert.ok(qaCenter.result.qaCenter.network.errors>=1,'QA network errors were not collected');
  assert.ok(qaCenter.result.qaCenter.network.endpoints.some(x=>x.endpoint==='REST qa_probe'&&x.failures>=1),
   'sanitized failed REST request missing: '+JSON.stringify(qaCenter.result.qaCenter.network.endpoints));
@@ -305,6 +305,49 @@ try{
    growOwner.diagEnd?.fullRenders>=2&&growOwner.diagEnd?.livePaints>=1,
   'V8.365 Growroom full-vs-live render accounting failed: '+JSON.stringify(growOwner));
  await growPage.close();
+
+  // V8.366: actual VIP owner: unchanged state retains buttons; changed
+  // confirmed state must repaint the real visible control tree.
+  const vipPage=await browser.newPage({viewport:{width:390,height:844}});
+  const vipErrors=[];vipPage.on('pageerror',e=>vipErrors.push(String(e.stack||e.message||e)));
+  await vipPage.setContent('<!doctype html><html><body><main><section id="harzDealer" class="screen active"></section></main></body></html>');
+  await vipPage.evaluate(()=>{
+   window.GROW_RELEASE_CHANNEL='beta';
+   window.s={level:10,gold:300,harzTaler:20};
+   window.v073User={id:'qa',is_anonymous:false};
+   window.v073Init=async()=>{};
+   window.__qaVip={ok:true,active:false,daily_harz:2,daily_fragments:1,weekly_xp_bonus_pct:10,public_visible:true};
+   window.v073Db={rpc:async()=>({data:{...window.__qaVip}})};
+   window.v032Go=()=>{};
+   window.v8144GameplayI18n={apply:()=>{}};
+   window.v7117DealerHubSync=()=>{};
+   window.renderShop=()=>{};
+  });
+  await vipPage.addScriptTag({path:path.join(process.cwd(),'js/features/shop/beta/v8195-vip.js')});
+  const vipOwner=await vipPage.evaluate(async()=>{
+   await window.v8195VipRefresh(true);
+   const root=document.getElementById('v8195VipPanel');
+   const hero=root.querySelector('.v8195-hero');
+   const button=root.querySelector('[data-v8195-buy-vip="7"]');
+   const before=window.__V8366_VIP_RENDER_QA__();
+   await window.v8195VipRefresh(true);
+   const stillHero=root.querySelector('.v8195-hero')===hero;
+   const stillButton=root.querySelector('[data-v8195-buy-vip="7"]')===button;
+   const after=window.__V8366_VIP_RENDER_QA__();
+   window.__qaVip={...window.__qaVip,active:true,vip_until:new Date(Date.now()+2*86400000).toISOString(),pending_chests:2};
+   await window.v8195VipRefresh(true);
+   const newHero=root.querySelector('.v8195-hero')!==hero;
+   const updated=root.textContent.includes('VIP AKTIV')&&root.textContent.includes('2 VIP-Truhen abholen');
+   const final=window.__V8366_VIP_RENDER_QA__();
+   return {stillHero,stillButton,newHero,updated,before,after,final};
+  });
+  assert.deepEqual(vipErrors,[],'V8.366 canonical VIP renderer boot errors');
+  assert.ok(vipOwner.stillHero&&vipOwner.stillButton&&vipOwner.after.noopRenders>vipOwner.before.noopRenders,
+   'V8.366 identical VIP refresh remounted buttons: '+JSON.stringify(vipOwner));
+  assert.ok(vipOwner.newHero&&vipOwner.updated&&vipOwner.final.fullRenders>vipOwner.after.fullRenders,
+   'V8.366 changed VIP state did not update authoritative controls: '+JSON.stringify(vipOwner));
+  await vipPage.close();
+
 
  assert.ok(errors.length===0,errors.join('; '));
  fs.mkdirSync('qa/reports',{recursive:true});
