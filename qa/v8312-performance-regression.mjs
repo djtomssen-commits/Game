@@ -423,7 +423,7 @@ check(hub354.includes('const wasActive=!!panel?.classList.contains(\'active\')')
 
 /* V8.360: opt-in Beta one-click page+tab coverage, read-only UI interactions. */
 const tabAudit=read('js/system/performance/v8315-page-trace.js');
-check(beta.includes('v8315-page-trace.js?v=8366-shop-noop-qa-beta')&&
+check(beta.includes('v8315-page-trace.js?v=8367-forge-shell-beta')&&
   !read('server1.html').includes('8360-beta-all-tabs-audit')&&
   tech.includes('id="gl8315AllTabs"')&&
   tech.includes('includeTabs:true,extended:true,maxTabsPerScreen:32,maxTabsTotal:130')&&
@@ -448,7 +448,7 @@ check(tabAudit.includes('function safeDomOwner(node,root)')&&
   tabAudit.includes('idleMutationHotspots:')&&
   tabAudit.includes('layoutShiftHotspots:')&&
   tabAudit.includes('if(betaAudit())inspect(); /* caravan becomes visible synchronously')&&
-  tabAudit.includes("return {version:betaAudit()?'V8.366':'V8.360'")&&
+  tabAudit.includes("return {version:betaAudit()?'V8.367':'V8.360'")&&
   !read('server1.html').includes('8362-tab-owner-hotspots-beta'),
   'V8.362 Beta owner and idle-churn profiler contract missing');
 check(beta.includes('v8009-s1-v4107-systemtechnik.js?v=8363-qa-center-button-beta')&&
@@ -467,7 +467,7 @@ const sourceQuest=read('js/features/quest/beta/v386-quest-redesign-script.js');
 check(beta.includes('v8144-i18n-gameplay.js?v=8364-stable-live-text-beta')&&
   beta.includes('v6163-growroom-primary-tabs-core.js?v=8364-stable-grow-tabs-beta')&&
   beta.includes('v386-quest-redesign-script.js?v=8364-stable-quest-cards-beta')&&
-  beta.includes('v8315-page-trace.js?v=8366-shop-noop-qa-beta')&&
+  beta.includes('v8315-page-trace.js?v=8367-forge-shell-beta')&&
   !read('server1.html').includes('8364-stable-live-text-beta')&&
   !read('server1.html').includes('8364-stable-quest-cards-beta')&&
   sourceI18n.includes('LAST_APPLIED_TEXT=new WeakMap()')&&
@@ -487,7 +487,7 @@ check(beta.includes('v8144-i18n-gameplay.js?v=8364-stable-live-text-beta')&&
    progress state must never destroy the whole .v492-grow subtree again. */
 const sourceGrowScene=read('js/features/grow/beta/v8009-s1-v492-growroom2.js');
 check(beta.includes('v492-growroom2.js?v=8365-layout-key-beta')&&
- beta.includes('v8315-page-trace.js?v=8366-shop-noop-qa-beta')&&
+ beta.includes('v8315-page-trace.js?v=8367-forge-shell-beta')&&
  !read('server1.html').includes('v492-growroom2.js?v=8365-layout-key-beta')&&
  sourceGrowScene.includes('function growLayoutSignature()')&&
  sourceGrowScene.includes('plantPhase:statusSig()')&&
@@ -504,7 +504,7 @@ check(beta.includes('v492-growroom2.js?v=8365-layout-key-beta')&&
  const frameSource=read('js/features/shift/beta/v8009-s1-v7137-shift-frame-client.js');
  check(beta.includes('v8195-vip.js?v=8366-vip-render-noop-beta')&&
    beta.includes('v7137-shift-frame-client.js?v=8366-frame-render-noop-beta')&&
-   beta.includes('v8315-page-trace.js?v=8366-shop-noop-qa-beta')&&
+   beta.includes('v8315-page-trace.js?v=8367-forge-shell-beta')&&
    read('server1.html').includes('v8195-vip.js?v=8296threechests1')&&
    read('server1.html').includes('v7137-shift-frame-client.js?v=8295vipframe1')&&
    vipSource.includes('lastVipPanel!==p||lastVipMarkup!==nextMarkup||!p.firstElementChild')&&
@@ -513,9 +513,26 @@ check(beta.includes('v492-growroom2.js?v=8365-layout-key-beta')&&
    frameSource.includes('lastFramePanel!==p||lastFrameMarkup!==nextMarkup||!p.firstElementChild')&&
    frameSource.includes("String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta'")&&
    frameSource.includes('window.__V8366_FRAME_RENDER_QA__')&&
-   tabAudit.includes("return {version:betaAudit()?'V8.366':'V8.360'")&&
+   tabAudit.includes("return {version:betaAudit()?'V8.367':'V8.360'")&&
    tabAudit.includes('renderOwners:{'),
    'V8.366 Beta VIP/frame canonical owner no-op guard or QA diagnostics missing');
+/* V8.367 Beta: the Nebelschmied needs ONLY v488 tabs, never a hidden
+   Enchant list underneath the active v7240 panel. The normal tab must
+   still render on return; Server1 must retain its original flow. */
+const forgeOwner=read('js/features/forge/beta/v8009-s1-v488-harzschmiede-core.js');
+const nebelforgeOwner=read('js/beta/v7240-beta-gold-features.js');
+check(beta.includes('v488-harzschmiede-core.js?v=8367-nebel-light-beta')&&
+ beta.includes('v7240-beta-gold-features.js?v=8367-nebel-light-beta')&&
+ !server1.includes('v488-harzschmiede-core.js?v=8367-nebel-light-beta')&&
+ !server1.includes('v7240-beta-gold-features.js?v=8367-nebel-light-beta')&&
+ forgeOwner.includes('options?.nebelforge===true')&&
+ forgeOwner.includes("nebelLight?'':forgeTab==='enchant'")&&
+ forgeOwner.includes("if(next===forgeTab&&!nebelLight)return;")&&
+ forgeOwner.includes("if(forgeTab==='enchant'&&!nebelLight)")&&
+ nebelforgeOwner.includes('window.v488ForgeRender?.({nebelforge:true})')&&
+ tabAudit.includes('window.__V8367_FORGE_QA__?.()'),
+ 'V8.367 Beta lightweight Nebelschmied shell or QA diagnostics missing');
+
 
 check(beta.includes('v8009-s12-v7081-account-capability-gate.js?v=8337-flat-diag-beta'),'Beta capability hotpath cache not updated');
 check(beta.includes('v8009-s1-v7042-unified-authority-bridge.js?v=8337-memo-diag-beta'),'Beta bridge hotpath cache not updated');
