@@ -161,11 +161,19 @@
     renderCards();
   }
 
+  /* V8.364 Beta: a duplicate quest repaint must not throw away identical
+     quest cards, their per-card handlers, decorations and image nodes. */
+  const lastQuestHtml=new WeakMap();
+  const betaQuest=()=>String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta';
   function renderCards(){
     const list=document.querySelector('#quests .v386-list');
     if(!list)return;
     const qs=currentQuestSet();
-    list.innerHTML=qs.slice(0,3).map((q,i)=>buildCard(q,i)).join('');
+    const html=qs.slice(0,3).map((q,i)=>buildCard(q,i)).join('');
+    if(betaQuest()&&lastQuestHtml.get(list)===html&&
+       list.querySelectorAll('[data-v386-start]').length===Math.min(3,qs.length))return;
+    list.innerHTML=html;
+    if(betaQuest())lastQuestHtml.set(list,html);
     list.querySelectorAll('[data-v386-start]').forEach(btn=>{
       btn.onclick=()=>{
         const i=Number(btn.dataset.v386Start)||0;
