@@ -1,0 +1,21 @@
+name: V8.378 Worldboss Beta balance
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/v8378-worldboss-balance.yml'
+      - 'qa/v8378-worldboss-balance.mjs'
+      - 'ops/database/v8378_beta_worldboss_full_upgrades.sql'
+      - 'js/features/worldboss/beta/v8009-s5-v291-worldboss-upgrades-balance.js'
+      - 'beta.html'
+  workflow_dispatch:
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check Beta worldboss source and Server1 isolation
+        run: node qa/v8378-worldboss-balance.mjs
