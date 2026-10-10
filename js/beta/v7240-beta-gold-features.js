@@ -200,7 +200,10 @@ async function openNebelforge(){
  /* V8.009: v488 owns the full three-tab shell. Build that shell once,
     then switch only the forge body into the server-owned Nebelschmied view. */
  forge.classList.remove('v7240-nebel-open');
- try{window.v488ForgeRender?.()}catch(_){}
+ try{
+  if(String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta')window.v488ForgeRender?.({nebelforge:true});
+  else window.v488ForgeRender?.();
+ }catch(_){}
  forge.classList.add('v7240-nebel-open');
  forge.querySelectorAll('.v667-tabs [data-v667-tab]').forEach(x=>x.classList.toggle('active',x.dataset.v667Tab==='nebelforge'));
  S.forge=null;S.forgeError='';
