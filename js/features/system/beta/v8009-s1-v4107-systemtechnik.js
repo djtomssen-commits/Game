@@ -634,7 +634,8 @@ function stopRuntimeProfiler(){
       ' ms (enthält Wartezeit zwischen Frames)'+
       ' | V8.346 Frame1-Warten '+(characterRender.firstFrameWaitMs??'n/v')+
       ' ms; Frame2-Warten '+(characterRender.secondFrameWaitMs??'n/v')+
-      ' ms; Inventar-Idle-Warten '+(characterRender.inventoryWaitMs??'n/v')+' ms'
+      ' ms; Inventar-Idle-Warten '+(characterRender.inventoryWaitMs??'n/v')+' ms'+
+      ' | V8.351 Idle-Budget '+(characterRender.inventoryIdleBudgetMs??'n/v')+' ms'
     :'Kein vollständig protokollierter Charakter-Render im Messfenster.',
    '',
    'CHARAKTER-NAVIGATION LISTENER (V8.343, letzter Event im Messfenster):',
