@@ -36,8 +36,29 @@ function fxClass(it){
  if(!n)return '';
  return 'v8198-e'+n+(n>=2?' v8198-e-glow':'')+(n>=5?' v8198-e-flash':'');
 }
+/* V8.368 Beta: the Character Hub and several item owners call this
+   repeatedly for the SAME visible item. Do not remove and reappend FX and
+   badges when the actual enchantment level/display is unchanged. */
+const V8368_ITEM_FX_QA={calls:0,noopRenders:0,fullRenders:0};
+window.__V8368_ITEM_FX_QA__=()=>({...V8368_ITEM_FX_QA});
 function applyItemFx(root,it){
  if(!root)return;
+ const beta=String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta';
+ if(beta){
+  V8368_ITEM_FX_QA.calls++;
+  const n=levelOf(it),old=Number(root.dataset.v8198Enchant||0);
+  const wanted=fxClass(it).split(/\\s+/).filter(Boolean);
+  const present=[...root.classList].filter(c=>/^v8198-e\\d+$/.test(c)||c==='v8198-e-glow'||c==='v8198-e-flash');
+  const badges=root.querySelectorAll(':scope > .v8198-plus-badge');
+  const effects=root.querySelectorAll(':scope > .v8198-item-fx');
+  const matching=old===n&&present.length===wanted.length&&
+    wanted.every(c=>root.classList.contains(c))&&
+    badges.length===(n?1:0)&&effects.length===(n?1:0)&&
+    (!n||badges[0].textContent==='+'+n)&&
+    (n>0||!root.hasAttribute('data-v8198-enchant'));
+  if(matching){V8368_ITEM_FX_QA.noopRenders++;return}
+  V8368_ITEM_FX_QA.fullRenders++;
+ }
  [...root.classList].forEach(c=>{if(/^v8198-e\d+$/.test(c)||c==='v8198-e-glow'||c==='v8198-e-flash')root.classList.remove(c)});
  root.querySelectorAll(':scope > .v8198-plus-badge,:scope > .v8198-item-fx').forEach(x=>x.remove());
  delete root.dataset.v8198Enchant;
