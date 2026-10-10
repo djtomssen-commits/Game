@@ -505,8 +505,8 @@ check(beta.includes('v492-growroom2.js?v=8365-layout-key-beta')&&
  check(beta.includes('v8195-vip.js?v=8366-vip-render-noop-beta')&&
    beta.includes('v7137-shift-frame-client.js?v=8366-frame-render-noop-beta')&&
    beta.includes('v8315-page-trace.js?v=8376-item-art-reuse-probe-beta')&&
-   read('server1.html').includes('v8195-vip.js?v=8296threechests1')&&
-   read('server1.html').includes('v7137-shift-frame-client.js?v=8295vipframe1')&&
+   read('server1.html').includes('v8195-vip.js?v=8377-server1-perf-reuse')&&
+   read('server1.html').includes('v7137-shift-frame-client.js?v=8377-server1-perf-reuse')&&
    vipSource.includes('lastVipPanel!==p||lastVipMarkup!==nextMarkup||!p.firstElementChild')&&
    vipSource.includes('betaVipRender()')&&
    vipSource.includes('window.__V8366_VIP_RENDER_QA__')&&
@@ -601,8 +601,46 @@ check(beta.includes('anon-0002.js?v=8372-dampf-text-noop-beta')&&
  dampfOwner.includes("el.textContent!==value")&&
  dampfOwner.includes('v028WriteText(energyEl')&&
  rarityOwner.includes('badge.textContent!==LABEL[q]')&&
- rarityOwner.includes("String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()!=='beta'"),
+ rarityOwner.includes('__GROW_SERVER1_PERFORMANCE_V8376__'),
  'V8.372 canonical Dampf text guard / inventory rarity guard or Server1 isolation missing');
+/* V8.377 Server1: explicit feature-gated, UI-only source promotion.
+   Original Beta behavior and gameplay/class balance entrypoints stay intact. */
+const server1PerfEntry=read('server1.html');
+const promotedPerfSources=[
+ "js/features/grow/beta/v8009-s6-v6163-growroom-primary-tabs-core.js",
+ "js/features/quest/beta/v386-quest-redesign-script.js",
+ "js/features/grow/beta/v8009-s1-v492-growroom2.js",
+ "js/features/shop/beta/v8195-vip.js",
+ "js/features/shift/beta/v8009-s1-v7137-shift-frame-client.js",
+ "js/features/forge/beta/v8009-s1-v488-harzschmiede-core.js",
+ "js/beta/v7240-beta-gold-features.js",
+ "js/features/forge/beta/v8198-enchanting.js",
+ "js/features/character/beta/v8009-s4-v470-character-slot-art-canonical-comparison.js",
+ "js/features/character/beta/v8009-s1-v514-heldenquartier-reference.js",
+ "js/features/character/beta/v8009-s2-v459-character-hub.js",
+ "js/features/anonymous-extracted/beta/anon-0002.js",
+ "js/features/character/beta/v8009-s8-v684-inventory-rarity-final-core.js",
+ "js/features/pets/beta/v8009-s1-v688-pet-drop-system-core.js",
+ "js/features/pets/beta/v8009-s1-v686-pet-album-core.js",
+ "js/features/character/beta/v8009-s7-v533-inventory-reference.js",
+ "js/features/core/beta/v8009-a1-legacy-state-core.js",
+ "js/features/items/beta/v8009-s13-v468-single-item-art-owner.js",
+ "js/features/items/beta/v8009-s4-v6107-global-item-art-authority.js"
+];
+const perfS1Flag='__GROW_SERVER1_PERFORMANCE_V8376__';
+check(
+ server1PerfEntry.includes('<script>window.'+perfS1Flag+'=true;</script>')&&
+ !beta.includes('<script>window.'+perfS1Flag+'=true;</script>')&&
+ promotedPerfSources.every(p=>
+   server1PerfEntry.includes(p+'?v=8377-server1-perf-reuse')&&
+   read(p).includes(perfS1Flag)
+ )&&
+ !server1PerfEntry.includes('v8144-i18n-gameplay.js?v=8364-stable-live-text-beta')&&
+ !server1PerfEntry.includes('v8315-page-trace.js?v=8376-item-art-reuse-probe-beta')&&
+ server1PerfEntry.includes('js/features/account/server1-release-channel.js'),
+ 'V8.377 Server1 original-source performance gate/cache/source list or channel separation missing'
+);
+
 /* V8.376: two independent original item art owners must reuse the same
    source URL regardless of relative/absolute browser URL normalization.
    Never change the historical Server 1 behavior. */
