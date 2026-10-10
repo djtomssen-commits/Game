@@ -194,7 +194,7 @@ function inspect(){
   p.domNodesMax=Math.max(p.domNodesMax,count);
   p.domNodesMin=Math.min(p.domNodesMin,count);
   p.imageErrors=Math.max(p.imageErrors,summaryImageErrors(el));
-  if(betaAudit()&&p.imageErrors)p.brokenImageHints=brokenImageHints(el);
+  if(betaAudit())p.brokenImageHints=brokenImageHints(el);
  }
  if(current==='world'&&!tracked)tracked=document.querySelector('#world .v366-lower');
 }
