@@ -1,12 +1,28 @@
 (function(){
   const VERSION='V4.68 Stable',SHORT='V4.68';
   let painting=false;
+  const v8376ArtQa={kept:0,replaced:0};
+  window.__V8376_V468_ART_QA__=()=>({...v8376ArtQa});
   function artUri(it){try{return typeof window.v466ItemArtUri==='function'?window.v466ItemArtUri(it):''}catch(e){return''}}
   function setArt(box,it){
     if(!box||!it)return false;
     const uri=artUri(it);if(!uri)return false;
     const current=box.querySelector(':scope > img.v466-item-art');
-    if(current&&current.src===uri&&box.childElementCount===1)return true;
+    const beta=String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta';
+    /* V8.376: src resolves relative artwork URLs to absolute URLs.
+       Compare the actual src attribute as well; don't destroy a correct
+       picture merely because the browser expanded its URL. */
+    const sameSource=current&&(beta
+      ?(current.getAttribute('src')===uri||current.src===uri)
+      :current.src===uri);
+    if(sameSource&&box.childElementCount===1){
+      if(beta){
+        if(current.alt!==String(it.name||'Item'))current.alt=String(it.name||'Item');
+        v8376ArtQa.kept++;
+      }
+      return true;
+    }
+    if(beta)v8376ArtQa.replaced++;
     const img=document.createElement('img');img.className='v466-item-art';img.src=uri;img.alt=String(it.name||'Item');img.decoding='async';
     box.replaceChildren(img);box.dataset.v468Art='1';return true;
   }
