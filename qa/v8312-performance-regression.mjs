@@ -89,7 +89,7 @@ check(hudJs.includes("panel.classList.remove('open','show')")&&hudJs.includes("p
 check(hudJs.includes("legacy.style.setProperty('display','none','important')"),'V8.338 must eliminate old header inline-important layout footprint');
 const tech=read('js/features/system/beta/v8009-s1-v4107-systemtechnik.js');
 check(tech.includes("const basename=match[1].split('/').pop().split(/[?#]/)[0]"),'V8.338 must resolve JSON caller cache-query URLs and SDK bundles');
-check(beta.includes('v8009-s1-v4107-systemtechnik.js?v=8355-material-paint-frame-report-beta'),'V8.344 profiler cache not updated');
+check(beta.includes('v8009-s1-v4107-systemtechnik.js?v=8360-all-tabs-control-beta'),'V8.344 profiler cache not updated');
 check(tech.includes('const longShort=long.filter(x=>x.ms>=50&&x.ms<100).length')&&
   tech.includes('...longPrint.map(x=>'),'V8.340 profiler must print measured 50-99ms long tasks');
 check(tech.includes("'LONGTASK-BEREICHE: 50–99 ms '"),'V8.340 profiler must explain longtask thresholds');
@@ -276,7 +276,7 @@ check(tech.includes('V8.349 XP-KORREKTUR:')&&
   tech.includes('v7154CharacterNavDiagnostics'),
   'V8.349 current profiler telemetry missing');
 check(beta.includes('v8009-s2-v4103-item-ui-consistency.js?v=8349-item-dataset-stability-beta')&&
-  beta.includes('v8009-s1-v4107-systemtechnik.js?v=8355-material-paint-frame-report-beta')&&
+  beta.includes('v8009-s1-v4107-systemtechnik.js?v=8360-all-tabs-control-beta')&&
   beta.includes('v8009-s3-v6167-longterm-xp-balance.js?v=8349-xp-cssom-precision-beta'),
   'V8.349 Beta original-owner caches missing');
 
@@ -289,7 +289,7 @@ check(slotOwner.includes('const ringVisualSnapshot=new WeakMap()')&&
   tech.includes('V8.350 RING-ART SINGLE-OWNER:'),
   'V8.350 ring visible-art signature or profiler counter missing');
 check(beta.includes('v8009-s8-v6102-character-equipment-scroll-fix.js?v=8350-art-backed-icon-signature-beta')&&
-  beta.includes('v8009-s1-v4107-systemtechnik.js?v=8355-material-paint-frame-report-beta')&&
+  beta.includes('v8009-s1-v4107-systemtechnik.js?v=8360-all-tabs-control-beta')&&
   !read('server1.html').includes('8350-art-backed-icon-signature-beta'),
   'V8.350 Beta only cache activation missing');
 
@@ -303,7 +303,7 @@ check(v086Staged.includes('const idleBudgetMs=beta?96:240')&&
   tech.includes("V8.351 Idle-Budget "),
   'V8.351 staged inventory idle deadline or diagnostic missing');
 check(beta.includes('v8009-s2-v086-polish-script.js?v=8351-short-inventory-idle-beta')&&
-  beta.includes('v8009-s1-v4107-systemtechnik.js?v=8355-material-paint-frame-report-beta')&&
+  beta.includes('v8009-s1-v4107-systemtechnik.js?v=8360-all-tabs-control-beta')&&
   !read('server1.html').includes('8351-short-inventory-idle-beta'),
   'V8.351 Beta-only progressive-render cache contract missing');
 
@@ -332,7 +332,7 @@ check(materialMultiOwner.includes('summary.innerHTML!==summaryHtml')&&
   materialMultiOwner.includes("check.getAttribute('aria-pressed')!==pressed"),
   'V8.352 selection card no-op guards missing');
 check(beta.includes('v8009-s1-v546-materials-grow-legends.js?v=8352-stable-gem-grid-beta')&&
-  beta.includes('v8009-s1-v4107-systemtechnik.js?v=8355-material-paint-frame-report-beta')&&
+  beta.includes('v8009-s1-v4107-systemtechnik.js?v=8360-all-tabs-control-beta')&&
   beta.includes('v8009-s3-v681-material-sell-core.js?v=8352-stable-material-price-ui-beta')&&
   beta.includes('v8009-s2-v683-material-multisell-core.js?v=8352-stable-material-select-ui-beta')&&
   !read('server1.html').includes('8352-stable-gem-grid-beta')&&
@@ -358,7 +358,7 @@ check(tech.includes('V8.353 AUTO-SOCKELN-BUTTON')&&
   tech.includes('autoMaterialBarMoves'),
   'V8.353 material auto-action diagnostic missing');
 check(beta.includes('v8009-s3-v480-auto-gear-material.js?v=8354-previsible-first-mount-trace-beta')&&
-  beta.includes('v8009-s1-v4107-systemtechnik.js?v=8355-material-paint-frame-report-beta')&&
+  beta.includes('v8009-s1-v4107-systemtechnik.js?v=8360-all-tabs-control-beta')&&
   !read('server1.html').includes('8353-stable-auto-material-button-beta')&&
   !read('server1.html').includes('8353-auto-material-button-diagnostics-beta'),
   'V8.353 must be cache activated only on Beta');
@@ -380,7 +380,7 @@ check(auto354.includes("panelActive:!!panel.classList?.contains?.('active')")&&
   'V8.354 Auto-Sockeln visibility trace missing');
 check(beta.includes('v8009-s2-v459-character-hub.js?v=8359-remembered-material-prewarm-beta')&&
   beta.includes('v8009-s3-v480-auto-gear-material.js?v=8354-previsible-first-mount-trace-beta')&&
-  beta.includes('v8009-s1-v4107-systemtechnik.js?v=8355-material-paint-frame-report-beta')&&
+  beta.includes('v8009-s1-v4107-systemtechnik.js?v=8360-all-tabs-control-beta')&&
   !read('server1.html').includes('8354-hidden-material-tab-prepare-beta')&&
   !read('server1.html').includes('8354-material-hidden-prewarm-report-beta'),
   'V8.354 only Beta should activate revised auto-material first mount');
@@ -401,7 +401,7 @@ check(tech.includes('V8.355 MATERIALIEN BUTTON-PAINT:')&&
   tech.includes('Transition '),
   'V8.355 Material button computed style and geometry profiler missing');
 check(beta.includes('v8009-s2-v459-character-hub.js?v=8359-remembered-material-prewarm-beta')&&
-  beta.includes('v8009-s1-v4107-systemtechnik.js?v=8355-material-paint-frame-report-beta')&&
+  beta.includes('v8009-s1-v4107-systemtechnik.js?v=8360-all-tabs-control-beta')&&
   !read('server1.html').includes('8355-material-instant-scroll-and-paint-trace-beta')&&
   !read('server1.html').includes('8355-material-paint-frame-report-beta'),
   'V8.355 must activate only on Beta');
@@ -421,6 +421,19 @@ check(hub354.includes('const wasActive=!!panel?.classList.contains(\'active\')')
   !read('server1.html').includes('8359-remembered-material-prewarm-beta'),
   'V8.359 active remembered material tab must prewarm before first paint on Beta only');
 
+/* V8.360: opt-in Beta one-click page+tab coverage, read-only UI interactions. */
+const tabAudit=read('js/system/performance/v8315-page-trace.js');
+check(beta.includes('v8315-page-trace.js?v=8360-beta-all-tabs-audit')&&
+  !read('server1.html').includes('8360-beta-all-tabs-audit')&&
+  tech.includes('id="gl8315AllTabs"')&&
+  tech.includes('includeTabs:true,maxTabsPerScreen:32,maxTabsTotal:130')&&
+  tabAudit.includes('async function auditTabs(id,opts)')&&
+  tabAudit.includes("const withTabs=options.includeTabs===true")&&
+  tabAudit.includes("if(withTabs&&!sweepCancelled)await auditTabs(id,options)")&&
+  tabAudit.includes("const tabAttr=/^data-")&&
+  tabAudit.includes("if(button.type==='submit'||button.hasAttribute('formaction'))return null")&&
+  tabAudit.includes('tabResults:state.tabResults'),
+  'V8.360 Beta semantic tab sweep or isolation missing');
 check(beta.includes('v8009-s12-v7081-account-capability-gate.js?v=8337-flat-diag-beta'),'Beta capability hotpath cache not updated');
 check(beta.includes('v8009-s1-v7042-unified-authority-bridge.js?v=8337-memo-diag-beta'),'Beta bridge hotpath cache not updated');
 check(beta.includes('v8009-extracted-v372-authoritative-header-css.css?v=8337-legacy-flow-beta'),'Beta retired header CSS cache not updated');
