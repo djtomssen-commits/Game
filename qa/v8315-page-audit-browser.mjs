@@ -146,7 +146,7 @@ try{
   return {result,restored};
  });
  assert.equal(qaCenter.restored,true,'opt-in fetch instrumentation was not restored');
- assert.equal(qaCenter.result.version,'V8.363','QA Center version missing');
+ assert.equal(qaCenter.result.version,'V8.364','QA Center version missing');
  assert.ok(qaCenter.result.qaCenter.network.errors>=1,'QA network errors were not collected');
  assert.ok(qaCenter.result.qaCenter.network.endpoints.some(x=>x.endpoint==='REST qa_probe'&&x.failures>=1),
   'sanitized failed REST request missing: '+JSON.stringify(qaCenter.result.qaCenter.network.endpoints));
