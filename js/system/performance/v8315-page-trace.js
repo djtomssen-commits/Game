@@ -454,8 +454,9 @@ async function sweep(options={}){
    /* Nebelkarawane owns its own async page navigation, not v7119. */
    const go=id==='caravan'&&betaAudit()&&typeof window.v7240OpenCaravan==='function'
      ?window.v7240OpenCaravan():window.v032Go(id);
+   if(betaAudit())inspect(); /* caravan becomes visible synchronously before RPC returns */
    if(go&&typeof go.then==='function')await Promise.race([go,pause(3500)]);
-   if(betaAudit())inspect(); /* register async owned routes BEFORE dwell begins */
+   if(betaAudit())inspect(); /* also capture a late async view transition */
    log('sweep_route',id);
    showProgress('SEITE '+id+' ('+(state.sweepDone+1)+'/'+ids.length+')');
    await pause(dwell);
