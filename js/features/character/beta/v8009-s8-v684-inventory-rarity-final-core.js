@@ -74,7 +74,10 @@ function repairCard(card,it){
  const badge=card.querySelector('.rarity-badge,.v4103-rarity,.v459-rarity');
  if(badge){
    const txt=String(badge.textContent||'').trim();
-   if(!txt||/normal|gewöhn|rare|selten|episch|legend|myst|prism/i.test(txt))badge.textContent=LABEL[q];
+  /* V8.372 Beta: avoid replacing identical rarity labels on every repair. */
+  if((!txt||/normal|gewöhn|rare|selten|episch|legend|myst|prism/i.test(txt))&&
+     (String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()!=='beta'||badge.textContent!==LABEL[q]))
+    badge.textContent=LABEL[q];
  }
  const box=card.querySelector('.v459-inv-icon,.v6108-quality-artbox');
  if(box){
