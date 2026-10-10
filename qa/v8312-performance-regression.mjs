@@ -89,7 +89,7 @@ check(hudJs.includes("panel.classList.remove('open','show')")&&hudJs.includes("p
 check(hudJs.includes("legacy.style.setProperty('display','none','important')"),'V8.338 must eliminate old header inline-important layout footprint');
 const tech=read('js/features/system/beta/v8009-s1-v4107-systemtechnik.js');
 check(tech.includes("const basename=match[1].split('/').pop().split(/[?#]/)[0]"),'V8.338 must resolve JSON caller cache-query URLs and SDK bundles');
-check(beta.includes('v8009-s1-v4107-systemtechnik.js?v=8350-icon-churn-counter-beta'),'V8.344 profiler cache not updated');
+check(beta.includes('v8009-s1-v4107-systemtechnik.js?v=8351-report-idle-budget-beta'),'V8.344 profiler cache not updated');
 check(tech.includes('const longShort=long.filter(x=>x.ms>=50&&x.ms<100).length')&&
   tech.includes('...longPrint.map(x=>'),'V8.340 profiler must print measured 50-99ms long tasks');
 check(tech.includes("'LONGTASK-BEREICHE: 50–99 ms '"),'V8.340 profiler must explain longtask thresholds');
@@ -126,7 +126,7 @@ check(beta.includes('v8009-s2-v459-character-hub.js?v=8343-nav-event-owner-beta'
   'V8.343 character hub cache key missing');
 const characterRenderer=read('js/features/ui/beta/v8009-s2-v086-polish-script.js');
 check(characterRenderer.includes('window.v7207CharacterRenderDiagnostics=()')&&
-  beta.includes('v8009-s2-v086-polish-script.js?v=8346-character-idle-stage-beta'),
+  beta.includes('v8009-s2-v086-polish-script.js?v=8351-short-inventory-idle-beta'),
   'V8.342 character render-stage metrics or JS cache missing');
 check(tech.includes('CHARAKTER RENDER-STUFEN (V8.342')&&
   tech.includes('freshCharacterRender'),
@@ -276,7 +276,7 @@ check(tech.includes('V8.349 XP-KORREKTUR:')&&
   tech.includes('v7154CharacterNavDiagnostics'),
   'V8.349 current profiler telemetry missing');
 check(beta.includes('v8009-s2-v4103-item-ui-consistency.js?v=8349-item-dataset-stability-beta')&&
-  beta.includes('v8009-s1-v4107-systemtechnik.js?v=8350-icon-churn-counter-beta')&&
+  beta.includes('v8009-s1-v4107-systemtechnik.js?v=8351-report-idle-budget-beta')&&
   beta.includes('v8009-s3-v6167-longterm-xp-balance.js?v=8349-xp-cssom-precision-beta'),
   'V8.349 Beta original-owner caches missing');
 
@@ -289,9 +289,23 @@ check(slotOwner.includes('const ringVisualSnapshot=new WeakMap()')&&
   tech.includes('V8.350 RING-ART SINGLE-OWNER:'),
   'V8.350 ring visible-art signature or profiler counter missing');
 check(beta.includes('v8009-s8-v6102-character-equipment-scroll-fix.js?v=8350-art-backed-icon-signature-beta')&&
-  beta.includes('v8009-s1-v4107-systemtechnik.js?v=8350-icon-churn-counter-beta')&&
+  beta.includes('v8009-s1-v4107-systemtechnik.js?v=8351-report-idle-budget-beta')&&
   !read('server1.html').includes('8350-art-backed-icon-signature-beta'),
   'V8.350 Beta only cache activation missing');
+
+/* V8.351: only Beta shortens the existing visible Inventory idle deadline.
+   Keep two progressive frames, stale epoch cancellation and Server1 default. */
+const v086Staged=read('js/features/ui/beta/v8009-s2-v086-polish-script.js');
+check(v086Staged.includes('const idleBudgetMs=beta?96:240')&&
+  v086Staged.includes('requestIdleCallback(inventory,{timeout:idleBudgetMs})')&&
+  v086Staged.includes('profile.inventoryIdleBudgetMs=idleBudgetMs')&&
+  v086Staged.includes('if(!v7207CharacterActive(epoch))return;')&&
+  tech.includes("V8.351 Idle-Budget "),
+  'V8.351 staged inventory idle deadline or diagnostic missing');
+check(beta.includes('v8009-s2-v086-polish-script.js?v=8351-short-inventory-idle-beta')&&
+  beta.includes('v8009-s1-v4107-systemtechnik.js?v=8351-report-idle-budget-beta')&&
+  !read('server1.html').includes('8351-short-inventory-idle-beta'),
+  'V8.351 Beta-only progressive-render cache contract missing');
 
 check(beta.includes('v8009-s12-v7081-account-capability-gate.js?v=8337-flat-diag-beta'),'Beta capability hotpath cache not updated');
 check(beta.includes('v8009-s1-v7042-unified-authority-bridge.js?v=8337-memo-diag-beta'),'Beta bridge hotpath cache not updated');
