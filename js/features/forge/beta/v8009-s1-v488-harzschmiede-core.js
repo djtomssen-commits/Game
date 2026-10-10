@@ -166,7 +166,13 @@
       return `<button type="button" class="v488-item ${qq} ${blocked?'blocked':''} ${sel?'selected':''}" data-v488-key="${esc(key)}" data-v6236-inv-index="${i}" ${blocked?'disabled':''}><span class="ico v4103-forge-art v6236-forge-art">${forgeItemArt(it)}</span><div class="nm">${esc(String(it?.name||'Item').replace(/^\w+\s*:\s*/,'').replace(/\s*\[Lv\.\d+\]\s*$/i,''))}</div><div class="yield">${blocked?esc(reason):gain}</div>${blocked?'<span class="lock">🔒</span>':''}</button>`;
     }).join('');
   }
-  function renderForge(){
+  const V8367_FORGE_QA={fullShells:0,lightNebelforgeShells:0,enchantPanelsBuilt:0};
+  window.__V8367_FORGE_QA__=()=>({...V8367_FORGE_QA});
+  function renderForge(options){
+    /* V8.367 Beta: a Nebelschmied entry only needs its navigation shell.
+       Do not construct the previously active Enchant/Craft/Dismantle view
+       underneath a different, server-owned panel. */
+    const nebelLight=String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta'&&options?.nebelforge===true;
     /* V7.273 Beta: while Nebelschmied owns the forge, the legacy renderer
        must not rebuild the entire forge DOM. Those rebuilds caused flicker. */
     if(document.getElementById('forge')?.classList.contains('v7240-nebel-open'))return;
@@ -208,6 +214,9 @@
         </div>
       </div>
     </div>`;
+    V8367_FORGE_QA.fullShells++;
+    if(nebelLight)V8367_FORGE_QA.lightNebelforgeShells++;
+    else if(forgeTab==='enchant')V8367_FORGE_QA.enchantPanelsBuilt++;
     sec.innerHTML=`<div class="v488-shell v490-shell">
       <div class="v490-titlebar">
         <div><h2>Harzschmiede</h2><p>ZERLEGEN · SCHMIEDEN · VERZAUBERN · NEBELSCHMIED</p></div>
@@ -221,7 +230,7 @@
           ${String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta'?'<button type="button" class="v667-tab '+(forgeTab==='enchant'?'active':'')+'" data-v667-tab="enchant"><span class="ic">ᚱ</span><span>VERZAUBERN<small>Runen · +Stufen · Item-FX</small></span></button>':''}
           ${['beta','server1'].includes(String(window.GROW_RELEASE_CHANNEL||'').toLowerCase())?'<button type="button" class="v667-tab" data-v667-tab="nebelforge"><span class="ic">🔥</span><span>NEBELSCHMIED<small>Gold · Werte neu verteilen</small></span></button>':''}
         </div>
-        ${forgeTab==='enchant'?(window.v8198EnchantForgeHtml?.()||'<div class="v8198-enchant-empty focus">Runenkammer wird geladen …</div>'):(forgeTab==='craft'?craftView():dismantleView())}
+        ${nebelLight?'':forgeTab==='enchant'?(window.v8198EnchantForgeHtml?.()||'<div class="v8198-enchant-empty focus">Runenkammer wird geladen …</div>'):(forgeTab==='craft'?craftView():dismantleView())}
         <div class="v490-legend v667-legend">
           <div class="v490-legend-title">✦ FRAGMENTE PRO SELTENHEIT ✦</div>
           <div class="v488-leg"><i style="--c:#9aa29e"></i><span>Normal</span><b>+1</b></div>
@@ -237,7 +246,7 @@
       if(next==='nebelforge'){void window.v7240OpenNebelforge?.();return}
       if(next!=='dismantle'&&next!=='craft'&&next!=='enchant')return;
       document.getElementById('forge')?.classList.remove('v7240-nebel-open');
-      if(next===forgeTab)return;
+      if(next===forgeTab&&!nebelLight)return;
       forgeTab=next;renderForge();
     }));
     const list=sec.querySelector('#v488ForgeInventory');if(list){list.scrollTop=listScroll;list.addEventListener('scroll',()=>listScroll=list.scrollTop,{passive:true})}
@@ -245,7 +254,7 @@
     sec.querySelectorAll('[data-v488-key]').forEach(card=>card.onclick=()=>{const k=card.dataset.v488Key;if(!k)return;listScroll=list?.scrollTop||0;selected.has(k)?selected.delete(k):selected.add(k);renderForge()});
     sec.querySelector('#v488Dismantle')?.addEventListener('click',dismantle);
     sec.querySelector('#v488Craft')?.addEventListener('click',craft);
-    if(forgeTab==='enchant')try{window.v8198BindEnchantForge?.(sec)}catch(e){console.warn('V8.198 enchant bind',e)}
+    if(forgeTab==='enchant'&&!nebelLight)try{window.v8198BindEnchantForge?.(sec)}catch(e){console.warn('V8.198 enchant bind',e)}
     try{if(typeof window.v4103DecorateItemSurfaces==='function')queueMicrotask(()=>window.v4103DecorateItemSurfaces())}catch(e){}
     try{if(typeof window.v4112RefreshAllItemArt==='function')queueMicrotask(()=>window.v4112RefreshAllItemArt(sec))}catch(e){}
     if(keepClassSet)queueMicrotask(()=>{try{window.v6130OpenSetPanel?.({refreshPvp:false})}catch(_){}});
