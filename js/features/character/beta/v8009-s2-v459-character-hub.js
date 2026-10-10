@@ -126,6 +126,22 @@
   }
   function activateNow(name,scroll=false){
     const shell=document.getElementById('v459CharacterShell');if(!shell)return false;
+    /* V8.354 Beta: mount the original Material grid and Auto-Sockeln bar
+       while its panel is still hidden, before exposing the Material tab.
+       This eliminates the observed V8.353 late first-mount (t+3733ms)
+       without a new renderer, timer, observer or gameplay-state change.
+       Keep the existing post-activation refresh for real state changes. */
+    if(name==='materials'&&String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta'){
+      const panel=document.getElementById('v459PanelMaterials');
+      if(panel&&!panel.classList.contains('active')){
+        try{
+          window.v030RenderMaterials?.();
+          window.v480UpdateAutoBars?.('materials');
+          const m=window.__V8348_VISUAL_METRICS__||(window.__V8348_VISUAL_METRICS__={});
+          m.autoMaterialBarHiddenPrepares=(Number(m.autoMaterialBarHiddenPrepares)||0)+1;
+        }catch(e){console.warn('V8.354 hidden material preparation',e)}
+      }
+    }
     shell.querySelectorAll('#v459CharacterTabs button').forEach(b=>b.classList.toggle('active',b.dataset.tab===name));
     shell.querySelectorAll('.v459-panel').forEach(p=>p.classList.toggle('active',p.dataset.panel===name));
     try{sessionStorage.setItem('growLegends:v459CharacterTab',name)}catch(e){}
