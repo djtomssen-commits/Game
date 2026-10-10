@@ -122,7 +122,7 @@ check(characterHub.includes('if(name.childElementCount!==2||!existingText||exist
 check(characterHub.includes("if(!layout()){")&&
   !characterHub.includes("layout();\n      if(activeTab()==='inventory')refreshTab('inventory');"),
   'V8.342 renderInventory is still refreshing the tab twice');
-check(beta.includes('v8009-s2-v459-character-hub.js?v=8359-remembered-material-prewarm-beta'),
+check(beta.includes('v8009-s2-v459-character-hub.js?v=8371-character-same-text-beta'),
   'V8.343 character hub cache key missing');
 const characterRenderer=read('js/features/ui/beta/v8009-s2-v086-polish-script.js');
 check(characterRenderer.includes('window.v7207CharacterRenderDiagnostics=()')&&
@@ -160,7 +160,7 @@ check(heroBuild.includes('v510CharacterNavDiagnostics')&&heroRef.includes('v514C
   tech.includes('V8.344 HELDENQUARTIER:'),
   'V8.344 character hero owner listener timing reporting missing');
 check(beta.includes('v8009-s10-v510-character-hero-rebuild.js?v=8344-nav-timing-beta')&&
-  beta.includes('v8009-s1-v514-heldenquartier-reference.js?v=8344-nav-timing-beta')&&
+  beta.includes('v8009-s1-v514-heldenquartier-reference.js?v=8371-character-same-text-beta')&&
   beta.includes('v8009-s15-v7157-character-equipment-scroll-stability.js?v=8347-nav-root-diagnostics-beta'),
   'V8.344 character hero owners cache not updated');
 
@@ -378,7 +378,7 @@ check(auto354.includes("panelActive:!!panel.classList?.contains?.('active')")&&
   tech.includes('V8.359 MATERIALIEN VOR-EINBLENDEN')&&
   tech.includes('Tab bereits sichtbar '),
   'V8.354 Auto-Sockeln visibility trace missing');
-check(beta.includes('v8009-s2-v459-character-hub.js?v=8359-remembered-material-prewarm-beta')&&
+check(beta.includes('v8009-s2-v459-character-hub.js?v=8371-character-same-text-beta')&&
   beta.includes('v8009-s3-v480-auto-gear-material.js?v=8354-previsible-first-mount-trace-beta')&&
   beta.includes('v8009-s1-v4107-systemtechnik.js?v=8363-qa-center-button-beta')&&
   !read('server1.html').includes('8354-hidden-material-tab-prepare-beta')&&
@@ -400,7 +400,7 @@ check(tech.includes('V8.355 MATERIALIEN BUTTON-PAINT:')&&
   tech.includes('CSS-Animation ')&&
   tech.includes('Transition '),
   'V8.355 Material button computed style and geometry profiler missing');
-check(beta.includes('v8009-s2-v459-character-hub.js?v=8359-remembered-material-prewarm-beta')&&
+check(beta.includes('v8009-s2-v459-character-hub.js?v=8371-character-same-text-beta')&&
   beta.includes('v8009-s1-v4107-systemtechnik.js?v=8363-qa-center-button-beta')&&
   !read('server1.html').includes('8355-material-instant-scroll-and-paint-trace-beta')&&
   !read('server1.html').includes('8355-material-paint-frame-report-beta'),
@@ -417,13 +417,13 @@ check(hub354.includes('const wasActive=!!panel?.classList.contains(\'active\')')
   hub354.includes('finally{if(wasActive)panel.classList.add(\'active\')}')&&
   hub354.includes('m.materialRememberedTabFirstMountPrepares=')&&
   tech.includes("visualCount('materialRememberedTabFirstMountPrepares')")&&
-  beta.includes('v8009-s2-v459-character-hub.js?v=8359-remembered-material-prewarm-beta')&&
+  beta.includes('v8009-s2-v459-character-hub.js?v=8371-character-same-text-beta')&&
   !read('server1.html').includes('8359-remembered-material-prewarm-beta'),
   'V8.359 active remembered material tab must prewarm before first paint on Beta only');
 
 /* V8.360: opt-in Beta one-click page+tab coverage, read-only UI interactions. */
 const tabAudit=read('js/system/performance/v8315-page-trace.js');
-check(beta.includes('v8315-page-trace.js?v=8370-childlist-attribution-beta')&&
+check(beta.includes('v8315-page-trace.js?v=8371-childlist-writers-beta')&&
   !read('server1.html').includes('8360-beta-all-tabs-audit')&&
   tech.includes('id="gl8315AllTabs"')&&
   tech.includes('includeTabs:true,extended:true,maxTabsPerScreen:32,maxTabsTotal:130')&&
@@ -448,7 +448,7 @@ check(tabAudit.includes('function safeDomOwner(node,root)')&&
   tabAudit.includes('idleMutationHotspots:')&&
   tabAudit.includes('layoutShiftHotspots:')&&
   tabAudit.includes('if(betaAudit())inspect(); /* caravan becomes visible synchronously')&&
-  tabAudit.includes("return {version:betaAudit()?'V8.370':'V8.360'")&&
+  tabAudit.includes("return {version:betaAudit()?'V8.371':'V8.360'")&&
   !read('server1.html').includes('8362-tab-owner-hotspots-beta'),
   'V8.362 Beta owner and idle-churn profiler contract missing');
 check(beta.includes('v8009-s1-v4107-systemtechnik.js?v=8363-qa-center-button-beta')&&
@@ -467,7 +467,7 @@ const sourceQuest=read('js/features/quest/beta/v386-quest-redesign-script.js');
 check(beta.includes('v8144-i18n-gameplay.js?v=8364-stable-live-text-beta')&&
   beta.includes('v6163-growroom-primary-tabs-core.js?v=8364-stable-grow-tabs-beta')&&
   beta.includes('v386-quest-redesign-script.js?v=8364-stable-quest-cards-beta')&&
-  beta.includes('v8315-page-trace.js?v=8370-childlist-attribution-beta')&&
+  beta.includes('v8315-page-trace.js?v=8371-childlist-writers-beta')&&
   !read('server1.html').includes('8364-stable-live-text-beta')&&
   !read('server1.html').includes('8364-stable-quest-cards-beta')&&
   sourceI18n.includes('LAST_APPLIED_TEXT=new WeakMap()')&&
@@ -487,7 +487,7 @@ check(beta.includes('v8144-i18n-gameplay.js?v=8364-stable-live-text-beta')&&
    progress state must never destroy the whole .v492-grow subtree again. */
 const sourceGrowScene=read('js/features/grow/beta/v8009-s1-v492-growroom2.js');
 check(beta.includes('v492-growroom2.js?v=8365-layout-key-beta')&&
- beta.includes('v8315-page-trace.js?v=8370-childlist-attribution-beta')&&
+ beta.includes('v8315-page-trace.js?v=8371-childlist-writers-beta')&&
  !read('server1.html').includes('v492-growroom2.js?v=8365-layout-key-beta')&&
  sourceGrowScene.includes('function growLayoutSignature()')&&
  sourceGrowScene.includes('plantPhase:statusSig()')&&
@@ -504,7 +504,7 @@ check(beta.includes('v492-growroom2.js?v=8365-layout-key-beta')&&
  const frameSource=read('js/features/shift/beta/v8009-s1-v7137-shift-frame-client.js');
  check(beta.includes('v8195-vip.js?v=8366-vip-render-noop-beta')&&
    beta.includes('v7137-shift-frame-client.js?v=8366-frame-render-noop-beta')&&
-   beta.includes('v8315-page-trace.js?v=8370-childlist-attribution-beta')&&
+   beta.includes('v8315-page-trace.js?v=8371-childlist-writers-beta')&&
    read('server1.html').includes('v8195-vip.js?v=8296threechests1')&&
    read('server1.html').includes('v7137-shift-frame-client.js?v=8295vipframe1')&&
    vipSource.includes('lastVipPanel!==p||lastVipMarkup!==nextMarkup||!p.firstElementChild')&&
@@ -513,7 +513,7 @@ check(beta.includes('v492-growroom2.js?v=8365-layout-key-beta')&&
    frameSource.includes('lastFramePanel!==p||lastFrameMarkup!==nextMarkup||!p.firstElementChild')&&
    frameSource.includes("String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta'")&&
    frameSource.includes('window.__V8366_FRAME_RENDER_QA__')&&
-   tabAudit.includes("return {version:betaAudit()?'V8.370':'V8.360'")&&
+   tabAudit.includes("return {version:betaAudit()?'V8.371':'V8.360'")&&
    tabAudit.includes('renderOwners:{'),
    'V8.366 Beta VIP/frame canonical owner no-op guard or QA diagnostics missing');
 /* V8.367 Beta: the Nebelschmied needs ONLY v488 tabs, never a hidden
@@ -537,7 +537,7 @@ check(beta.includes('v488-harzschmiede-core.js?v=8367-nebel-light-beta')&&
    the Server1 original entrypoint and game backend stay unchanged. */
 const fxOwner=read('js/features/forge/beta/v8198-enchanting.js');
 check(beta.includes('v8198-enchanting.js?v=8368-character-fx-beta')&&
- beta.includes('v8315-page-trace.js?v=8370-childlist-attribution-beta')&&
+ beta.includes('v8315-page-trace.js?v=8371-childlist-writers-beta')&&
  !read('server1.html').includes('v8198-enchanting.js?v=8368-character-fx-beta')&&
  fxOwner.includes('V8368_ITEM_FX_QA.noopRenders++')&&
  fxOwner.includes("const beta=String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta'")&&
@@ -562,13 +562,31 @@ check(
 
 /* V8.370: classify text rewrites versus element churn during Beta QA only. */
 check(
- beta.includes('v8315-page-trace.js?v=8370-childlist-attribution-beta')&&
- !read('server1.html').includes('v8315-page-trace.js?v=8370-childlist-attribution-beta')&&
+ beta.includes('v8315-page-trace.js?v=8371-childlist-writers-beta')&&
+ !read('server1.html').includes('v8315-page-trace.js?v=8371-childlist-writers-beta')&&
  tabAudit.includes("['character','harzDealer','forge'].includes(current)")&&
  tabAudit.includes('if(identicalText)t.identicalText++')&&
  tabAudit.includes('mutationDetail:(()=>{const out={};')&&
  tabAudit.includes('qaState.extended'),
  'V8.370 childList type diagnostics or beta-only opt-in guard missing');
+/* V8.371 Beta: direct original UI-owner guards, diagnostic stack caller
+   only in opted-in QA and with restoration at stop. Server1 stays untouched. */
+check(beta.includes('v8009-s2-v459-character-hub.js?v=8371-character-same-text-beta')&&
+ beta.includes('v8009-s1-v514-heldenquartier-reference.js?v=8371-character-same-text-beta')&&
+ heroRef.includes('lvl.textContent!==levelText')&&
+ characterHub.includes('const paintCount=(el,next)=>')&&
+ characterHub.includes('el.textContent!==next')&&
+ !read('server1.html').includes('8371-character-same-text-beta'),
+ 'V8.371 canonical Character no-op guards missing');
+check(beta.includes('v8315-page-trace.js?v=8371-childlist-writers-beta')&&
+ !read('server1.html').includes('v8315-page-trace.js?v=8371-childlist-writers-beta')&&
+ tabAudit.includes('function installTextOriginTrace()')&&
+ tabAudit.includes('function teardownTextOriginTrace()')&&
+ tabAudit.includes('Object.defineProperty(Node.prototype')&&
+ tabAudit.includes("if(qaState.extended){setupNetwork();installTextOriginTrace();}")&&
+ tabAudit.includes('teardownNetwork();teardownTextOriginTrace();')&&
+ tabAudit.includes('textWriters:Object.entries('),
+ 'V8.371 opt-in diagnostic text setter hook or cleanup incomplete');
 check(beta.includes('v8009-s12-v7081-account-capability-gate.js?v=8337-flat-diag-beta'),'Beta capability hotpath cache not updated');
 check(beta.includes('v8009-s1-v7042-unified-authority-bridge.js?v=8337-memo-diag-beta'),'Beta bridge hotpath cache not updated');
 check(beta.includes('v8009-extracted-v372-authoritative-header-css.css?v=8337-legacy-flow-beta'),'Beta retired header CSS cache not updated');
