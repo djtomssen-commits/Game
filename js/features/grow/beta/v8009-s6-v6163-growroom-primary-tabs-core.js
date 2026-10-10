@@ -10,7 +10,7 @@ try{const x=sessionStorage.getItem(STORE);if(['grow','stock','genetics','orders'
 const $=(s,r=document)=>r?.querySelector?.(s)||null;
 /* V8.364 Beta: only repaint a tab body when its canonical HTML changes.
    A returning background fetch must not remount the same cards repeatedly. */
-const betaTabs=()=>String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta';
+const betaTabs=()=>String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta'||(window.__GROW_SERVER1_PERFORMANCE_V8376__===true&&String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='server1');
 const lastPanelHtml=new WeakMap();
 function setPanelHtml(panel,html){
  if(!betaTabs()||lastPanelHtml.get(panel)!==html||(!panel.hasChildNodes()&&html)){
