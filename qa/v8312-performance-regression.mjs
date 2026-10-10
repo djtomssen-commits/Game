@@ -551,7 +551,7 @@ check(beta.includes('v8198-enchanting.js?v=8368-character-fx-beta')&&
    identical v460-* state classes or title attributes on every v459 tab refresh.
    Preserve server1 historical behavior and allow real score/class changes. */
 check(
- beta.includes('v470-character-slot-art-canonical-comparison.js?v=8369-comparison-noop-beta')&&
+ beta.includes('v470-character-slot-art-canonical-comparison.js?v=8374-comparison-diagnostics-beta')&&
  !read('server1.html').includes('v470-character-slot-art-canonical-comparison.js?v=8369-comparison-noop-beta')&&
  artOwner.includes('V8369_COMPARE_QA.classNoops++')&&
  artOwner.includes("const wanted=!!c&&css==='v460-'+c.state")&&
