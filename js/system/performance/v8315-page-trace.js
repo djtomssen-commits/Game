@@ -154,11 +154,12 @@ function onError(e){
 }
 function onTabClick(e){
  if(!state.running||!(e.target instanceof Element))return;
- const el=e.target.closest('[data-tab],[role="tab"],[data-grow-tab],[data-subtab]');
+ const el=e.target.closest('button');
  if(!el||isOwn(el))return;
- const raw=String(el.dataset.tab||el.dataset.growTab||el.dataset.subtab||el.id||'tab');
- /* Never export arbitrary user content or identifiers from element attributes. */
- const tab=/^[a-z0-9_-]{1,36}$/i.test(raw)?raw:'tab';
+ const target=semanticTab(el);
+ if(!target)return;
+ /* Only static, semantic tab IDs; no account or player content. */
+ const tab=target.tab;
  const p=createPage(current);p.tabClicks[tab]=(p.tabClicks[tab]||0)+1;
  log('tab_click',current,{tab});
 }
@@ -262,6 +263,7 @@ function showResult(){
   el=document.createElement('div');el.id='v8315PerfResults';
   el.style.cssText='position:fixed;inset:5%;z-index:2147483100;background:#211a14;color:#eee;border:2px solid #927449;border-radius:12px;padding:15px;display:flex;flex-direction:column;gap:7px';
   const title=document.createElement('b');title.textContent='Performance-Test: Ergebnis';
+  const summary=document.createElement('div');summary.id='v8315ResultSummary';summary.style.cssText='font:12px sans-serif;color:#e7d6b3;white-space:normal';
   const ta=document.createElement('textarea');ta.style.cssText='width:100%;flex:1;background:#171210;color:#eee;font:10px monospace';
   const row=document.createElement('div');row.style.cssText='display:flex;gap:8px';
   const copy=document.createElement('button');copy.textContent='Bericht kopieren';
@@ -269,8 +271,15 @@ function showResult(){
   const download=document.createElement('button');download.textContent='JSON speichern';
   download.onclick=()=>{try{const a=document.createElement('a'),u=URL.createObjectURL(new Blob([ta.value],{type:'application/json'}));a.href=u;a.download='grow-legends-perf-v8315.json';a.click();setTimeout(()=>URL.revokeObjectURL(u),2000)}catch(_){}};
   const close=document.createElement('button');close.textContent='Schließen';close.onclick=()=>el.remove();
-  row.append(copy,download,close);el.append(title,ta,row);document.body.appendChild(el);
+  row.append(copy,download,close);el.append(title,summary,ta,row);document.body.appendChild(el);
  }
+ const flagged=(data.tabResults||[]).filter(t=>t.warnings?.length);
+ const summary=el.querySelector('#v8315ResultSummary');
+ if(summary)summary.textContent='Hauptseiten '+data.sweepDone+'/'+SCREENS.length+
+   ' · Tabs geprüft '+(data.tabSweepDone||0)+'/'+(data.tabSweepDiscovered||0)+
+   ' · Auffällige Tabs '+flagged.length+' · übersprungene Tabs '+(data.tabSkipped||[]).length+
+   (data.tabSweepLimited?' · PRÜF-LIMIT ERREICHT':'')+
+   ' · Nur UI/Performance, kein Gameplay-Funktionstest.';
  el.querySelector('textarea').value=JSON.stringify(data,null,2);
  return data;
 }
@@ -285,7 +294,7 @@ function semanticTab(button){
  const attribute=[...button.attributes].find(a=>tabAttr.test(a.name));
  const parent=button.parentElement;
  const role=button.getAttribute('role')==='tab';
- const inTabList=!!parent?.matches?.('nav,[role="tablist"],.tabs,.tabbar,.tab-nav,[class*="-tabs"],[class*="-tab-nav"]');
+ const inTabList=!!parent?.matches?.('[role="tablist"],.tabs,.tabbar,.tab-nav,[class*="-tabs"],[class*="-tab-nav"]');
  if(!attribute&&!role&&!inTabList)return null;
  if(inTabList&&!attribute&&!role&&[...parent.children].filter(x=>x.tagName==='BUTTON').length<2)return null;
  const raw=String(attribute?.value||button.id||'');
