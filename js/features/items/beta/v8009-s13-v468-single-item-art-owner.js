@@ -17,11 +17,26 @@
         const it=s?.inventory?.[i];if(!it)return;
         setArt(card.querySelector('.v459-inv-icon'),it);
         /* Preserve the one useful V466 inventory decoration while keeping a single art owner. */
-        let mark=card.querySelector('.v466-set-mark');if(mark)mark.remove();
-        if(it.setName||it.setId||it.mysticSetId){
-          mark=document.createElement('span');mark.className='v466-set-mark';
-          const q=String(it.quality||'').toLowerCase();
-          mark.textContent=q==='cyan'?'MYTHIC SET':'SET';card.appendChild(mark);
+        let mark=card.querySelector('.v466-set-mark');
+        const beta=String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta';
+        const hasSet=!!(it.setName||it.setId||it.mysticSetId);
+        if(beta){
+          /* V8.373: a set marker is a persistent item node, not a repaint. */
+          if(!hasSet){mark?.remove()}
+          else{
+            const q=String(it.quality||'').toLowerCase();
+            const label=q==='cyan'?'MYTHIC SET':'SET';
+            if(!mark){mark=document.createElement('span');mark.className='v466-set-mark';card.appendChild(mark)}
+            if(mark.textContent!==label)mark.textContent=label;
+          }
+        }else{
+          /* Server1 historical painting remains unchanged. */
+          if(mark)mark.remove();
+          if(hasSet){
+            mark=document.createElement('span');mark.className='v466-set-mark';
+            const q=String(it.quality||'').toLowerCase();
+            mark.textContent=q==='cyan'?'MYTHIC SET':'SET';card.appendChild(mark);
+          }
         }
       });
     }finally{painting=false}
