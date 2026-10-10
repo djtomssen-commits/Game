@@ -423,7 +423,7 @@ check(hub354.includes('const wasActive=!!panel?.classList.contains(\'active\')')
 
 /* V8.360: opt-in Beta one-click page+tab coverage, read-only UI interactions. */
 const tabAudit=read('js/system/performance/v8315-page-trace.js');
-check(beta.includes('v8315-page-trace.js?v=8360-beta-all-tabs-audit')&&
+check(beta.includes('v8315-page-trace.js?v=8361-scoped-complete-audit-beta')&&
   !read('server1.html').includes('8360-beta-all-tabs-audit')&&
   tech.includes('id="gl8315AllTabs"')&&
   tech.includes('includeTabs:true,maxTabsPerScreen:32,maxTabsTotal:130')&&
@@ -434,6 +434,14 @@ check(beta.includes('v8315-page-trace.js?v=8360-beta-all-tabs-audit')&&
   tabAudit.includes("if(button.getAttribute('type')?.toLowerCase()==='submit'||button.hasAttribute('formaction'))return null")&&
   tabAudit.includes('tabResults:state.tabResults'),
   'V8.360 Beta semantic tab sweep or isolation missing');
+check(tabAudit.includes('function relevantMutation(r,root)')&&
+  tabAudit.includes('if(betaAudit()&&!relevantMutation(r,root))continue')&&
+  tabAudit.includes('function brokenImageHints(root)')&&
+  tabAudit.includes("EXPECTED_TAB_ROUTES[id+':'+candidate.tab]===dest")&&
+  tabAudit.includes("typeof window.v7240OpenCaravan==='function'")&&
+  tabAudit.includes('if(betaAudit())inspect();')&&
+  !read('server1.html').includes('8361-scoped-complete-audit-beta'),
+  'V8.361 Beta navigation and screen-attributed mutation auditing missing');
 check(beta.includes('v8009-s12-v7081-account-capability-gate.js?v=8337-flat-diag-beta'),'Beta capability hotpath cache not updated');
 check(beta.includes('v8009-s1-v7042-unified-authority-bridge.js?v=8337-memo-diag-beta'),'Beta bridge hotpath cache not updated');
 check(beta.includes('v8009-extracted-v372-authoritative-header-css.css?v=8337-legacy-flow-beta'),'Beta retired header CSS cache not updated');
