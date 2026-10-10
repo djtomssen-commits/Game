@@ -15,6 +15,8 @@
    prismatic:{label:'Prismatisch',color:'#ff5ed2',glow:'#fff3a0'}
  };
  const V6108_CACHE=new Map();
+ const v8376GlobalArtQa={kept:0,replaced:0};
+ window.__V8376_GLOBAL_ART_QA__=()=>({...v8376GlobalArtQa});
 
  function qualityOf(it){
    let q=String(it?.quality||'').toLowerCase().trim();
@@ -73,11 +75,24 @@
    box.classList.add('v6108-quality-artbox');
    ['gray','green','blue','purple','orange','cyan','prismatic'].forEach(x=>box.classList.toggle('v6108-q-'+x,x===q));
 
-   const cur=box.querySelector(':scope > img.v6107-item-art');
-   if(cur&&cur.getAttribute('src')===u&&box.childElementCount===1){
-     cur.dataset.v6108Quality=q;
+   const beta=String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta';
+   const cur=box.querySelector(beta
+     ?':scope > img.v6107-item-art,:scope > img.v466-item-art'
+     :':scope > img.v6107-item-art');
+   if(cur&&(cur.getAttribute('src')===u||(beta&&cur.src===u))&&box.childElementCount===1){
+     /* V8.376 Beta: V459/V468 may have installed this very same artwork.
+        Adopt it in place as the canonical quality-framed image instead of
+        decoding a second copy of the exact same source. */
+     if(beta){
+       cur.classList.add('v466-item-art','v6107-item-art','v6108-quality-art');
+       if(cur.dataset.v6107!=='1')cur.dataset.v6107='1';
+       if(cur.alt!==String(it.name||'Item'))cur.alt=String(it.name||'Item');
+       v8376GlobalArtQa.kept++;
+     }
+     if(!beta||cur.dataset.v6108Quality!==q)cur.dataset.v6108Quality=q;
      return true;
    }
+   if(beta)v8376GlobalArtQa.replaced++;
    const im=document.createElement('img');
    im.className='v466-item-art v6107-item-art v6108-quality-art';
    im.dataset.v6107='1';
