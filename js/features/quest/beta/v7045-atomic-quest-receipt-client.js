@@ -330,12 +330,23 @@ if(typeof baseStart==='function'){
  w.__v7045Atomic=true;w.__v7045Base=baseStart;window.startQuest=w;try{startQuest=w}catch(_){}
 }
 
+/* V8.381 server1-only in-memory diagnostic, no extra RPC or gameplay writes. */
+const claimTraces=[];
+window.v8381QuestClaimTimings=()=>claimTraces.slice(-6).map(x=>({...x}));
 const base233=window.v233ClaimQuest||((typeof v233ClaimQuest==='function')?v233ClaimQuest:null);
 const baseClaim=window.claimQuest||((typeof claimQuest==='function')?claimQuest:null);
 async function claimServerQuest(){
  if(C.busy)return false;
  const q=s?.quests?.active;if(!q||Date.now()<Number(q.ends||0))return false;
  const runId=Number(q.serverRunId)||0;if(!runId){toast('Quest-Serverfehler','error','Server-Quest-ID fehlt.');return false}
+ const traceStart=performance.now();
+ const trace=String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='server1'?{
+   at:Date.now(),outcome:'läuft',
+   animationEnabled:(()=>{try{return !(typeof v141Settings==='object'&&v141Settings.questBattleAnimation===false)}catch(_){return null}})(),
+   reducedMotion:(()=>{try{return !!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches}catch(_){return false}})()
+ }:null;
+ const mark=k=>{if(trace)trace[k]=Math.max(0,Math.round(performance.now()-traceStart))};
+ if(trace){claimTraces.push(trace);if(claimTraces.length>6)claimTraces.shift()}
  C.busy=true;window.__V7214_QUEST_MUTATION_BUSY__=true;invalidateQuestState();C.lastRunId=runId;
  const before=(()=>{try{
   const snap=typeof v235RewardSnapshot==='function'?v235RewardSnapshot(q):{q:clone(q),gold:Number(s.gold)||0,harz:Number(s.harzTaler)||0,inventory:(s.inventory||[]).map(itemId)};
@@ -344,14 +355,18 @@ async function claimServerQuest(){
  }catch(_){return{q:clone(q),level:Math.max(1,Number(s?.level)||1)}}})();
  try{
   let b;
+  mark('rpcStartMs');
   try{b=await rpcTimeout('v7044_claim_quest',{},9000)}catch(e){
+   mark('rpcEndMs');if(trace)trace.outcome='RPC-Fehler/Recovery';
    C.lastError=String(e?.message||e);
    const recovered=await recoverClaimAfterTimeout(runId,q,before);
    if(recovered)return recovered;
    toast('Quest-Belohnung wird geprüft','warn','Keine zweite Belohnung wird ausgelöst. Beim nächsten Start wird der Serverstatus erneut geprüft.');return false;
   }
-  if(!b?.ok){toast('Quest nicht abgeschlossen','warn',String(b?.reason||'Serveraktion fehlgeschlagen.'));return false}
-  if(b.won===false)return false;
+  mark('rpcEndMs');
+  if(!b?.ok){if(trace)trace.outcome='Server abgelehnt';toast('Quest nicht abgeschlossen','warn',String(b?.reason||'Serveraktion fehlgeschlagen.'));return false}
+  if(b.won===false){if(trace)trace.outcome='Kampf nicht gewonnen';return false}
+  if(trace)trace.outcome='Claim bestätigt';
   /* A successful server claim has consumed the active run. Clear the local
      projection immediately so a failed/stale follow-up state fetch cannot
      leave the finished Quest card visible. Any explicit server bundle/state
@@ -362,12 +377,15 @@ async function claimServerQuest(){
      Server remains authoritative; no second claim or reward is issued. */
   const fastClaimSync=['beta','server1'].includes(String(window.GROW_RELEASE_CHANNEL||'').toLowerCase());
   const postClaimSync=fastClaimSync?(async()=>{
-    const ackResult=await ack(runId);
+    const ackResult=await ack(runId);mark('ackDoneMs');
     try{await canonicalQuestState(true)}catch(_){}
+    mark('stateDoneMs');
     return ackResult;
   })():null;
   /* Presentation is never allowed to block the committed server reward. */
+  mark('fightStartMs');
   try{if(typeof v311PlayFight==='function')await Promise.race([Promise.resolve(v311PlayFight(clone(q))),sleep(6000)])}catch(e){console.warn('[V7045] quest presentation',e)}
+  mark('fightDoneMs');
   /* A resolved claim must never resurrect the consumed run from a stale
      receipt/bundle. Rewards are applied, while active quest state is fetched
      separately from the canonical server state below. */
@@ -389,10 +407,14 @@ async function claimServerQuest(){
    else if(typeof v235ShowQuestReward==='function')v235ShowQuestReward(before);
    else toast('📜 Quest abgeschlossen','success',`+${Number(b.xp_awarded)||0} EXP · +${Number(b.gold_awarded)||0} Gold`);
   }catch(e){console.warn('[V7045] reward popup',e)}
+  mark('popupCallMs');
+  /* Only two existing browser presentation frames; this does not await paint
+     and cannot prove when the GPU visibly composited the reward. */
+  if(trace)try{requestAnimationFrame(()=>requestAnimationFrame(()=>mark('popupFrameMs')))}catch(_){}
   const a=fastClaimSync?await postClaimSync:await ack(runId);
   if(!a?.ok)toast('Belohnung serverseitig gesichert','warn','Der Spielstand wird weiter abgeglichen; es wird nichts doppelt vergeben.');
   return b;
- }finally{C.busy=false;window.__V7214_QUEST_MUTATION_BUSY__=false}
+ }finally{mark('doneMs');if(trace&&trace.outcome==='läuft')trace.outcome='abgebrochen';C.busy=false;window.__V7214_QUEST_MUTATION_BUSY__=false}
 }
 function claimWrapper(base){
  if(typeof base!=='function')return null;

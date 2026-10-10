@@ -274,3 +274,6 @@ V8.287 – Aktive tägliche Verlustwache
 - Realer Beta-V8.379-Android-Reaktionsmonitor: 31 Aktionen, P95 1.562 ms, Max 1.719 ms, UI P95 32 ms; Quest-Abholungen 851–1.719 ms; laut Nutzer Belohnung, EXP, Gold und Popup korrekt. Frühere Server1-P95 3.263 ms / Max 5.326 ms nicht als kontrollierter A/B-Nachweis ausgeben.
 - V8.380 gleicher kanonischer v7045-Originalowner jetzt mit parallelem ACK + Queststate während Kampfanimation auf Server 1, Server1-Einstieg mit eigenem neuen Cachekey; Beta-Einstieg sowie Server1-Klassenbalance, SQL/Rewards/Spielerdaten unverändert. QA-Guard prüft Single-Claim, Popups, Kanal- und Cache-Grenzen.
 - Server1 echte Android-Quest-Abholung und Reaktionsmonitor noch als manuelle Endabnahme offen; Attribut-Klick und langsame Gilde/Nachrichten/Shop-Calls getrennt analysieren.
+
+### V8.381 – Server1 Quest Einzelzeit (10.10.2026)
+- Quest-Abhol-Owner protokolliert in höchstens sechs server1-only In-Memory-Messungen die tatsächliche RPC-, Animations-, Popup- und ACK/State-Zeit. Systemtechnik zeigt eigene Karte und QA-Copy-Zeilen; keine neuen Requests/Timer, keine Spielmechanik oder Beta-Cache verändert. Echte Server1-Android-Abnahme offen.
