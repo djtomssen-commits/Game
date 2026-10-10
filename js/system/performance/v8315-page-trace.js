@@ -297,7 +297,7 @@ function semanticTab(button){
  const inTabList=!!parent?.matches?.('[role="tablist"],.tabs,.tabbar,.tab-nav,[class*="-tabs"],[class*="-tab-nav"]');
  if(!attribute&&!role&&!inTabList)return null;
  if(inTabList&&!attribute&&!role&&[...parent.children].filter(x=>x.tagName==='BUTTON').length<2)return null;
- const raw=String(attribute?.value||button.id||'');
+ const raw=String(attribute?.value||(inTabList?button.getAttribute('data-type'):'')||button.id||'');
  const token=/^[a-z0-9_-]{1,40}$/i.test(raw)?raw:'slot'+Math.max(0,[...parent.children].indexOf(button));
  const group=String(parent.id||parent.className||'tabs').split(/\s+/)[0].slice(0,40).replace(/[^a-z0-9_-]/gi,'');
  return {button,tab:token,group,key:(attribute?.name||'role-tab')+':'+token+':'+group};
