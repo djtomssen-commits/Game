@@ -213,7 +213,12 @@ try{
   window.v6160GrowContracts={state:()=>({contracts:[]})};
   window.v6160RenderBoardHtml=()=>'<div id="qaOrders">Aufträge</div>';
  });
+ const ownerErrors=[];ownerPage.on('pageerror',e=>ownerErrors.push(String(e.stack||e.message||e)));
  await ownerPage.addScriptTag({path:path.join(process.cwd(),'js/features/i18n/v8144-i18n-gameplay.js')});
+ const bootI18n=await ownerPage.evaluate(()=>({
+  hasG:!!window.GrowI18n,gate:window.__V8144_GAMEPLAY_I18N__,bridge:!!window.v8144GameplayI18n
+ }));
+ assert.ok(bootI18n.bridge,'Original i18n bridge failed to initialize: '+JSON.stringify({bootI18n,ownerErrors}));
  await ownerPage.addScriptTag({path:path.join(process.cwd(),'js/features/quest/beta/v386-quest-redesign-script.js')});
  await ownerPage.addScriptTag({path:path.join(process.cwd(),'js/features/grow/beta/v8009-s6-v6163-growroom-primary-tabs-core.js')});
  const ownerCheck=await ownerPage.evaluate(()=>{
