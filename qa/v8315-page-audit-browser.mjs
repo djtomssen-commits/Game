@@ -152,7 +152,7 @@ try{
  });
  assert.equal(qaCenter.restored,true,'opt-in fetch instrumentation was not restored');
  assert.equal(qaCenter.restoredText,true,'V8.371 textContent instrumentation was not restored');
- assert.equal(qaCenter.result.version,'V8.373','QA Center version missing');
+ assert.equal(qaCenter.result.version,'V8.374','QA Center version missing');
  assert.ok(qaCenter.result.qaCenter.mutationDetail?.character?.identicalText>=1,
   'V8.370 same-text childList replacement classification missing');
  assert.ok(qaCenter.result.qaCenter.mutationDetail?.character?.textWriters?.some(x=>x.attempts>=1),
@@ -475,11 +475,14 @@ try{
    paint();
    const server1Unchanged=obs.takeRecords().length>0;
    obs.disconnect();window.GROW_RELEASE_CHANNEL='beta';
-   return {initialWorse,stable,changed,cleared,server1Unchanged,counts};
+   const causes=window.__V8374_COMPARE_REBUILDS__?.();
+   return {initialWorse,stable,changed,cleared,server1Unchanged,counts,causes};
   });
   assert.ok(comparePaint.initialWorse&&comparePaint.stable&&comparePaint.changed&&
    comparePaint.cleared&&comparePaint.server1Unchanged&&comparePaint.counts?.classNoops>0&&
-   comparePaint.counts?.titleNoops>0,
+   comparePaint.counts?.titleNoops>0&&
+   comparePaint.causes?.stable>0&&comparePaint.causes?.missingFinal>0&&
+   comparePaint.causes?.changedKey>0,
    'V8.369 canonical Character compare no-op/update/Server1 regression: '+JSON.stringify(comparePaint));
   await forgePage.close();
 
@@ -623,6 +626,37 @@ try{
  assert.ok(emptyResult.stable&&emptyResult.filtered&&emptyResult.filteredStable&&emptyResult.legacy,
   'V8.373 original V533 empty-slot stable/filter/Server1 regression: '+JSON.stringify(emptyResult));
  await emptyPage.close();
+
+ // V8.374: the original V686 pet button placement is a repeated synchronous
+ // book installation hook. Beta must keep already ordered button DOM nodes
+ // untouched, reorder only after a real displacement, Server1 keeps old moves.
+ const bookPage=await browser.newPage();
+ bookPage.on('pageerror',e=>errors.push('v686-book: '+String(e.message||e)));
+ await bookPage.setContent('<!doctype html><html><body><section id="character" class="active">'+
+  '<div class="v514-book-host"><button id="v106BookBtn">Illegales Buch</button>'+
+  '<button id="v686PetAlbumBtn"><span class="info">Pets</span></button></div></section></body></html>');
+ await bookPage.evaluate(()=>{
+  window.GROW_RELEASE_CHANNEL='beta';window.s={};
+  window.v106InstallBook=function(){return true};
+ });
+ await bookPage.addScriptTag({path:path.join(process.cwd(),
+  'js/features/pets/beta/v8009-s1-v686-pet-album-core.js')});
+ const bookResult=await bookPage.evaluate(async()=>{
+  const host=document.querySelector('.v514-book-host');
+  const book=document.getElementById('v106BookBtn'),pet=document.getElementById('v686PetAlbumBtn');
+  const obs=new MutationObserver(()=>{});obs.observe(host,{childList:true});
+  v106InstallBook();await Promise.resolve();v106InstallBook();await Promise.resolve();
+  const stable=obs.takeRecords().length===0&&host.firstElementChild===book&&book.nextElementSibling===pet;
+  host.insertBefore(pet,book);obs.takeRecords();
+  v106InstallBook();await Promise.resolve();
+  const fixed=host.firstElementChild===book&&book.nextElementSibling===pet&&obs.takeRecords().length>0;
+  window.GROW_RELEASE_CHANNEL='server1';v106InstallBook();await Promise.resolve();
+  const legacy=obs.takeRecords().length>=2;
+  obs.disconnect();return{stable,fixed,legacy};
+ });
+ assert.ok(bookResult.stable&&bookResult.fixed&&bookResult.legacy,
+  'V8.374 original V686 stable book-host/fix displaced pair/Server1: '+JSON.stringify(bookResult));
+ await bookPage.close();
 
  assert.ok(errors.length===0,errors.join('; '));
  fs.mkdirSync('qa/reports',{recursive:true});
