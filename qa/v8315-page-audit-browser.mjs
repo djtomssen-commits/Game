@@ -195,6 +195,55 @@ try{
  assert.ok(profilerSmoke.report.includes('Records 175 | Batches 9'),'V477 real observer delta missing');
  assert.ok(profilerSmoke.report.includes('Long-Task-Quelle:'),'Profiler must declare its long-task source');
  await page.locator('#glRuntimeProfiler').evaluate(el=>el.remove());
+ // V8.364: real original Beta owners must not overwrite live dynamic stats,
+ // remount identical Quest/Grow panels or call normal scrolling "flicker".
+ const ownerPage=await browser.newPage({viewport:{width:390,height:844}});
+ await ownerPage.setContent('<!doctype html><html><body>'+
+  '<section id="quests" class="screen active"><div class="quest-list"></div></section>'+
+  '<section id="grow" class="screen"><div class="v492-grow"><div class="v492-sign"></div></div></section>'+
+  '<div id="qaTranslate">VIP kaufen</div><span id="qaValue">1.997</span></body></html>');
+ await ownerPage.evaluate(()=>{
+  window.GROW_RELEASE_CHANNEL='beta';
+  window.__qaLanguage='de';
+  window.GrowI18n={getLanguage:()=>window.__qaLanguage};
+  window.s={level:10,quests:{offers:[{title:'Quest A',duration:60,energy:3,xp:10,gold:20}]},grow:{v492:{bag:[]}}};
+  window.v094XpEventActive=()=>false;
+  window.v274GoldEventActive=()=>false;
+  window.v7081UseAuthority=()=>false;
+  window.v6160GrowContracts={state:()=>({contracts:[]})};
+  window.v6160RenderBoardHtml=()=>'<div id="qaOrders">Aufträge</div>';
+ });
+ await ownerPage.addScriptTag({path:path.join(process.cwd(),'js/features/i18n/v8144-i18n-gameplay.js')});
+ await ownerPage.addScriptTag({path:path.join(process.cwd(),'js/features/quest/beta/v386-quest-redesign-script.js')});
+ await ownerPage.addScriptTag({path:path.join(process.cwd(),'js/features/grow/beta/v8009-s6-v6163-growroom-primary-tabs-core.js')});
+ const ownerCheck=await ownerPage.evaluate(()=>{
+  const value=document.getElementById('qaValue').firstChild;
+  window.v8144GameplayI18n.apply('quests');
+  value.nodeValue='2.000';
+  window.v8144GameplayI18n.apply('quests');
+  const dynamicGerman=value.nodeValue;
+  window.__qaLanguage='en';window.v8144GameplayI18n.apply('quests');
+  window.__qaLanguage='de';window.v8144GameplayI18n.apply('quests');
+  const dynamicAfterSwitch=value.nodeValue;
+  window.v386RenderQuestShell();
+  const list=document.querySelector('#quests .v386-list'),first=list.firstElementChild;
+  window.v386RenderQuestShell();
+  const sameQuestCards=first===list.firstElementChild;
+  window.s.quests.offers[0].title='Quest B';
+  window.v386RenderQuestShell();
+  const changedQuestCards=first!==list.firstElementChild&&list.textContent.includes('Quest B');
+  window.v6163GrowTabs.mountNow();window.v6163GrowTabs.open('orders');
+  const panel=document.getElementById('v6163Inline'),before=panel.firstElementChild;
+  window.v6163GrowTabs.refresh();
+  const sameOrders=before===panel.firstElementChild;
+  return {dynamicGerman,dynamicAfterSwitch,sameQuestCards,changedQuestCards,sameOrders};
+ });
+ assert.equal(ownerCheck.dynamicGerman,'2.000','German i18n reset updated dynamic stat');
+ assert.equal(ownerCheck.dynamicAfterSwitch,'2.000','language switch reset current dynamic stat');
+ assert.ok(ownerCheck.sameQuestCards,'identical Quest cards were remounted');
+ assert.ok(ownerCheck.changedQuestCards,'changed quest offers did not rerender');
+ assert.ok(ownerCheck.sameOrders,'identical server-authoritative Grow orders were remounted');
+ await ownerPage.close();
  assert.ok(errors.length===0,errors.join('; '));
  fs.mkdirSync('qa/reports',{recursive:true});
  fs.writeFileSync('qa/reports/v8315-per-page-browser.json',JSON.stringify({
