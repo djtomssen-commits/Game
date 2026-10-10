@@ -13,7 +13,7 @@ new vm.Script(src,{filename:'v8383-unified-flight-recorder.js'});
 assert.equal(beta.split('id="v8383-unified-flight-recorder"').length-1,1,'Single Beta entry');
 assert.equal(beta.split('v8383-unified-flight-recorder.js?v=8384-batch-triage-beta').length-1,1,'Beta cache key');
 assert.equal(server1.includes('v8383-unified-flight-recorder'),false,'Server1 remains unchanged');
-assert.ok(tech.includes('window.__GL_FLIGHT_RECORDER__?.network?.({url,ms,status,method,failed:!ok&&status===0,expectedReject:expectedRpcReject})'),'Reuse the existing network observation');
+assert.ok(tech.includes('window.__GL_FLIGHT_RECORDER__?.network?.({url,ms,status,method,screen:startedScreen,startedAt,failed:!ok&&status===0,expectedReject:expectedRpcReject})'),'Reuse the existing network observation');
 assert.ok(watchdog.includes('window.__GL_FLIGHT_RECORDER__?.watchdog?.({kind,severity,details})'),'Reuse the existing server watchdog');
 assert.equal(src.includes('setInterval('),false,'No extra recurring monitor timer');
 assert.equal(src.includes('new MutationObserver('),false,'No recursive DOM monitor');
