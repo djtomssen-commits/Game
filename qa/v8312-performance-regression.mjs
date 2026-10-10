@@ -122,7 +122,7 @@ check(characterHub.includes('if(name.childElementCount!==2||!existingText||exist
 check(characterHub.includes("if(!layout()){")&&
   !characterHub.includes("layout();\n      if(activeTab()==='inventory')refreshTab('inventory');"),
   'V8.342 renderInventory is still refreshing the tab twice');
-check(beta.includes('v8009-s2-v459-character-hub.js?v=8355-material-instant-scroll-and-paint-trace-beta'),
+check(beta.includes('v8009-s2-v459-character-hub.js?v=8359-remembered-material-prewarm-beta'),
   'V8.343 character hub cache key missing');
 const characterRenderer=read('js/features/ui/beta/v8009-s2-v086-polish-script.js');
 check(characterRenderer.includes('window.v7207CharacterRenderDiagnostics=()')&&
@@ -368,17 +368,17 @@ check(beta.includes('v8009-s3-v480-auto-gear-material.js?v=8354-previsible-first
 const hub354=read('js/features/character/beta/v8009-s2-v459-character-hub.js');
 const auto354=read('js/features/character/beta/v8009-s3-v480-auto-gear-material.js');
 check(hub354.includes("if(name==='materials'&&String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta')")&&
-  hub354.includes("if(panel&&!panel.classList.contains('active'))")&&
+  hub354.includes('(!wasActive||needsFirstMount)')&&
   hub354.includes('window.v030RenderMaterials?.()')&&
   hub354.includes("window.v480UpdateAutoBars?.('materials')")&&
   hub354.indexOf("window.v480UpdateAutoBars?.('materials')")<hub354.indexOf("shell.querySelectorAll('#v459CharacterTabs button').forEach(b=>b.classList.toggle('active'")&&
   hub354.includes('m.autoMaterialBarHiddenPrepares='),
   'V8.354 hidden Materials warmup must precede tab visibility');
 check(auto354.includes("panelActive:!!panel.classList?.contains?.('active')")&&
-  tech.includes('V8.354 MATERIALIEN VOR-EINBLENDEN')&&
+  tech.includes('V8.359 MATERIALIEN VOR-EINBLENDEN')&&
   tech.includes('Tab bereits sichtbar '),
   'V8.354 Auto-Sockeln visibility trace missing');
-check(beta.includes('v8009-s2-v459-character-hub.js?v=8355-material-instant-scroll-and-paint-trace-beta')&&
+check(beta.includes('v8009-s2-v459-character-hub.js?v=8359-remembered-material-prewarm-beta')&&
   beta.includes('v8009-s3-v480-auto-gear-material.js?v=8354-previsible-first-mount-trace-beta')&&
   beta.includes('v8009-s1-v4107-systemtechnik.js?v=8355-material-paint-frame-report-beta')&&
   !read('server1.html').includes('8354-hidden-material-tab-prepare-beta')&&
@@ -400,11 +400,26 @@ check(tech.includes('V8.355 MATERIALIEN BUTTON-PAINT:')&&
   tech.includes('CSS-Animation ')&&
   tech.includes('Transition '),
   'V8.355 Material button computed style and geometry profiler missing');
-check(beta.includes('v8009-s2-v459-character-hub.js?v=8355-material-instant-scroll-and-paint-trace-beta')&&
+check(beta.includes('v8009-s2-v459-character-hub.js?v=8359-remembered-material-prewarm-beta')&&
   beta.includes('v8009-s1-v4107-systemtechnik.js?v=8355-material-paint-frame-report-beta')&&
   !read('server1.html').includes('8355-material-instant-scroll-and-paint-trace-beta')&&
   !read('server1.html').includes('8355-material-paint-frame-report-beta'),
   'V8.355 must activate only on Beta');
+
+/* V8.359: remembered Materials tab may already be active when Character
+   reopens. The very first Material AutoBar mount still happens hidden in
+   the same synchronous activation; no extra timer, CSS workaround or
+   gameplay change. */
+check(hub354.includes('const wasActive=!!panel?.classList.contains(\'active\')')&&
+  hub354.includes('const needsFirstMount=!bar||bar.parentElement!==panel')&&
+  hub354.includes("document.getElementById('character')?.classList.contains('active')")&&
+  hub354.includes('if(wasActive)panel.classList.remove(\'active\')')&&
+  hub354.includes('finally{if(wasActive)panel.classList.add(\'active\')}')&&
+  hub354.includes('m.materialRememberedTabFirstMountPrepares=')&&
+  tech.includes("visualCount('materialRememberedTabFirstMountPrepares')")&&
+  beta.includes('v8009-s2-v459-character-hub.js?v=8359-remembered-material-prewarm-beta')&&
+  !read('server1.html').includes('8359-remembered-material-prewarm-beta'),
+  'V8.359 active remembered material tab must prewarm before first paint on Beta only');
 
 check(beta.includes('v8009-s12-v7081-account-capability-gate.js?v=8337-flat-diag-beta'),'Beta capability hotpath cache not updated');
 check(beta.includes('v8009-s1-v7042-unified-authority-bridge.js?v=8337-memo-diag-beta'),'Beta bridge hotpath cache not updated');
