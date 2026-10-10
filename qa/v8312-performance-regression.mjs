@@ -431,7 +431,7 @@ check(beta.includes('v8315-page-trace.js?v=8360-beta-all-tabs-audit')&&
   tabAudit.includes("const withTabs=options.includeTabs===true")&&
   tabAudit.includes("if(withTabs&&!sweepCancelled)await auditTabs(id,options)")&&
   tabAudit.includes("const tabAttr=/^data-")&&
-  tabAudit.includes("if(button.type==='submit'||button.hasAttribute('formaction'))return null")&&
+  tabAudit.includes("if(button.getAttribute('type')?.toLowerCase()==='submit'||button.hasAttribute('formaction'))return null")&&
   tabAudit.includes('tabResults:state.tabResults'),
   'V8.360 Beta semantic tab sweep or isolation missing');
 check(beta.includes('v8009-s12-v7081-account-capability-gate.js?v=8337-flat-diag-beta'),'Beta capability hotpath cache not updated');
