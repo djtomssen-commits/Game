@@ -616,6 +616,17 @@ function stopRuntimeProfiler(){
      ' | XP-Layout-Verschiebungen '+visualCount('xpNodeMoves')+
      ' | Ring-Slot-Neuaufbauten '+visualCount('ringRebuilds')+
      ' | Ring-Bild-Ersetzungen '+visualCount('ringImageReplaces'),
+   'V8.352 MATERIALIEN DOM-CHURN (Delta im Profil): Render-Anfragen '+visualCount('materialRenderCalls')+
+     ' | Kachel-Neuaufbauten '+visualCount('materialGridRebuilds')+
+     ' | unnötige Kachel-Neuaufbauten vermieden '+visualCount('materialGridNoopSkips')+
+     ' | Kopf-Neuaufbauten '+visualCount('materialHeaderRebuilds')+
+     ' | Kopf-Neuaufbauten vermieden '+visualCount('materialHeaderNoopSkips')+
+     ' | Bildknoten durch nötigen Neuaufbau entfernt '+visualCount('materialImageNodesRemovedByRebuild'),
+   ...(isBetaProfile?(visualNow.materialGridRebuildTrace||[]).filter(x=>Number(x.at||0)>=runtimeProfile.startEpoch)
+      .slice(-10).map(x=>'V8.352 MATERIALIEN-NEUAUFBAU t+'+Math.max(0,Math.round(Number(x.at)-runtimeProfile.startEpoch))+
+        ' ms | Grund '+String(x.reason||'n/v')+
+        ' | sichtbare Stapel '+Math.max(0,Number(x.visibleStacks)||0)+
+        ' | entfernte Bildknoten '+Math.max(0,Number(x.removedImages)||0)):[]),
    'V8.350 RING-ART SINGLE-OWNER: reine Roh-Icon-Wechsel bei gleicher sichtbarer Grafik '+visualCount('ringIconOnlyChangesSkipped')+
      ' | tatsächliche Ring-Neuaufbauten '+visualCount('ringRebuilds')+
      ' | Bild-Ersetzungen '+visualCount('ringImageReplaces'),
