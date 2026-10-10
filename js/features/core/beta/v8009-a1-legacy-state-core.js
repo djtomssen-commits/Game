@@ -473,7 +473,7 @@ function renderInventory(){
  const count=document.querySelector('#invCount'),box=document.querySelector('#inventory');
  if(!count||!box)return;
  if(!Array.isArray(s.inventory))s.inventory=[];
- const beta=String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta';
+ const beta=String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta'||(window.__GROW_SERVER1_PERFORMANCE_V8376__===true&&String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='server1');
  const countText=`${s.inventory.length} Item${s.inventory.length===1?'':'s'}`;
  if(!beta||count.textContent!==countText)count.textContent=countText;
  let signature=null;
