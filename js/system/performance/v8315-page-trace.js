@@ -442,8 +442,19 @@ function percentile(values,q){
 }
 /* The QA center ranks observed failures without claiming that expected
    tab-content rebuilds, transitions or hidden image placeholders are bugs. */
+function consistencySnapshot(){
+ if(!qaState.extended)return {available:false};
+ try{
+  const r=window.v8330DataConsistencyReport?.();
+  if(!r)return {available:false};
+  return {available:true,observations:Number(r.observations)||0,checks:Number(r.checks)||0,
+    suspectedIssues:Array.isArray(r.issues)?r.issues.length:0,accountSwitches:Number(r.accountSwitches)||0,
+    note:'Passive confirmed server-response comparison only; no extra RPC or full balance verification'};
+ }catch(_){return {available:false}}
+}
 function rankedFindings(pages){
  const findings=[];
+ const cons=consistencySnapshot();
  const add=(severity,screen,tab,code,detail={})=>{
   if(findings.length<95)findings.push({severity,screen,tab:tab||null,code,...detail});
  };
@@ -471,6 +482,8 @@ function rankedFindings(pages){
   for(const id of SCREENS)if(!present.has(id))add('high',id,null,'screen_not_observed');
  }
  if(state.tabSweepLimited)add('medium','audit',null,'tab_coverage_limit');
+ if(cons.available&&cons.suspectedIssues>0)add('high','consistency',null,'suspected_server_ui_mismatch',{count:cons.suspectedIssues});
+ if(!cons.available)add('low','consistency',null,'server_comparison_not_available');
  findings.sort((a,b)=>({critical:0,high:1,medium:2,low:3}[a.severity]||4)-({critical:0,high:1,medium:2,low:3}[b.severity]||4));
  return findings;
 }
@@ -496,7 +509,7 @@ function report(){
   ...(qaState.extended?{qaCenter:{
     mode:'safe-readonly-diagnostics',network:{requests:qaState.requests.length,errors:qaState.networkErrors,slow:qaState.slowRequests,
       endpoints:Object.entries(qaState.rpcStats).sort((a,b)=>b[1].failures-a[1].failures||b[1].calls-a[1].calls).slice(0,35).map(([endpoint,value])=>({endpoint,...value}))},
-    layoutChecks:qaState.layoutChecks,visualChecks:qaState.visualChecks,
+    layoutChecks:qaState.layoutChecks,visualChecks:qaState.visualChecks,consistency:consistencySnapshot(),
     findings,counts,coverage:{primaryScreens:pages.filter(p=>SCREENS.includes(p.screen)).length,totalPrimary:SCREENS.length,
       tabs:state.tabSweepDone,discoveredTabs:state.tabSweepDiscovered,skippedTabs:state.tabSkipped.length},
     limitations:['No screenshot/GPU pixel diff','No server-side reward integrity write test','No real purchase or battle mutation','No guarantee of catching intermittent bugs']
