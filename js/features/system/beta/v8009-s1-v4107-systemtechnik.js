@@ -1200,6 +1200,16 @@ function renderRight(r){
    }).join('');
    box.insertAdjacentHTML('beforeend',`<div class="v4107-right-card" id="v8381QuestTimingCard"><h3>⏱️ V8.381 QUEST-EINZELMESSUNG</h3><div class="v4107-legacy-list">${details||'<small>Noch keine Quest seit App-Start abgeholt.</small>'}</div><div class="v4107-clean">Nur Server 1 · kein neuer RPC/Timer · Popup-Folgebild ist keine GPU-Paint-Garantie.</div></div>`);
   }
+  /* V8.382: actual attribute stages, excluding unrelated background RPCs. */
+  if(String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='server1'){
+   const rows=(()=>{try{return window.v8382AttributeLatencyDiagnostics?.()||[]}catch(_){return[]}})();
+   const dur=(x,a,b)=>Number.isFinite(x[a])&&Number.isFinite(x[b])?Math.max(0,x[b]-x[a])+' ms':'—';
+   const end=(x,k)=>Number.isFinite(x[k])?x[k]+' ms':'—';
+   const body=rows.slice(-8).reverse().map(x=>
+    `<small>${esc(x.status||'—')} · ${esc(x.mode||'unbekannt')} · Warteschlange ${end(x,'queueStartMs')} · Authority ${dur(x,'gateStartMs','gateDoneMs')} · RPC ${dur(x,'rpcStartMs','rpcDoneMs')} · Local-Mirror ${dur(x,'mirrorStartMs','mirrorDoneMs')} · Neuzeichnen ${dur(x,'paintStartMs','paintDoneMs')} · Gesamt ${end(x,'doneMs')}</small>`
+   ).join('');
+   box.insertAdjacentHTML('beforeend',`<div class="v4107-right-card" id="v8382AttributeTimingCard"><h3>⏱️ V8.382 ATTRIBUT-EINZELMESSUNG</h3><div class="v4107-legacy-list">${body||'<small>Seit App-Start keine Attributpunkte verteilt.</small>'}</div><div class="v4107-clean">Nur Server 1 · vorhandener Original-RPC · keine zusätzlichen Aufrufe oder Hintergrundtimer. Alle Werte ab Attributklick.</div></div>`);
+  }
   const ad=(()=>{try{return window.v7133AuthorityDiagnostics?.()||null}catch(_){return null}})(),ap=window.__V7133_AUTHORITY_POLICY__||null;
  if(ad){const ds=ad.domains||{},enf=Object.values(ds).filter(x=>String(x)==='enforce').length,total=Object.keys(ds).length;box.insertAdjacentHTML('beforeend',`<div class="v4107-right-card" id="v7173AuthorityCard"><h3>🛡️ AUTHORITY-WÄCHTER</h3><div class="v4107-metrics"><span>Domains enforce</span><b class="${enf===22?'':'bad'}">${enf}/22</b><span>Fail-Closed</span><b>${ap?.unknownAuthority==='fail-closed'?'JA':'NEIN'}</b><span>Alte Cloud-Writes blockiert</span><b>${Number(ad.legacyCloudWritesSuppressed)||0}</b><span>Alte Restores blockiert</span><b>${Number(ad.legacyCloudAppliesBlocked)||0}</b><span>Local-Fallbacks blockiert</span><b>${Number(ad.legacyGameplayFallbacksBlocked)||0}</b><span>Rehydrations</span><b>${Number(ad.rehydrates)||0}</b><span>Legacy-Dampf</span><b class="${ad.legacyEnergyGuarded&&ad.legacyDampfResetGuarded?'':'bad'}">${ad.legacyEnergyGuarded&&ad.legacyDampfResetGuarded?'BLOCKIERT':'OFFEN'}</b><span>Legacy-Tagesreset</span><b class="${ad.legacyMidnightGuarded&&ad.legacyWorldbossResetGuarded?'':'bad'}">${ad.legacyMidnightGuarded&&ad.legacyWorldbossResetGuarded?'BLOCKIERT':'OFFEN'}</b><span>Alter Whole-Save-Monitor</span><b>${ad.legacySaveMonitorRetired?'BEENDET':'läuft bis Authority bereit'}</b><span>Login Whole-Save-Restore</span><b class="${ad.accountResolverGuarded?'':'bad'}">${ad.accountResolverGuarded?'BLOCKIERT':'OFFEN'}</b></div><div class="v4107-clean">${enf===22&&ad.cloudWriterGuarded&&ad.cloudApplyGuarded&&ad.accountResolverGuarded&&ad.legacyEnergyGuarded&&ad.legacyDampfResetGuarded&&ad.legacyMidnightGuarded&&ad.legacyWorldbossResetGuarded?'Server ist alleinige Gameplay-Wahrheit':'Authority-Schutz unvollständig – Systemtest starten'}</div></div>`)}
  const rg=(()=>{try{return window.__V477_RUNTIME_DIAGNOSTICS__?.()||null}catch(_){return null}})(),lg=window.__V7173_LEGACY_LOCAL_GUARD__||null;
@@ -1213,7 +1223,12 @@ function copyReport(r){
    const dt=(a,b)=>Number.isFinite(x[a])&&Number.isFinite(x[b])?x[b]-x[a]:'—';
    return `QUEST | Animation ${x.animationEnabled===false?'AUS':x.animationEnabled===true?(x.reducedMotion?'EIN reduziert':'EIN'):'unbekannt'} | ${x.outcome} | Claim ${dt('rpcStartMs','rpcEndMs')} ms | Kampf ${dt('fightStartMs','fightDoneMs')} ms | ACK seit Claim ${dt('rpcEndMs','ackDoneMs')} ms | State seit Claim ${dt('rpcEndMs','stateDoneMs')} ms | Popup ${x.popupCallMs??'—'} ms | Folgebild ${x.popupFrameMs??'—'} ms | Ende ${x.doneMs??'—'} ms`;
   });
-  const report=text+(extra.length?'\n\nV8.381 QUEST-EINZELMESSUNG\n'+extra.join('\n'):'');
+  const attributeRows=String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='server1'?(window.v8382AttributeLatencyDiagnostics?.()||[]):[];
+  const attributeTexts=attributeRows.map(x=>{
+   const dt=(a,b)=>Number.isFinite(x[a])&&Number.isFinite(x[b])?x[b]-x[a]:'—';
+   return `ATTRIBUT | ${x.status} | Modus ${x.mode||'unbekannt'} | Queue ${x.queueStartMs??'—'} ms | Gate ${dt('gateStartMs','gateDoneMs')} ms | Server-RPC ${dt('rpcStartMs','rpcDoneMs')} ms | Mirror ${dt('mirrorStartMs','mirrorDoneMs')} ms | Paint ${dt('paintStartMs','paintDoneMs')} ms | Ende ${x.doneMs??'—'} ms`;
+  });
+  const report=text+(extra.length?'\n\nV8.381 QUEST-EINZELMESSUNG\n'+extra.join('\n'):'')+(attributeTexts.length?'\n\nV8.382 ATTRIBUT-EINZELMESSUNG\n'+attributeTexts.join('\n'):'');
   try{navigator.clipboard?.writeText(report).then(()=>window.v063Toast?.('QA-Bericht kopiert','success','Kann direkt geschickt werden.')).catch(()=>{})}catch(e){}
 }
 /* V8.324 Beta: opening the profiler must not implicitly run a deep QA/RPC

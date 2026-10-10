@@ -22,6 +22,9 @@
  };
  let gatePromise=null,gateUid='';
  let actionChain=Promise.resolve();
+ /* V8.382 server1-only, bounded diagnostics in the original attribute owner. */
+ const attributeTiming=[];
+ window.v8382AttributeLatencyDiagnostics=()=>attributeTiming.slice(-8).map(x=>({...x}));
 
  function currentUid(){
   try{return String((typeof v073User!=='undefined'&&v073User?.id)||'')}catch(_){return ''}
@@ -191,8 +194,10 @@
    return Array.isArray(data)?data[0]:data;
   }catch(e){wd?.fail?.(e);throw e}
  }
- async function useAuthorityOrFallback(base,ctx,args,serverFn){
+ async function useAuthorityOrFallback(base,ctx,args,serverFn,traceMark=null){
+  if(traceMark)traceMark('gateStartMs');
   const gate=await loadGate(false);
+  if(traceMark)traceMark('gateDoneMs',gate?.build_bridge_enabled?'server':'legacy');
   if(!gate?.build_bridge_enabled){
    return typeof base==='function'?base.apply(ctx,args):false;
   }
@@ -220,19 +225,40 @@
   if(typeof base==='function'){
    window.incAttr=function(k){
     const ctx=this,args=arguments,attr=String(k||'');
-    return enqueue(()=>useAuthorityOrFallback(base,ctx,args,async()=>{
-     const row=await rpc('v6357_spend_attribute',{p_attr:attr});
-     if(rejectRow(row)){
-      if(row?.attrs)s.attrs=deep(row.attrs);
-      if(Number.isFinite(Number(row?.points)))s.points=Math.max(0,Number(row.points));
-      repaint('attribute');
-      return false;
-     }
-     if(row?.attrs)s.attrs=deep(row.attrs);
-     if(Number.isFinite(Number(row?.points)))s.points=Math.max(0,Number(row.points));
-     persistServerBuild();repaint('attribute');
-     return true;
-    }));
+    const started=performance.now();
+    const trace=String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='server1'?{at:Date.now(),status:'läuft'}:null;
+    if(trace){attributeTiming.push(trace);if(attributeTiming.length>8)attributeTiming.shift()}
+    const stamp=(name,mode)=>{
+     if(!trace)return;
+     trace[name]=Math.max(0,Math.round(performance.now()-started));
+     if(mode)trace.mode=mode;
+    };
+    return enqueue(async()=>{
+     stamp('queueStartMs');
+     try{
+      const out=await useAuthorityOrFallback(base,ctx,args,async()=>{
+       stamp('rpcStartMs');
+       const row=await rpc('v6357_spend_attribute',{p_attr:attr});
+       stamp('rpcDoneMs');
+       if(rejectRow(row)){
+        if(row?.attrs)s.attrs=deep(row.attrs);
+        if(Number.isFinite(Number(row?.points)))s.points=Math.max(0,Number(row.points));
+        stamp('paintStartMs');repaint('attribute');stamp('paintDoneMs');
+        if(trace)trace.status='abgewiesen';
+        return false;
+       }
+       if(row?.attrs)s.attrs=deep(row.attrs);
+       if(Number.isFinite(Number(row?.points)))s.points=Math.max(0,Number(row.points));
+       stamp('mirrorStartMs');persistServerBuild();stamp('mirrorDoneMs');
+       stamp('paintStartMs');repaint('attribute');stamp('paintDoneMs');
+       if(trace)trace.status='bestätigt';
+       return true;
+      },trace?stamp:null);
+      if(trace&&trace.status==='läuft')trace.status=out===false?'fehlgeschlagen/abgebrochen':'Legacy-Pfad';
+      return out;
+     }catch(e){if(trace)trace.status='Fehler';throw e}
+     finally{stamp('doneMs')}
+    });
    };
    try{incAttr=window.incAttr}catch(_){ }
   }

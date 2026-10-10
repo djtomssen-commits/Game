@@ -280,3 +280,6 @@ V8.287 – Aktive tägliche Verlustwache
 
 ### V8.381 – Server1 Android-Abnahme Quest-Einzelmessung (10.10.2026)
 - Nutzer bestätigte zwei echte Server1-Quest-Claims mit Kampfanimation **AUS**: Serverclaim 411/172 ms, Belohnungs-Popup-Aufruf t+455/t+229 ms, Folgeframe t+507/t+281 ms, gesamter Claim t+997/t+557 ms, jeweils `Claim bestätigt`. Der generische Klickmonitor zeigte max 1.350 ms, enthält aber zusätzlich zeitlich überlappende Gilden- und Authority-RPCs und ist nicht gleich Popup-Wartezeit. Keine mehrsekündige Quest-Popup-Latenz in diesen zwei Fällen. V8.380/381 damit gezielt live auf Android abgenommen; keine weiteren Quest-Codeänderungen, nächste Latenzuntersuchung Attributpunkte getrennt.
+
+### V8.382 – Server1 Attribut-Latenz (10.10.2026)
+- V7033-Originalowner instrumentiert nur auf Server1 maximal acht reale Attributklicks (Warteschlange, Gate, einzelner v6357_spend_attribute-RPC, Local-Mirror, gezielter Paint, Gesamt/Status). Systemtechnik erhält eigene V8.382-Karte/Kopierreport; nur Server1-HTML-Cache aktualisiert, Beta/SQL/Spielerwerte und Klassenbalance unverändert. Android-Nachtest mit 2–3 normalen Punkten offen.
