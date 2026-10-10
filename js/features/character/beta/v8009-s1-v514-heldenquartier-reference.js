@@ -30,7 +30,7 @@
       if(!lvl){lvl=document.createElement('div');lvl.className='v514-slot-level';el.appendChild(lvl)}
       /* V8.371 Beta: an identical level is not a new text node. */
       const levelText=`Lv.${itemLevel(it)}`;
-      if(String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()!=='beta'||lvl.textContent!==levelText)
+      if(!(String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta'||(window.__GROW_SERVER1_PERFORMANCE_V8376__===true&&String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='server1'))||lvl.textContent!==levelText)
         lvl.textContent=levelText;
     });
   }
