@@ -6,6 +6,7 @@ window.__V683_MATERIAL_MULTI_SELL__=true;
 let mode=false;
 const selected=new Set(); // key = sichtbarer Material-Stapel; Mehrfachmodus verkauft jeweils den kompletten Stapel.
 let scheduled=false;
+const beta=()=>String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta';
 
 function qNorm(m){
  const q=String(m?.quality||'').toLowerCase();
@@ -44,22 +45,34 @@ function updateSummary(panel){
  cleanSelection();
  const st=selectionStats();
  const summary=panel.querySelector('.v683-multi-summary');
- if(summary)summary.innerHTML=mode
+ const summaryHtml=mode
   ? `<b>${st.count} Material${st.count===1?'':'ien'} ausgewählt · 💰 ${st.gold} Gold</b>${st.gems} Edelstein${st.gems===1?'':'e'} · ${st.scrolls} Rolle${st.scrolls===1?'':'n'} · ${st.stacks} Stapel`
   : `<b>Mehrfachverkauf</b>Mehrere Edelsteine und Rollen gemeinsam markieren und in einem Schritt verkaufen.`;
- const sell=panel.querySelector('.v683-sell-selected');if(sell){sell.disabled=!mode||st.count===0;sell.textContent=st.count?`💰 Auswahl verkaufen (${st.gold})`:'💰 Auswahl verkaufen'}
- const clear=panel.querySelector('.v683-clear');if(clear)clear.disabled=selected.size===0;
+ if(summary&&(!beta()||summary.innerHTML!==summaryHtml))summary.innerHTML=summaryHtml;
+ const sell=panel.querySelector('.v683-sell-selected');if(sell){
+  const disabled=!mode||st.count===0;
+  if(!beta()||sell.disabled!==disabled)sell.disabled=disabled;
+  const label=st.count?`💰 Auswahl verkaufen (${st.gold})`:'💰 Auswahl verkaufen';
+  if(!beta()||sell.textContent!==label)sell.textContent=label;
+ }
+ const clear=panel.querySelector('.v683-clear');if(clear){
+  const disabled=selected.size===0;
+  if(!beta()||clear.disabled!==disabled)clear.disabled=disabled;
+ }
 }
 function paintCards(panel){
  visibleCards(panel).forEach(card=>{
   const d=cardData(card);if(!d)return;
-  card.dataset.v683Key=d.key;
+  if(!beta()||card.dataset.v683Key!==d.key)card.dataset.v683Key=d.key;
   let check=card.querySelector('.v683-check');
   if(!check){check=document.createElement('button');check.type='button';check.className='v683-check';check.setAttribute('aria-label','Zum Mehrfachverkauf auswählen');check.textContent='✓';card.appendChild(check)}
   let note=card.querySelector('.v683-stack-note');
   if(!note){note=document.createElement('div');note.className='v683-stack-note';card.appendChild(note)}
-  note.textContent=d.count>1?`Auswahl verkauft den ganzen Stapel (${d.count}×)`:'Dieses Material auswählen';
-  const on=selected.has(d.key);card.classList.toggle('v683-selected',on);check.setAttribute('aria-pressed',on?'true':'false');
+  const noteText=d.count>1?`Auswahl verkauft den ganzen Stapel (${d.count}×)`:'Dieses Material auswählen';
+  if(!beta()||note.textContent!==noteText)note.textContent=noteText;
+  const on=selected.has(d.key);card.classList.toggle('v683-selected',on);
+  const pressed=on?'true':'false';
+  if(!beta()||check.getAttribute('aria-pressed')!==pressed)check.setAttribute('aria-pressed',pressed);
   check.onclick=e=>{e.preventDefault();e.stopPropagation();toggleKey(d.key,panel)};
   if(!card.__v683CardBound){
    card.__v683CardBound=true;
@@ -93,8 +106,13 @@ function insertToolbar(panel){
   bar.querySelector('.v683-sell-selected').onclick=()=>sellSelected(panel);
  }
  bar.querySelector('.v683-toggle')?.classList.toggle('active',mode);
- bar.querySelector('.v683-toggle').textContent=mode?'✕ Mehrfachverkauf beenden':'☑ Mehrfach verkaufen';
- ['.v683-all','.v683-clear','.v683-sell-selected'].forEach(sel=>{const el=bar.querySelector(sel);if(el)el.style.display=mode?'inline-flex':'none'});
+ const toggle=bar.querySelector('.v683-toggle');
+ const toggleText=mode?'✕ Mehrfachverkauf beenden':'☑ Mehrfach verkaufen';
+ if(toggle&&(!beta()||toggle.textContent!==toggleText))toggle.textContent=toggleText;
+ ['.v683-all','.v683-clear','.v683-sell-selected'].forEach(sel=>{const el=bar.querySelector(sel);if(el){
+  const display=mode?'inline-flex':'none';
+  if(!beta()||el.style.display!==display)el.style.display=display;
+ }});
  return bar;
 }
 async function sellSelected(panel){
