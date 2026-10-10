@@ -471,6 +471,9 @@ check(beta.includes('v8144-i18n-gameplay.js?v=8364-stable-live-text-beta')&&
   !read('server1.html').includes('8364-stable-live-text-beta')&&
   !read('server1.html').includes('8364-stable-quest-cards-beta')&&
   sourceI18n.includes('LAST_APPLIED_TEXT=new WeakMap()')&&
+  sourceI18n.includes("if(String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta')")&&
+  sourceI18n.indexOf('V8.364 Beta: append these only after P exists')>
+   sourceI18n.indexOf('const P={')&&
   sourceI18n.includes('last!==undefined&&last!==existing')&&
   sourceI18n.includes('ORDERED_TRANSLATIONS.set(lang,entries)')&&
   sourceGrow.includes('const lastPanelHtml=new WeakMap()')&&
