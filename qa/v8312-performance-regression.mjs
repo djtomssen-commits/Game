@@ -423,7 +423,7 @@ check(hub354.includes('const wasActive=!!panel?.classList.contains(\'active\')')
 
 /* V8.360: opt-in Beta one-click page+tab coverage, read-only UI interactions. */
 const tabAudit=read('js/system/performance/v8315-page-trace.js');
-check(beta.includes('v8315-page-trace.js?v=8368-character-fx-beta')&&
+check(beta.includes('v8315-page-trace.js?v=8369-comparison-noop-beta')&&
   !read('server1.html').includes('8360-beta-all-tabs-audit')&&
   tech.includes('id="gl8315AllTabs"')&&
   tech.includes('includeTabs:true,extended:true,maxTabsPerScreen:32,maxTabsTotal:130')&&
@@ -448,7 +448,7 @@ check(tabAudit.includes('function safeDomOwner(node,root)')&&
   tabAudit.includes('idleMutationHotspots:')&&
   tabAudit.includes('layoutShiftHotspots:')&&
   tabAudit.includes('if(betaAudit())inspect(); /* caravan becomes visible synchronously')&&
-  tabAudit.includes("return {version:betaAudit()?'V8.368':'V8.360'")&&
+  tabAudit.includes("return {version:betaAudit()?'V8.369':'V8.360'")&&
   !read('server1.html').includes('8362-tab-owner-hotspots-beta'),
   'V8.362 Beta owner and idle-churn profiler contract missing');
 check(beta.includes('v8009-s1-v4107-systemtechnik.js?v=8363-qa-center-button-beta')&&
@@ -467,7 +467,7 @@ const sourceQuest=read('js/features/quest/beta/v386-quest-redesign-script.js');
 check(beta.includes('v8144-i18n-gameplay.js?v=8364-stable-live-text-beta')&&
   beta.includes('v6163-growroom-primary-tabs-core.js?v=8364-stable-grow-tabs-beta')&&
   beta.includes('v386-quest-redesign-script.js?v=8364-stable-quest-cards-beta')&&
-  beta.includes('v8315-page-trace.js?v=8368-character-fx-beta')&&
+  beta.includes('v8315-page-trace.js?v=8369-comparison-noop-beta')&&
   !read('server1.html').includes('8364-stable-live-text-beta')&&
   !read('server1.html').includes('8364-stable-quest-cards-beta')&&
   sourceI18n.includes('LAST_APPLIED_TEXT=new WeakMap()')&&
@@ -487,7 +487,7 @@ check(beta.includes('v8144-i18n-gameplay.js?v=8364-stable-live-text-beta')&&
    progress state must never destroy the whole .v492-grow subtree again. */
 const sourceGrowScene=read('js/features/grow/beta/v8009-s1-v492-growroom2.js');
 check(beta.includes('v492-growroom2.js?v=8365-layout-key-beta')&&
- beta.includes('v8315-page-trace.js?v=8368-character-fx-beta')&&
+ beta.includes('v8315-page-trace.js?v=8369-comparison-noop-beta')&&
  !read('server1.html').includes('v492-growroom2.js?v=8365-layout-key-beta')&&
  sourceGrowScene.includes('function growLayoutSignature()')&&
  sourceGrowScene.includes('plantPhase:statusSig()')&&
@@ -504,7 +504,7 @@ check(beta.includes('v492-growroom2.js?v=8365-layout-key-beta')&&
  const frameSource=read('js/features/shift/beta/v8009-s1-v7137-shift-frame-client.js');
  check(beta.includes('v8195-vip.js?v=8366-vip-render-noop-beta')&&
    beta.includes('v7137-shift-frame-client.js?v=8366-frame-render-noop-beta')&&
-   beta.includes('v8315-page-trace.js?v=8368-character-fx-beta')&&
+   beta.includes('v8315-page-trace.js?v=8369-comparison-noop-beta')&&
    read('server1.html').includes('v8195-vip.js?v=8296threechests1')&&
    read('server1.html').includes('v7137-shift-frame-client.js?v=8295vipframe1')&&
    vipSource.includes('lastVipPanel!==p||lastVipMarkup!==nextMarkup||!p.firstElementChild')&&
@@ -513,7 +513,7 @@ check(beta.includes('v492-growroom2.js?v=8365-layout-key-beta')&&
    frameSource.includes('lastFramePanel!==p||lastFrameMarkup!==nextMarkup||!p.firstElementChild')&&
    frameSource.includes("String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta'")&&
    frameSource.includes('window.__V8366_FRAME_RENDER_QA__')&&
-   tabAudit.includes("return {version:betaAudit()?'V8.368':'V8.360'")&&
+   tabAudit.includes("return {version:betaAudit()?'V8.369':'V8.360'")&&
    tabAudit.includes('renderOwners:{'),
    'V8.366 Beta VIP/frame canonical owner no-op guard or QA diagnostics missing');
 /* V8.367 Beta: the Nebelschmied needs ONLY v488 tabs, never a hidden
@@ -537,7 +537,7 @@ check(beta.includes('v488-harzschmiede-core.js?v=8367-nebel-light-beta')&&
    the Server1 original entrypoint and game backend stay unchanged. */
 const fxOwner=read('js/features/forge/beta/v8198-enchanting.js');
 check(beta.includes('v8198-enchanting.js?v=8368-character-fx-beta')&&
- beta.includes('v8315-page-trace.js?v=8368-character-fx-beta')&&
+ beta.includes('v8315-page-trace.js?v=8369-comparison-noop-beta')&&
  !read('server1.html').includes('v8198-enchanting.js?v=8368-character-fx-beta')&&
  fxOwner.includes('V8368_ITEM_FX_QA.noopRenders++')&&
  fxOwner.includes("const beta=String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta'")&&
@@ -546,6 +546,19 @@ check(beta.includes('v8198-enchanting.js?v=8368-character-fx-beta')&&
  'V8.368 Beta item FX canonical no-op protection/counters or Server1 separation missing');
 
 
+
+/* V8.369 Beta: v470 comparison painter must not repeatedly remove/readd
+   identical v460-* state classes or title attributes on every v459 tab refresh.
+   Preserve server1 historical behavior and allow real score/class changes. */
+check(
+ beta.includes('v470-character-slot-art-canonical-comparison.js?v=8369-comparison-noop-beta')&&
+ !read('server1.html').includes('v470-character-slot-art-canonical-comparison.js?v=8369-comparison-noop-beta')&&
+ artOwner.includes('V8369_COMPARE_QA.classNoops++')&&
+ artOwner.includes("const wanted=!!c&&css==='v460-'+c.state")&&
+ artOwner.includes('card.classList.contains(css)===wanted')&&
+ artOwner.includes("card.title!==value")&&
+ tabAudit.includes('window.__V8369_COMPARE_QA__?.()'),
+ 'V8.369 Beta comparison class/title no-op guard or Server1 separation missing');
 
 check(beta.includes('v8009-s12-v7081-account-capability-gate.js?v=8337-flat-diag-beta'),'Beta capability hotpath cache not updated');
 check(beta.includes('v8009-s1-v7042-unified-authority-bridge.js?v=8337-memo-diag-beta'),'Beta bridge hotpath cache not updated');
