@@ -21,7 +21,7 @@
     }
     const count=head.querySelector('.v533-inv-count');
     const n=Array.isArray(s?.inventory)?s.inventory.length:0;
-    if(count)count.textContent=`${n} Item${n===1?'':'s'}`;
+    if(count){const value=`${n} Item${n===1?'':'s'}`;if(String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()!=='beta'||count.textContent!==value)count.textContent=value}
     return head;
   }
 
@@ -43,12 +43,12 @@
     const srcBtn=original?.querySelector('button');
     const sub=bar?.querySelector('.v533-auto-copy span');
     const btn=bar?.querySelector('.v533-auto-btn');
-    if(sub&&src?.textContent)sub.textContent=src.textContent.trim();
+    if(sub&&src?.textContent){const value=src.textContent.trim();if(String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()!=='beta'||sub.textContent!==value)sub.textContent=value}
     if(btn){
       const disabled=!!srcBtn?.disabled;
       btn.disabled=disabled;
       btn.dataset.upgradeAvailable=disabled?'false':'true';
-      if(srcBtn?.textContent)btn.textContent=srcBtn.textContent.trim();
+      if(srcBtn?.textContent){const value=srcBtn.textContent.trim();if(String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()!=='beta'||btn.textContent!==value)btn.textContent=value}
       if(disabled&&!String(btn.textContent||'').includes('optimal'))btn.textContent='✓ Ausrüstung optimal';
     }
   }
@@ -76,14 +76,29 @@
       card.dataset.v533Category=category(it);
       card.hidden=filter!=='all'&&card.dataset.v533Category!==filter;
     });
-    grid.querySelectorAll(':scope > .v533-empty-slot').forEach(x=>x.remove());
+    const beta=String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta';
     const visible=cards.filter(c=>!c.hidden).length;
     const target=visible<6?6-visible:0;
-    for(let i=0;i<target;i++){
-      const empty=document.createElement('div');
-      empty.className='v533-empty-slot';
-      empty.innerHTML='<span class="v533-empty-plus">＋</span><span>Noch mehr Loot wartet auf dich!</span>';
-      grid.appendChild(empty);
+    if(beta){
+      /* V8.373: reuse stable empty inventory slots across tab refreshes.
+         Shrink only when the displayed item/filter count really changes. */
+      const emptySlots=[...grid.querySelectorAll(':scope > .v533-empty-slot')];
+      for(let i=emptySlots.length-1;i>=target;i--)emptySlots[i].remove();
+      for(let i=emptySlots.length;i<target;i++){
+        const empty=document.createElement('div');
+        empty.className='v533-empty-slot';
+        empty.innerHTML='<span class="v533-empty-plus">＋</span><span>Noch mehr Loot wartet auf dich!</span>';
+        grid.appendChild(empty);
+      }
+    }else{
+      /* Server1: preserve the previous rebuild algorithm. */
+      grid.querySelectorAll(':scope > .v533-empty-slot').forEach(x=>x.remove());
+      for(let i=0;i<target;i++){
+        const empty=document.createElement('div');
+        empty.className='v533-empty-slot';
+        empty.innerHTML='<span class="v533-empty-plus">＋</span><span>Noch mehr Loot wartet auf dich!</span>';
+        grid.appendChild(empty);
+      }
     }
     grid.querySelectorAll('.v533-filter').forEach(b=>b.classList.toggle('active',b.dataset.v533Filter===filter));
   }
