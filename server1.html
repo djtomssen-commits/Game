@@ -2,6 +2,8 @@
 <html lang="de" class="v7154-frame-pending">
 <head>
 <script src="js/features/account/server1-release-channel.js"></script>
+<!-- V8.377: enable audited UI-only no-op optimizations on Server 1. No Beta class balance, gameplay action, purchase, SQL or RPC changes. -->
+<script>window.__GROW_SERVER1_PERFORMANCE_V8376__=true;</script>
 <script id="v7233-server-scoped-storage" src="js/features/account/beta/v8009-s15-v7233-server-scoped-storage.js"></script>
 <script id="v4131-version-source" src="js/features/system/beta/v8009-s13-v4131-version-source.js"></script>
 <script id="v7101-public-profile-coalescer" src="js/features/profile/beta/v8009-s2-v7101-public-profile-coalescer.js"></script>
@@ -695,7 +697,7 @@
 
 </main>
 </div>
-<script src="js/features/core/beta/v8009-a1-legacy-state-core.js?v=8187s1sync1"></script>
+<script src="js/features/core/beta/v8009-a1-legacy-state-core.js?v=8377-server1-perf-reuse"></script>
 
 <script src="js/features/items/beta/v8009-a2-loot-item-balance.js"></script>
 
@@ -709,7 +711,7 @@
 <script src="js/features/items/beta/v8009-a2-rarity-economy.js"></script>
 
 
-<script src="js/features/anonymous-extracted/beta/anon-0002.js"></script>
+<script src="js/features/anonymous-extracted/beta/anon-0002.js?v=8377-server1-perf-reuse"></script>
 
 
 <script src="js/features/character/beta/v8009-a1-class-creation-primary-combat.js"></script>
@@ -2151,7 +2153,7 @@ create index if not exists player_messages_sender_idx on public.player_messages(
 <!-- ===== V4.29 Stable: Quest page visual redesign (mobile-safe) ===== -->
 <link rel="stylesheet" id="v386-quest-redesign-style" href="v8009-extracted-v386-quest-redesign-style.css?v=8032questshiftbrown1">
 
-<script src="js/features/quest/beta/v386-quest-redesign-script.js"></script>
+<script src="js/features/quest/beta/v386-quest-redesign-script.js?v=8377-server1-perf-reuse"></script>
 
 <!-- ===== V4.29 Stable: Quest page final cleanup ===== -->
 <link rel="stylesheet" id="v387-quest-page-final-style" href="v8009-extracted-v387-quest-page-final-style.css">
@@ -2334,7 +2336,7 @@ create index if not exists player_messages_sender_idx on public.player_messages(
 <!-- ===== V4.58 Stable: Schlüsselstein sofort live freischalten ===== -->
 <!-- ===== V4.67 Stable: compact RPG character hub with tabs ===== -->
 <link rel="stylesheet" id="v459-character-hub-css" href="v8009-extracted-v459-character-hub-css.css">
-<script id="v459-character-hub" src="js/features/character/beta/v8009-s2-v459-character-hub.js?v=8220s1sync1"></script>
+<script id="v459-character-hub" src="js/features/character/beta/v8009-s2-v459-character-hub.js?v=8377-server1-perf-reuse"></script>
 
 
 <!-- ===== V4.67 Stable: hero stat cleanup + direct inventory better/worse indicators ===== -->
@@ -2365,7 +2367,7 @@ create index if not exists player_messages_sender_idx on public.player_messages(
 
 <!-- ===== V4.68 Stable: single authoritative item-art owner ===== -->
 <link rel="stylesheet" id="v468-item-art-stability-css" href="v8009-extracted-v468-item-art-stability-css.css">
-<script id="v468-single-item-art-owner" src="js/features/items/beta/v8009-s13-v468-single-item-art-owner.js"></script>
+<script id="v468-single-item-art-owner" src="js/features/items/beta/v8009-s13-v468-single-item-art-owner.js?v=8377-server1-perf-reuse"></script>
 
 
 <!-- ===== V4.69 Stable: shop gold purchase comparison fix ===== -->
@@ -2374,7 +2376,7 @@ create index if not exists player_messages_sender_idx on public.player_messages(
 
 <!-- ===== V4.70 Stable: character slot artwork + one canonical item comparison ===== -->
 <link rel="stylesheet" id="v470-slot-art-comparison-css" href="v8009-extracted-v470-slot-art-comparison-css.css">
-<script id="v470-character-slot-art-canonical-comparison" src="js/features/character/beta/v8009-s4-v470-character-slot-art-canonical-comparison.js?v=8228s1sync1"></script>
+<script id="v470-character-slot-art-canonical-comparison" src="js/features/character/beta/v8009-s4-v470-character-slot-art-canonical-comparison.js?v=8377-server1-perf-reuse"></script>
 
 <!-- ===== V4.71: shop NPC hero image hard fix ===== -->
 <link rel="stylesheet" id="v471-shop-hero-art-css" href="v8009-extracted-v471-shop-hero-art-css.css">
@@ -2434,14 +2436,14 @@ create index if not exists player_messages_sender_idx on public.player_messages(
 <link rel="stylesheet" id="v667-harzschmiede-tab-redesign" href="v8009-extracted-v667-harzschmiede-tab-redesign.css?v=8043forgebrown1">
 <link rel="stylesheet" id="v8198-rune-enchant-css" href="css/features/forge/beta/v8198-rune-enchant.css?v=8228s1sync1">
 
-<script id="v8198-enchanting" src="js/features/forge/beta/v8198-enchanting.js?v=8220s1sync1"></script>
-<script id="v488-harzschmiede-core" src="js/features/forge/beta/v8009-s1-v488-harzschmiede-core.js?v=8220s1sync1"></script>
+<script id="v8198-enchanting" src="js/features/forge/beta/v8198-enchanting.js?v=8377-server1-perf-reuse"></script>
+<script id="v488-harzschmiede-core" src="js/features/forge/beta/v8009-s1-v488-harzschmiede-core.js?v=8377-server1-perf-reuse"></script>
 
 \n\n
 <link rel="stylesheet" id="v416x-grow-tap-stability-css" href="v8009-extracted-v416x-grow-tap-stability-css.css">
 <!-- ===== V4.92 Stable: Growroom 2.0 / comic RPG grow loop ===== -->
 <link rel="stylesheet" id="v492-growroom2-css" href="v8009-extracted-v492-growroom2-css.css?v=8031growframe3">
-<script id="v492-growroom2-script" src="js/features/grow/beta/v8009-s1-v492-growroom2.js?v=8194guilddonate1"></script>
+<script id="v492-growroom2-script" src="js/features/grow/beta/v8009-s1-v492-growroom2.js?v=8377-server1-perf-reuse"></script>
 
 <link rel="stylesheet" id="v493-growroom-mobile-css" href="v8009-extracted-v493-growroom-mobile-css.css?v=8031growframe3">
 <script id="v493-growroom-mobile-js" src="js/features/grow/beta/v8009-s11-v493-growroom-mobile.js"></script>
@@ -3015,7 +3017,7 @@ create index if not exists player_messages_sender_idx on public.player_messages(
 <!-- ===== V5.14 HELDENQUARTIER REFERENCE REBUILD ===== -->
 <link rel="stylesheet" id="v514-heldenquartier-reference-css" href="v8009-extracted-v514-heldenquartier-reference-css.css?v=8025unibrown1">
 
-<script id="v514-heldenquartier-reference-js" src="js/features/character/beta/v8009-s1-v514-heldenquartier-reference.js"></script>
+<script id="v514-heldenquartier-reference-js" src="js/features/character/beta/v8009-s1-v514-heldenquartier-reference.js?v=8377-server1-perf-reuse"></script>
 <!-- ===== /V5.14 HELDENQUARTIER REFERENCE REBUILD ===== -->
 
 <!-- ===== V5.16 HELDENQUARTIER EXACT MOBILE COMPOSITION PASS ===== -->
@@ -3090,7 +3092,7 @@ create index if not exists player_messages_sender_idx on public.player_messages(
 
 <!-- ===== V5.33 INVENTAR REFERENCE REBUILD ===== -->
 <link rel="stylesheet" id="v533-inventory-reference-css" href="v8009-extracted-v533-inventory-reference-css.css?v=8025unibrown1">
-<script id="v533-inventory-reference-js" src="js/features/character/beta/v8009-s7-v533-inventory-reference.js"></script>
+<script id="v533-inventory-reference-js" src="js/features/character/beta/v8009-s7-v533-inventory-reference.js?v=8377-server1-perf-reuse"></script>
 <!-- ===== /V5.33 INVENTAR REFERENCE REBUILD ===== -->
 
 <!-- ===== V5.34 INVENTAR HEADER + AUTO-EQUIP POLISH ===== -->
@@ -3595,7 +3597,7 @@ The fight button therefore returned before the server start RPC.
 <!-- ===== V6.86 PET SAMMELALBUM – GRUNDSYSTEM ===== -->
 <link rel="stylesheet" id="v686-pet-album-css" href="v8009-extracted-v686-pet-album-css.css?v=8026petbrown1">
 
-<script id="v686-pet-album-core" src="js/features/pets/beta/v8009-s1-v686-pet-album-core.js"></script>
+<script id="v686-pet-album-core" src="js/features/pets/beta/v8009-s1-v686-pet-album-core.js?v=8377-server1-perf-reuse"></script>
 <!-- ===== /V6.86 PET SAMMELALBUM – GRUNDSYSTEM ===== -->
 
 
@@ -3606,7 +3608,7 @@ The fight button therefore returned before the server start RPC.
 <!-- ===== V6.88 PET DROPS + PITY + PERMANENT BONUSES ===== -->
 <link rel="stylesheet" id="v688-pet-drop-system-css" href="v8009-extracted-v688-pet-drop-system-css.css?v=8053rewardbrown1">
 
-<script id="v688-pet-drop-system-core" src="js/features/pets/beta/v8009-s1-v688-pet-drop-system-core.js"></script>
+<script id="v688-pet-drop-system-core" src="js/features/pets/beta/v8009-s1-v688-pet-drop-system-core.js?v=8377-server1-perf-reuse"></script>
 <!-- ===== /V6.88 PET DROPS + PITY + PERMANENT BONUSES ===== -->
 
 
@@ -3655,7 +3657,7 @@ The fight button therefore returned before the server start RPC.
 
 
 <link rel="stylesheet" id="v6107-global-item-art-css" href="v8009-extracted-v6107-global-item-art-css.css">
-<script id="v6107-global-item-art-authority" src="js/features/items/beta/v8009-s4-v6107-global-item-art-authority.js"></script>
+<script id="v6107-global-item-art-authority" src="js/features/items/beta/v8009-s4-v6107-global-item-art-authority.js?v=8377-server1-perf-reuse"></script>
 
 
 <link rel="stylesheet" id="v6109-background-music-css" href="v8009-extracted-v6109-background-music-css.css">
@@ -3708,7 +3710,7 @@ The fight button therefore returned before the server start RPC.
 
 <!-- ===== V4.164 Stable: STABILITY + DIRECT GROWROOM TABS ===== -->
 <link rel="stylesheet" id="v6163-growroom-primary-tabs-css" href="v8009-extracted-v6163-growroom-primary-tabs-css.css?v=8029growbrown1">
-<script id="v6163-growroom-primary-tabs-core" src="js/features/grow/beta/v8009-s6-v6163-growroom-primary-tabs-core.js"></script>
+<script id="v6163-growroom-primary-tabs-core" src="js/features/grow/beta/v8009-s6-v6163-growroom-primary-tabs-core.js?v=8377-server1-perf-reuse"></script>
 <!-- ===== /V4.164 ===== -->
 
 <!-- ===== V4.164 FINAL VERSION AUTHORITY ===== -->
@@ -3941,7 +3943,7 @@ The fight button therefore returned before the server start RPC.
 
 <!-- ===== Grow Legends · FINAL FIX · Inventory rarity + Barbar dungeon avatar ===== -->
 <!-- ===== Grow Legends · V6.84 Inventory rarity canonicalization ===== -->
-<script id="v684-inventory-rarity-final-core" src="js/features/character/beta/v8009-s8-v684-inventory-rarity-final-core.js"></script>
+<script id="v684-inventory-rarity-final-core" src="js/features/character/beta/v8009-s8-v684-inventory-rarity-final-core.js?v=8377-server1-perf-reuse"></script>
 <!-- ===== /V6.84 Inventory rarity canonicalization ===== -->
 
 <!-- V6.85/V6.86 dungeon emergency fighter repair retired by canonical visual owner Phase 2G. -->
@@ -4842,7 +4844,7 @@ No combat, reward, persistence, item stat, shop purchase, or Supabase logic chan
 <script id="v7117-dealer-hub" src="js/features/shop/beta/v8009-s7-v7117-dealer-hub.js?v=8208dealernav1"></script>
 <!-- V8.293: identical VIP client & styles as Beta; entitlements scoped to server1. -->
 <link rel="stylesheet" id="v8195-vip-css" href="css/features/shop/beta/v8195-vip.css?v=8293server1vip1">
-<script id="v8195-vip-client" src="js/features/shop/beta/v8195-vip.js?v=8296threechests1"></script>
+<script id="v8195-vip-client" src="js/features/shop/beta/v8195-vip.js?v=8377-server1-perf-reuse"></script>
 <script id="v7117-release-marker" src="js/features/legacy-extracted/beta/v7117-release-marker.js"></script>
 <!-- ===== /V7.117 ===== -->
 
@@ -4935,7 +4937,7 @@ No combat, reward, persistence, item stat, shop purchase, or Supabase logic chan
 
 <!-- ===== V7.145 QUEST & SCHICHT + AVATAR-RAHMEN ===== -->
 <link rel="stylesheet" id="v7137-shift-frame-css" href="v8009-extracted-v7137-shift-frame-css.css?v=8045dealerheader1">
-<script id="v7137-shift-frame-client" src="js/features/shift/beta/v8009-s1-v7137-shift-frame-client.js?v=8295vipframe1"></script>
+<script id="v7137-shift-frame-client" src="js/features/shift/beta/v8009-s1-v7137-shift-frame-client.js?v=8377-server1-perf-reuse"></script>
 <link rel="stylesheet" id="v7140-avatar-frame-assets-css" href="v8009-extracted-v7140-avatar-frame-assets-css.css?v=8220s1sync1">
 <!-- ===== /V7.145 QUEST & SCHICHT + AVATAR-RAHMEN ===== -->
 
@@ -5095,7 +5097,7 @@ No combat, reward, persistence, item stat, shop purchase, or Supabase logic chan
 
 <link rel="stylesheet" id="v7270-karawane-route-header-wood-pass" href="v8009-extracted-v7270-karawane-route-header-wood-pass.css">
 
-<script id="v7240-beta-gold-features-js" src="js/beta/v7240-beta-gold-features.js?v=8095late1"></script>
+<script id="v7240-beta-gold-features-js" src="js/beta/v7240-beta-gold-features.js?v=8377-server1-perf-reuse"></script>
 <!-- ===== /V7.273 BETA · NEBELSCHMIED + NEBELKARAWANE ===== -->
 
 
