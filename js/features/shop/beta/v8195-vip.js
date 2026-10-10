@@ -8,7 +8,7 @@ const S={state:null,busy:false,lastLoad:0,flight:null,expiryTimer:0};
    No transaction or server state may be suppressed; comparison applies only to markup. */
 const VIP_RENDER_QA={fullRenders:0,noopRenders:0};
 let lastVipPanel=null,lastVipMarkup=null;
-const betaVipRender=()=>String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta';
+const betaVipRender=()=>String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta'||(window.__GROW_SERVER1_PERFORMANCE_V8376__===true&&String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='server1');
 const PRICES={7:3.99,14:6.99,30:11.99};
 const one=d=>Array.isArray(d)?d[0]:d;
 const fmt=n=>Math.max(0,Number(n)||0).toLocaleString('de-DE');
