@@ -29,7 +29,7 @@ function createPage(id){
    added:0,removed:0,mutations:0,rootReplacements:0,currentReplacements:0,
    visibilityChanges:0,layoutShifts:0,longTasks:0,longestTaskMs:0,
    frames:0,jankFrames:0,maxFrameGapMs:0,frameGaps:[],renderMarks:{},
-   navMeasuredMs:[],tabClicks:{},imageErrors:0,brokenImageHints:[],mutationTargets:{},layoutShiftTargets:{}
+   navMeasuredMs:[],tabClicks:{},imageErrors:0,brokenImageHints:[],mutationTargets:{},layoutShiftTargets:{},mutationTypes:{records:0,textOnly:0,identicalText:0,elementChanged:0,elementAdded:0,elementRemoved:0,owners:{}}
  });
 }
 let current='unknown',screenAt=0;
@@ -118,6 +118,30 @@ function observeChanges(records){
   if(isOwn(r.target))continue;
   relevant++;
   if(betaAudit())incrementTarget(p.mutationTargets,safeDomOwner(r.target,root));
+  /* V8.370: opt-in, read-only provenance for the Character/Harz Dealer
+     childList spikes. Never export the text itself or any player data.
+     Record whether a writer replaced a text node by the exact same text,
+     or actually inserted/removed HTML elements. */
+  if(betaAudit()&&qaState.extended&&['character','harzDealer','forge'].includes(current)){
+   const d=p.mutationTypes,owner=safeDomOwner(r.target,root);
+   const a=[...r.addedNodes],b=[...r.removedNodes];
+   const isTextOnly=a.concat(b).length>0&&a.concat(b).every(n=>n.nodeType===3);
+   const identicalText=a.length===1&&b.length===1&&a[0].nodeType===3&&
+    b[0].nodeType===3&&a[0].nodeValue===b[0].nodeValue;
+   const aEl=a.filter(n=>n.nodeType===1).length,bEl=b.filter(n=>n.nodeType===1).length;
+   const inc=(t)=>{
+    t.records++;
+    if(isTextOnly)t.textOnly++;
+    if(identicalText)t.identicalText++;
+    if(aEl||bEl)t.elementChanged++;
+    t.elementAdded+=aEl;t.elementRemoved+=bEl;
+   };
+   inc(d);
+   if(d.owners[owner]||Object.keys(d.owners).length<35){
+    if(!d.owners[owner])d.owners[owner]={records:0,textOnly:0,identicalText:0,elementChanged:0,elementAdded:0,elementRemoved:0};
+    inc(d.owners[owner]);
+   }
+  }
   let added=0,removed=0;
   for(const n of r.addedNodes)if(n.nodeType===1&&!isOwn(n))added++;
   for(const n of r.removedNodes){
@@ -510,7 +534,7 @@ function report(){
  const findings=qaState.extended?rankedFindings(pages):[];
  const counts={high:0,medium:0,low:0};
  for(const f of findings)if(counts[f.severity]!==undefined)counts[f.severity]++;
- return {version:betaAudit()?'V8.369':'V8.360',mode:'opt-in-device',server:state.channel,
+ return {version:betaAudit()?'V8.370':'V8.360',mode:'opt-in-device',server:state.channel,
   running:state.running,sweeping:state.sweeping,elapsedMs:Math.round((state.stoppedAt||clock())-state.startedAt),
   pages,totalScreens:pages.length,primaryScreens:pages.filter(p=>SCREENS.includes(p.screen)).length,
   linkedScreens:pages.filter(p=>LINKED_SCREENS.includes(p.screen)).map(p=>p.screen),slowTasks:state.slowTasks,layoutShiftEvents:state.shiftCount,
@@ -523,6 +547,16 @@ function report(){
     forgeShell:(()=>{try{return window.__V8367_FORGE_QA__?.()||null}catch(_){return null}})(),
     itemFx:(()=>{try{return window.__V8368_ITEM_FX_QA__?.()||null}catch(_){return null}})(),
     itemCompare:(()=>{try{return window.__V8369_COMPARE_QA__?.()||null}catch(_){return null}})(),
+    mutationDetail:(()=>{const out={};
+      for(const screen of ['character','harzDealer','forge']){
+       const d=state.pages[screen]?.mutationTypes;if(!d)continue;
+       const {owners,...totals}=d;
+       out[screen]={...totals,hotspots:Object.entries(owners)
+        .sort((a,b)=>b[1].records-a[1].records).slice(0,12)
+        .map(([component,counts])=>({component,...counts}))};
+      }
+      return out;
+    })(),
     renderOwners:{
       vip:(()=>{try{return window.__V8366_VIP_RENDER_QA__?.()||null}catch(_){return null}})(),
       frames:(()=>{try{return window.__V8366_FRAME_RENDER_QA__?.()||null}catch(_){return null}})()
