@@ -523,8 +523,8 @@ const forgeOwner=read('js/features/forge/beta/v8009-s1-v488-harzschmiede-core.js
 const nebelforgeOwner=read('js/beta/v7240-beta-gold-features.js');
 check(beta.includes('v488-harzschmiede-core.js?v=8367-nebel-light-beta')&&
  beta.includes('v7240-beta-gold-features.js?v=8367-nebel-light-beta')&&
- !server1.includes('v488-harzschmiede-core.js?v=8367-nebel-light-beta')&&
- !server1.includes('v7240-beta-gold-features.js?v=8367-nebel-light-beta')&&
+ !read('server1.html').includes('v488-harzschmiede-core.js?v=8367-nebel-light-beta')&&
+ !read('server1.html').includes('v7240-beta-gold-features.js?v=8367-nebel-light-beta')&&
  forgeOwner.includes('options?.nebelforge===true')&&
  forgeOwner.includes("nebelLight?'':forgeTab==='enchant'")&&
  forgeOwner.includes("if(next===forgeTab&&!nebelLight)return;")&&
