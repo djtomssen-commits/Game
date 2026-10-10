@@ -317,8 +317,16 @@ function rectSignature(root){
  return elements.filter(el=>el.isConnected&&el.getClientRects().length>0).slice(0,32)
   .map((el,i)=>{
     const r=el.getBoundingClientRect(),style=getComputedStyle(el);
+    /* V8.364 Beta: normalize viewport and inner-panel scroll so an
+       ordinary scroll does not become '17 moving buttons' with zero
+       DOM or layout changes. True CSS transform/layout motion remains. */
+    let x=r.x+(window.scrollX||0),y=r.y+(window.scrollY||0);
+    if(betaAudit())for(let parent=el.parentElement;parent;parent=parent.parentElement){
+      x+=parent.scrollLeft||0;y+=parent.scrollTop||0;
+      if(parent===root)break;
+    }
     return {k:safeDomOwner(el,root)+':'+i,
-     x:Math.round(r.x),y:Math.round(r.y),w:Math.round(r.width),h:Math.round(r.height),
+     x:Math.round(x),y:Math.round(y),w:Math.round(r.width),h:Math.round(r.height),
      display:style.display,opacity:Math.round(Number(style.opacity||1)*100)};
   });
 }
@@ -502,7 +510,7 @@ function report(){
  const findings=qaState.extended?rankedFindings(pages):[];
  const counts={high:0,medium:0,low:0};
  for(const f of findings)if(counts[f.severity]!==undefined)counts[f.severity]++;
- return {version:betaAudit()?'V8.363':'V8.360',mode:'opt-in-device',server:state.channel,
+ return {version:betaAudit()?'V8.364':'V8.360',mode:'opt-in-device',server:state.channel,
   running:state.running,sweeping:state.sweeping,elapsedMs:Math.round((state.stoppedAt||clock())-state.startedAt),
   pages,totalScreens:pages.length,primaryScreens:pages.filter(p=>SCREENS.includes(p.screen)).length,
   linkedScreens:pages.filter(p=>LINKED_SCREENS.includes(p.screen)).map(p=>p.screen),slowTasks:state.slowTasks,layoutShiftEvents:state.shiftCount,
