@@ -27,11 +27,17 @@ jobs:
           s=p.read_text(encoding='utf-8')
           needle='js/features/quest/beta/v7045-atomic-quest-receipt-client.js'
           target=needle+'?v=8379-quest-overlap-ack-beta'
-          if target not in s:
-              assert s.count(needle)==1, 'Expected one original client script'
+          assert s.count(needle)==1, 'Expected exactly one original client script'
+          prior=needle+'?v=8305-instant-dampf'
+          doubled=target+'?v=8305-instant-dampf'
+          if doubled in s:
+              s=s.replace(doubled,target)
+          elif prior in s:
+              s=s.replace(prior,target)
+          elif target not in s:
               s=s.replace(needle,target)
-              p.write_text(s,encoding='utf-8')
-          assert target in p.read_text(encoding='utf-8')
+          p.write_text(s,encoding='utf-8')
+          assert s.count(target+'"')==1, 'Expected exactly one clean cache query'
           assert '8379-quest-overlap-ack-beta' not in Path('server1.html').read_text(encoding='utf-8')
           PY
       - name: Commit Beta entrypoint change
