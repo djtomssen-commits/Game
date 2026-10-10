@@ -95,6 +95,37 @@ try{
  assert.ok(allTabs.tabSkipped.some(x=>x.screen==='guild'&&x.tab==='war'&&x.reason==='disabled'),'disabled tab not documented');
  assert.equal(await page.evaluate(()=>window.__qaActionClicks),0,'payment button was clicked');
  assert.ok(allTabs.tabResults.every(x=>x.durationMs>=0&&Array.isArray(x.warnings)),'tab measurements incomplete');
+ // V8.361: a real async Caravan owner and a linked Gold Shop route
+ // must not be mistaken for a missing/failed primary screen.
+ await page.evaluate(()=>{
+  const gold=document.createElement('section');gold.id='goldShop';gold.className='screen';
+  gold.innerHTML='<h2>Gold-Shop</h2>';document.querySelector('main').appendChild(gold);
+  window.v7240OpenCaravan=async()=>{
+   await new Promise(resolve=>setTimeout(resolve,85));
+   v032Go('caravan');return true;
+  };
+  document.getElementById('harzDealer').innerHTML='<div class="v7117-tabs">'+
+   '<button type="button" data-v7117-tab="harz">Harz</button>'+
+   '<button type="button" data-v7117-tab="gold">Gold</button></div>';
+  document.querySelector('#harzDealer [data-v7117-tab="gold"]').onclick=()=>v032Go('goldShop');
+ });
+ const linked=await page.evaluate(()=>GL_PAGE_AUDIT.sweep({
+  ids:['caravan','harzDealer'],dwellMs:170,tabDwellMs:250,includeTabs:true
+ }));
+ assert.equal(linked.sweepDone,2,'Caravan must be measured as an actually opened screen');
+ assert.equal(linked.primaryScreens,2,'Only two requested primary screens should be counted');
+ assert.ok(linked.pages.some(x=>x.screen==='caravan'&&x.visits>0),'Caravan page visit missing');
+ assert.ok(linked.linkedScreens.includes('goldShop'),'linked Gold Shop must be named in the report');
+ assert.ok(linked.tabResults.some(x=>x.screen==='harzDealer'&&x.tab==='gold'&&x.status==='linked_screen'),
+   'Gold Shop navigation is expected, not a broken Harz Dealer tab');
+ assert.equal(linked.tabResults.filter(x=>x.status==='unexpected_navigation').length,0,'unexpected tab routing');
+ await page.evaluate(()=>{window.GROW_RELEASE_CHANNEL='beta';GL_PAGE_AUDIT.start();v032Go('character')});
+ await page.waitForTimeout(450);
+ const scopeStart=await page.evaluate(()=>GL_PAGE_AUDIT.report().pages.find(x=>x.screen==='character').mutationRecords);
+ await page.evaluate(()=>{for(let i=0;i<40;i++)document.querySelector('#world .v366-lower').textContent='Background '+i});
+ await page.waitForTimeout(80);
+ const scopeEnd=await page.evaluate(()=>GL_PAGE_AUDIT.stop('qa_scope').pages.find(x=>x.screen==='character').mutationRecords);
+ assert.equal(scopeEnd,scopeStart,'inactive World DOM mutations must not be billed to Character');
  // V8.319: the 30-second profiler must read the real V477 counters
  // rather than the retired __V4106_TECH__ store. Synthetic, no real account.
  const profilerStart=systemtechSource.indexOf('/* V8.319: canonical opt-in');
@@ -137,7 +168,7 @@ try{
  assert.ok(errors.length===0,errors.join('; '));
  fs.mkdirSync('qa/reports',{recursive:true});
  fs.writeFileSync('qa/reports/v8315-per-page-browser.json',JSON.stringify({
-  type:'synthetic-instrumentation-validation',world,manual,automatic:sweep,allTabs
+  type:'synthetic-instrumentation-validation',world,manual,automatic:sweep,allTabs,linked
  },null,2)+'\n');
  await page.screenshot({path:'qa/reports/v8315-per-page-browser.png',fullPage:false});
  console.log(JSON.stringify({pass:true,manualWorld:{
@@ -145,6 +176,7 @@ try{
    visibilityChanges:world.visibilityChanges,renderMarks:world.renderMarks
  },automatic:{screens:sweep.totalScreens,passed:sweep.sweepDone,ids:sweep.pages.map(x=>x.screen)},
  allTabs:{screens:allTabs.sweepDone,tabs:allTabs.tabSweepDone,skipped:allTabs.tabSkipped.length},
+ scopedMutations:{before:scopeStart,after:scopeEnd},linked:{screens:linked.sweepDone,goldShop:linked.linkedScreens},
  pageErrors:errors.length},null,2));
 }catch(e){
  console.error('V8.315 page recorder browser integration FAILED',e.stack||String(e));
