@@ -126,7 +126,11 @@ function enhance(){
 
     const buy=purchaseValue(m);
     const sell=sellValue(m);
-    value.innerHTML=`Kaufwert <b>${buy}</b> · Verkauf <b>💰 ${sell}</b>`;
+    /* V8.352 Beta: a no-op Materials refresh must not rewrite visible
+       price markup inside otherwise stable gem tiles. */
+    const beta=String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta';
+    const valueHtml=`Kaufwert <b>${buy}</b> · Verkauf <b>💰 ${sell}</b>`;
+    if(!beta||value.innerHTML!==valueHtml)value.innerHTML=valueHtml;
 
     let actions=card.querySelector('.v681-material-actions');
     if(!actions){
@@ -145,8 +149,9 @@ function enhance(){
       btn.className='btn v681-sell';
       actions.appendChild(btn);
     }
-    btn.dataset.index=String(index);
-    btn.innerHTML=`💰 Verkaufen<br>${sell} Gold`;
+    if(!beta||btn.dataset.index!==String(index))btn.dataset.index=String(index);
+    const buttonHtml=`💰 Verkaufen<br>${sell} Gold`;
+    if(!beta||btn.innerHTML!==buttonHtml)btn.innerHTML=buttonHtml;
     btn.onclick=e=>{
       e.preventDefault();
       e.stopPropagation();
