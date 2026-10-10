@@ -423,7 +423,7 @@ check(hub354.includes('const wasActive=!!panel?.classList.contains(\'active\')')
 
 /* V8.360: opt-in Beta one-click page+tab coverage, read-only UI interactions. */
 const tabAudit=read('js/system/performance/v8315-page-trace.js');
-check(beta.includes('v8315-page-trace.js?v=8361-scoped-complete-audit-beta')&&
+check(beta.includes('v8315-page-trace.js?v=8362-tab-owner-hotspots-beta')&&
   !read('server1.html').includes('8360-beta-all-tabs-audit')&&
   tech.includes('id="gl8315AllTabs"')&&
   tech.includes('includeTabs:true,maxTabsPerScreen:32,maxTabsTotal:130')&&
@@ -442,6 +442,15 @@ check(tabAudit.includes('function relevantMutation(r,root)')&&
   tabAudit.includes('if(betaAudit())inspect();')&&
   !read('server1.html').includes('8361-scoped-complete-audit-beta'),
   'V8.361 Beta navigation and screen-attributed mutation auditing missing');
+check(tabAudit.includes('function safeDomOwner(node,root)')&&
+  tabAudit.includes('function deltaTargets(after,before,max=5)')&&
+  tabAudit.includes('idleMutationRecords:')&&
+  tabAudit.includes('idleMutationHotspots:')&&
+  tabAudit.includes('layoutShiftHotspots:')&&
+  tabAudit.includes('if(betaAudit())inspect(); /* caravan becomes visible synchronously')&&
+  tabAudit.includes("return {version:betaAudit()?'V8.362':'V8.360'")&&
+  !read('server1.html').includes('8362-tab-owner-hotspots-beta'),
+  'V8.362 Beta owner and idle-churn profiler contract missing');
 check(beta.includes('v8009-s12-v7081-account-capability-gate.js?v=8337-flat-diag-beta'),'Beta capability hotpath cache not updated');
 check(beta.includes('v8009-s1-v7042-unified-authority-bridge.js?v=8337-memo-diag-beta'),'Beta bridge hotpath cache not updated');
 check(beta.includes('v8009-extracted-v372-authoritative-header-css.css?v=8337-legacy-flow-beta'),'Beta retired header CSS cache not updated');
