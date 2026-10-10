@@ -716,15 +716,15 @@ check(beta.includes('v8009-extracted-v372-authoritative-header-css.css?v=8337-le
 check(beta.includes('v8009-s7-v372-authoritative-header.js?v=8338-retire-header-flow-beta'),'Beta menu owner cache not updated');
 
 /* V8.382: canonical Server1-only attribute action diagnostics. */
-const attrOwner=read('js/features/authority/beta/v8009-s2-v7033-build-authority-bridge.js');
-const systemtechOwner=read('js/features/system/beta/v8009-s1-v4107-systemtechnik.js');
-const liveHtml=read('server1.html');
-check(attrOwner.split("rpc('v6357_spend_attribute'").length===2,'Attribute spend must keep one canonical RPC');
-check(attrOwner.includes('window.v8382AttributeLatencyDiagnostics')&&attrOwner.includes("attributeTiming.length>8"),'Bounded attribute trace missing');
-check(attrOwner.includes("trace?stamp:null")&&attrOwner.includes("trace.status='bestätigt'"),'Attribute diagnostics not tied to real canonical action');
-check(attrOwner.includes("String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='server1'"),'Attribute instrumentation not Server1-only');
-check(systemtechOwner.includes('v8382AttributeTimingCard')&&systemtechOwner.includes('V8.382 ATTRIBUT-EINZELMESSUNG'),'Systemtechnik attribute panel missing');
-check(liveHtml.includes('v7033-build-authority-bridge.js?v=8382-attr-stage-trace-server1')&&liveHtml.includes('v4107-systemtechnik.js?v=8382-attribute-timing-server1'),'Server1 attribute trace cache missing');
+const v8382AttrOwner=read('js/features/authority/beta/v8009-s2-v7033-build-authority-bridge.js');
+const v8382SystemtechOwner=read('js/features/system/beta/v8009-s1-v4107-systemtechnik.js');
+const v8382LiveHtml=read('server1.html');
+check(v8382AttrOwner.split("rpc('v6357_spend_attribute'").length===2,'Attribute spend must keep one canonical RPC');
+check(v8382AttrOwner.includes('window.v8382AttributeLatencyDiagnostics')&&v8382AttrOwner.includes("attributeTiming.length>8"),'Bounded attribute trace missing');
+check(v8382AttrOwner.includes("trace?stamp:null")&&v8382AttrOwner.includes("trace.status='bestätigt'"),'Attribute diagnostics not tied to real canonical action');
+check(v8382AttrOwner.includes("String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='server1'"),'Attribute instrumentation not Server1-only');
+check(v8382SystemtechOwner.includes('v8382AttributeTimingCard')&&v8382SystemtechOwner.includes('V8.382 ATTRIBUT-EINZELMESSUNG'),'Systemtechnik attribute panel missing');
+check(v8382LiveHtml.includes('v7033-build-authority-bridge.js?v=8382-attr-stage-trace-server1')&&v8382LiveHtml.includes('v4107-systemtechnik.js?v=8382-attribute-timing-server1'),'Server1 attribute trace cache missing');
 check(!beta.includes('8382-attr-stage-trace-server1')&&!beta.includes('8382-attribute-timing-server1'),'Beta entry must remain unchanged');
 const largest=[...areas].map(([area,v])=>({area,...v})).sort((a,b)=>b.bytes-a.bytes).slice(0,12);
 const report={version:'V8.312',time:new Date().toISOString(),entryMetrics,
