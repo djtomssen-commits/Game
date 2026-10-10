@@ -290,7 +290,7 @@ const tabAttr=/^data-(?:tab|grow-tab|subtab|v[0-9]{2,5}-(?:tab|subtab))$/i;
 const pause=ms=>new Promise(resolve=>setTimeout(resolve,ms));
 function semanticTab(button){
  if(button.tagName!=='BUTTON'||button.closest('#v8315PerfDock'))return null;
- if(button.type==='submit'||button.hasAttribute('formaction'))return null;
+ if(button.getAttribute('type')?.toLowerCase()==='submit'||button.hasAttribute('formaction'))return null;
  const attribute=[...button.attributes].find(a=>tabAttr.test(a.name));
  const parent=button.parentElement;
  const role=button.getAttribute('role')==='tab';
