@@ -149,7 +149,7 @@ try{
  assert.equal(qaCenter.result.version,'V8.363','QA Center version missing');
  assert.ok(qaCenter.result.qaCenter.network.errors>=1,'QA network errors were not collected');
  assert.ok(qaCenter.result.qaCenter.network.endpoints.some(x=>x.endpoint==='REST qa_probe'&&x.failures>=1),
-  'sanitized failed REST request missing');
+  'sanitized failed REST request missing: '+JSON.stringify(qaCenter.result.qaCenter.network.endpoints));
  assert.ok(qaCenter.result.qaCenter.findings.some(x=>x.code==='rpc_http_failures'),
   'ranked network findings missing');
  assert.ok(qaCenter.result.tabResults.every(x=>x.layoutAudit&&x.idleVisualDelta),
