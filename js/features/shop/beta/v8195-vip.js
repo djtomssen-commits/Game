@@ -4,6 +4,11 @@ if(window.__V8195_VIP_CLIENT__)return;
 window.__V8195_VIP_CLIENT__=true;
 
 const S={state:null,busy:false,lastLoad:0,flight:null,expiryTimer:0};
+/* V8.366 Beta: preserve the actual VIP DOM when confirmed state paints are identical.
+   No transaction or server state may be suppressed; comparison applies only to markup. */
+const VIP_RENDER_QA={fullRenders:0,noopRenders:0};
+let lastVipPanel=null,lastVipMarkup=null;
+const betaVipRender=()=>String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta';
 const PRICES={7:3.99,14:6.99,30:11.99};
 const one=d=>Array.isArray(d)?d[0]:d;
 const fmt=n=>Math.max(0,Number(n)||0).toLocaleString('de-DE');
@@ -84,7 +89,7 @@ function render(){
  const claimed=st&&!st.daily_claim_available;
  const todayClaim=st?.today_claim||null;
  const publicVisible=st?.public_visible!==false;
- p.innerHTML=`
+ const nextMarkup=`
    <div class="v8195-hero">
      <div class="v8195-crown">👑</div>
      <div><small>GROW LEGENDS · VIP</small><h2>${yes?'VIP AKTIV':'VIP-PASS'}</h2><p>${yes?`${remainingText(st)} · aktiv bis ${untilText(st)}`:'Mehr Komfort, tägliche Extras und sichtbares Prestige – ohne Kampfkraft-Bonus.'}</p></div>
@@ -118,6 +123,11 @@ function render(){
    </div>
    <div class="v8195-note">VIP-Zeit wird bei einer Verlängerung hinten angehängt. Nach Ablauf enden alle zeitgebundenen VIP-Vorteile automatisch. Keine zusätzlichen Attribute oder Kampfschadens-Boni.</div>
  `;
+ if(!betaVipRender()||lastVipPanel!==p||lastVipMarkup!==nextMarkup||!p.firstElementChild){
+  p.innerHTML=nextMarkup;
+  lastVipPanel=p;lastVipMarkup=nextMarkup;
+  VIP_RENDER_QA.fullRenders++;
+ }else VIP_RENDER_QA.noopRenders++;
  try{window.v8144GameplayI18n?.apply?.('harzDealer')}catch(_){}
 }
 async function claimDaily(){
@@ -182,6 +192,7 @@ window.addEventListener('growlegends:language-changed',render,{passive:true});
 window.v8195OpenVip=openVip;
 window.v8195CloseVip=closeVip;
 window.v8195VipRefresh=load;
+window.__V8366_VIP_RENDER_QA__=()=>({...VIP_RENDER_QA});
 window.v8195VipDiagnostics=()=>({version:'V8.195',state:S.state?{active:active(),vip_until:S.state.vip_until,public_visible:S.state.public_visible,daily_claim_available:S.state.daily_claim_available,free_reroll_available:S.state.free_reroll_available}:null,busy:S.busy,serverAuthoritative:true});
 try{window.v7117DealerHubSync?.()}catch(_){}
 if(logged())void load(false);
