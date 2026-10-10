@@ -89,7 +89,7 @@ check(hudJs.includes("panel.classList.remove('open','show')")&&hudJs.includes("p
 check(hudJs.includes("legacy.style.setProperty('display','none','important')"),'V8.338 must eliminate old header inline-important layout footprint');
 const tech=read('js/features/system/beta/v8009-s1-v4107-systemtechnik.js');
 check(tech.includes("const basename=match[1].split('/').pop().split(/[?#]/)[0]"),'V8.338 must resolve JSON caller cache-query URLs and SDK bundles');
-check(beta.includes('v8009-s1-v4107-systemtechnik.js?v=8353-auto-material-button-diagnostics-beta'),'V8.344 profiler cache not updated');
+check(beta.includes('v8009-s1-v4107-systemtechnik.js?v=8354-material-hidden-prewarm-report-beta'),'V8.344 profiler cache not updated');
 check(tech.includes('const longShort=long.filter(x=>x.ms>=50&&x.ms<100).length')&&
   tech.includes('...longPrint.map(x=>'),'V8.340 profiler must print measured 50-99ms long tasks');
 check(tech.includes("'LONGTASK-BEREICHE: 50–99 ms '"),'V8.340 profiler must explain longtask thresholds');
@@ -122,7 +122,7 @@ check(characterHub.includes('if(name.childElementCount!==2||!existingText||exist
 check(characterHub.includes("if(!layout()){")&&
   !characterHub.includes("layout();\n      if(activeTab()==='inventory')refreshTab('inventory');"),
   'V8.342 renderInventory is still refreshing the tab twice');
-check(beta.includes('v8009-s2-v459-character-hub.js?v=8343-nav-event-owner-beta'),
+check(beta.includes('v8009-s2-v459-character-hub.js?v=8354-hidden-material-tab-prepare-beta'),
   'V8.343 character hub cache key missing');
 const characterRenderer=read('js/features/ui/beta/v8009-s2-v086-polish-script.js');
 check(characterRenderer.includes('window.v7207CharacterRenderDiagnostics=()')&&
@@ -276,7 +276,7 @@ check(tech.includes('V8.349 XP-KORREKTUR:')&&
   tech.includes('v7154CharacterNavDiagnostics'),
   'V8.349 current profiler telemetry missing');
 check(beta.includes('v8009-s2-v4103-item-ui-consistency.js?v=8349-item-dataset-stability-beta')&&
-  beta.includes('v8009-s1-v4107-systemtechnik.js?v=8353-auto-material-button-diagnostics-beta')&&
+  beta.includes('v8009-s1-v4107-systemtechnik.js?v=8354-material-hidden-prewarm-report-beta')&&
   beta.includes('v8009-s3-v6167-longterm-xp-balance.js?v=8349-xp-cssom-precision-beta'),
   'V8.349 Beta original-owner caches missing');
 
@@ -289,7 +289,7 @@ check(slotOwner.includes('const ringVisualSnapshot=new WeakMap()')&&
   tech.includes('V8.350 RING-ART SINGLE-OWNER:'),
   'V8.350 ring visible-art signature or profiler counter missing');
 check(beta.includes('v8009-s8-v6102-character-equipment-scroll-fix.js?v=8350-art-backed-icon-signature-beta')&&
-  beta.includes('v8009-s1-v4107-systemtechnik.js?v=8353-auto-material-button-diagnostics-beta')&&
+  beta.includes('v8009-s1-v4107-systemtechnik.js?v=8354-material-hidden-prewarm-report-beta')&&
   !read('server1.html').includes('8350-art-backed-icon-signature-beta'),
   'V8.350 Beta only cache activation missing');
 
@@ -303,7 +303,7 @@ check(v086Staged.includes('const idleBudgetMs=beta?96:240')&&
   tech.includes("V8.351 Idle-Budget "),
   'V8.351 staged inventory idle deadline or diagnostic missing');
 check(beta.includes('v8009-s2-v086-polish-script.js?v=8351-short-inventory-idle-beta')&&
-  beta.includes('v8009-s1-v4107-systemtechnik.js?v=8353-auto-material-button-diagnostics-beta')&&
+  beta.includes('v8009-s1-v4107-systemtechnik.js?v=8354-material-hidden-prewarm-report-beta')&&
   !read('server1.html').includes('8351-short-inventory-idle-beta'),
   'V8.351 Beta-only progressive-render cache contract missing');
 
@@ -332,7 +332,7 @@ check(materialMultiOwner.includes('summary.innerHTML!==summaryHtml')&&
   materialMultiOwner.includes("check.getAttribute('aria-pressed')!==pressed"),
   'V8.352 selection card no-op guards missing');
 check(beta.includes('v8009-s1-v546-materials-grow-legends.js?v=8352-stable-gem-grid-beta')&&
-  beta.includes('v8009-s1-v4107-systemtechnik.js?v=8353-auto-material-button-diagnostics-beta')&&
+  beta.includes('v8009-s1-v4107-systemtechnik.js?v=8354-material-hidden-prewarm-report-beta')&&
   beta.includes('v8009-s3-v681-material-sell-core.js?v=8352-stable-material-price-ui-beta')&&
   beta.includes('v8009-s2-v683-material-multisell-core.js?v=8352-stable-material-select-ui-beta')&&
   !read('server1.html').includes('8352-stable-gem-grid-beta')&&
@@ -357,11 +357,33 @@ check(tech.includes('V8.353 AUTO-SOCKELN-BUTTON')&&
   tech.includes('autoMaterialBarTrace')&&
   tech.includes('autoMaterialBarMoves'),
   'V8.353 material auto-action diagnostic missing');
-check(beta.includes('v8009-s3-v480-auto-gear-material.js?v=8353-stable-auto-material-button-beta')&&
-  beta.includes('v8009-s1-v4107-systemtechnik.js?v=8353-auto-material-button-diagnostics-beta')&&
+check(beta.includes('v8009-s3-v480-auto-gear-material.js?v=8354-previsible-first-mount-trace-beta')&&
+  beta.includes('v8009-s1-v4107-systemtechnik.js?v=8354-material-hidden-prewarm-report-beta')&&
   !read('server1.html').includes('8353-stable-auto-material-button-beta')&&
   !read('server1.html').includes('8353-auto-material-button-diagnostics-beta'),
   'V8.353 must be cache activated only on Beta');
+
+/* V8.354: prepare original Materials grid and Auto-Sockeln action while
+   the tab is still hidden. Existing tab refresh after reveal remains. */
+const hub354=read('js/features/character/beta/v8009-s2-v459-character-hub.js');
+const auto354=read('js/features/character/beta/v8009-s3-v480-auto-gear-material.js');
+check(hub354.includes("if(name==='materials'&&String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta')")&&
+  hub354.includes("if(panel&&!panel.classList.contains('active'))")&&
+  hub354.includes('window.v030RenderMaterials?.()')&&
+  hub354.includes("window.v480UpdateAutoBars?.('materials')")&&
+  hub354.indexOf("window.v480UpdateAutoBars?.('materials')")<hub354.indexOf("shell.querySelectorAll('#v459CharacterTabs button').forEach(b=>b.classList.toggle('active'")&&
+  hub354.includes('m.autoMaterialBarHiddenPrepares='),
+  'V8.354 hidden Materials warmup must precede tab visibility');
+check(auto354.includes("panelActive:!!panel.classList?.contains?.('active')")&&
+  tech.includes('V8.354 MATERIALIEN VOR-EINBLENDEN')&&
+  tech.includes('Tab bereits sichtbar '),
+  'V8.354 Auto-Sockeln visibility trace missing');
+check(beta.includes('v8009-s2-v459-character-hub.js?v=8354-hidden-material-tab-prepare-beta')&&
+  beta.includes('v8009-s3-v480-auto-gear-material.js?v=8354-previsible-first-mount-trace-beta')&&
+  beta.includes('v8009-s1-v4107-systemtechnik.js?v=8354-material-hidden-prewarm-report-beta')&&
+  !read('server1.html').includes('8354-hidden-material-tab-prepare-beta')&&
+  !read('server1.html').includes('8354-material-hidden-prewarm-report-beta'),
+  'V8.354 only Beta should activate revised auto-material first mount');
 
 check(beta.includes('v8009-s12-v7081-account-capability-gate.js?v=8337-flat-diag-beta'),'Beta capability hotpath cache not updated');
 check(beta.includes('v8009-s1-v7042-unified-authority-bridge.js?v=8337-memo-diag-beta'),'Beta bridge hotpath cache not updated');
