@@ -2,16 +2,22 @@
 /* ===== V4.02 Dampf UI Cleanup ===== */
 const V028_DAMPF_ICON='💨';
 
+/* V8.372 Beta: preserve live text nodes when Dampf labels are already
+   canonical. This original owner runs after every base render. */
+function v028WriteText(el,value){
+  if(!el)return;
+  if(!(String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta')||el.textContent!==value)el.textContent=value;
+}
 function v028ApplyDampfUI(){
   // Top resource label/value
   const energyEl=document.querySelector('#energy');
   if(energyEl){
-    energyEl.textContent=`${V028_DAMPF_ICON} ${Math.floor(s.energy||0)}/300`;
+    v028WriteText(energyEl,`${V028_DAMPF_ICON} ${Math.floor(s.energy||0)}/300`);
     const stat=energyEl.parentElement;
     if(stat){
       // Preserve only the resource label before the <b>
       const first=stat.childNodes[0];
-      if(first && first.nodeType===3) first.nodeValue='DAMPF';
+      if(first && first.nodeType===3 && (!(String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta')||first.nodeValue!=='DAMPF')) first.nodeValue='DAMPF';
     }
   }
 
@@ -20,22 +26,30 @@ function v028ApplyDampfUI(){
   if(quests){
     quests.querySelectorAll('*').forEach(el=>{
       if(el.children.length===0 && typeof el.textContent==='string'){
-        el.textContent=el.textContent
+        const original=el.textContent;
+        const canonical=original
           .replace(/⚡\s*/g,`${V028_DAMPF_ICON} `)
           .replace(/🍀\s*(\d+)/g,`${V028_DAMPF_ICON} $1`)
           .replace(/\bEnergie\b/g,'Dampf');
+        if(!(String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta')||canonical!==original)el.textContent=canonical;
       }
     });
   }
 
   // Refill button/labels
   const refill=document.querySelector('#v026RefillBtn');
-  if(refill) refill.textContent=`🟢 +20 ${V028_DAMPF_ICON} Dampf`;
+  if(refill) v028WriteText(refill,`🟢 +20 ${V028_DAMPF_ICON} Dampf`);
 
   // Any leftover simple "Energie" labels anywhere in the app.
   document.querySelectorAll('body *').forEach(el=>{
     if(el.children.length===0 && typeof el.textContent==='string'){
-      el.textContent=el.textContent.replace(/\bEnergie\b/g,'Dampf');
+      const original=el.textContent;
+      if(!(String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta')){
+        el.textContent=original.replace(/\bEnergie\b/g,'Dampf');
+      }else if(original.includes('Energie')){
+        const canonical=original.replace(/\bEnergie\b/g,'Dampf');
+        if(canonical!==original)el.textContent=canonical;
+      }
     }
   });
 }
@@ -43,7 +57,7 @@ function v028ApplyDampfUI(){
 // Replace old V4.02 painter if present.
 v026PaintDampf=function(){
   const energyEl=document.querySelector('#energy');
-  if(energyEl)energyEl.textContent=`${V028_DAMPF_ICON} ${Math.floor(s.energy||0)}/300`;
+  if(energyEl)v028WriteText(energyEl,`${V028_DAMPF_ICON} ${Math.floor(s.energy||0)}/300`);
   v028ApplyDampfUI();
 };
 
