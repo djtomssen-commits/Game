@@ -137,8 +137,11 @@ try{
   window.GROW_RELEASE_CHANNEL='beta';
   const originalFetch=window.fetch;
   window.fetch=async()=>new Response('simulated failure',{status:503});
+  const domProbe=document.createElement('span');
+  domProbe.className='v8315-qa-text-probe';domProbe.textContent='test-only';
+  document.querySelector('#character').appendChild(domProbe);
   document.querySelector('#character [data-tab="materials"]').addEventListener('click',
-   ()=>{void fetch('/rest/v1/qa_probe?secret=never_export')},{once:true});
+   ()=>{domProbe.textContent='test-only';void fetch('/rest/v1/qa_probe?secret=never_export')},{once:true});
   const result=await GL_PAGE_AUDIT.sweep({ids:['character'],dwellMs:170,
    tabDwellMs:250,includeTabs:true,extended:true});
   const restored=window.fetch!==originalFetch&&window.fetch.name!=='wrappedFetch';
@@ -146,7 +149,11 @@ try{
   return {result,restored};
  });
  assert.equal(qaCenter.restored,true,'opt-in fetch instrumentation was not restored');
- assert.equal(qaCenter.result.version,'V8.369','QA Center version missing');
+ assert.equal(qaCenter.result.version,'V8.370','QA Center version missing');
+ assert.ok(qaCenter.result.qaCenter.mutationDetail?.character?.identicalText>=1,
+  'V8.370 same-text childList replacement classification missing');
+ assert.ok(qaCenter.result.qaCenter.mutationDetail?.character?.textOnly>=1,
+  'V8.370 synthetic text-only rewrite classification missing');
  assert.ok(qaCenter.result.qaCenter.network.errors>=1,'QA network errors were not collected');
  assert.ok(qaCenter.result.qaCenter.network.endpoints.some(x=>x.endpoint==='REST qa_probe'&&x.failures>=1),
   'sanitized failed REST request missing: '+JSON.stringify(qaCenter.result.qaCenter.network.endpoints));
