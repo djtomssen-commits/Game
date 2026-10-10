@@ -423,10 +423,10 @@ check(hub354.includes('const wasActive=!!panel?.classList.contains(\'active\')')
 
 /* V8.360: opt-in Beta one-click page+tab coverage, read-only UI interactions. */
 const tabAudit=read('js/system/performance/v8315-page-trace.js');
-check(beta.includes('v8315-page-trace.js?v=8362-tab-owner-hotspots-beta')&&
+check(beta.includes('v8315-page-trace.js?v=8363-qa-center-beta')&&
   !read('server1.html').includes('8360-beta-all-tabs-audit')&&
   tech.includes('id="gl8315AllTabs"')&&
-  tech.includes('includeTabs:true,maxTabsPerScreen:32,maxTabsTotal:130')&&
+  tech.includes('includeTabs:true,extended:true,maxTabsPerScreen:32,maxTabsTotal:130')&&
   tabAudit.includes('async function auditTabs(id,opts)')&&
   tabAudit.includes("const withTabs=options.includeTabs===true")&&
   tabAudit.includes("if(withTabs&&!sweepCancelled)await auditTabs(id,options)")&&
@@ -448,9 +448,17 @@ check(tabAudit.includes('function safeDomOwner(node,root)')&&
   tabAudit.includes('idleMutationHotspots:')&&
   tabAudit.includes('layoutShiftHotspots:')&&
   tabAudit.includes('if(betaAudit())inspect(); /* caravan becomes visible synchronously')&&
-  tabAudit.includes("return {version:betaAudit()?'V8.362':'V8.360'")&&
+  tabAudit.includes("return {version:betaAudit()?'V8.363':'V8.360'")&&
   !read('server1.html').includes('8362-tab-owner-hotspots-beta'),
   'V8.362 Beta owner and idle-churn profiler contract missing');
+check(beta.includes('v8009-s1-v4107-systemtechnik.js?v=8363-qa-center-button-beta')&&
+  tech.includes('QA-Zentrale: Komplettprüfung')&&
+  tabAudit.includes('function setupNetwork()')&&tabAudit.includes('function teardownNetwork()')&&
+  tabAudit.includes('function rectSignature(root)')&&tabAudit.includes('function layoutSample(root)')&&
+  tabAudit.includes('function consistencySnapshot()')&&tabAudit.includes('function rankedFindings(pages)')&&
+  tabAudit.includes('qaState.extended=withTabs&&options.extended===true')&&
+  !read('server1.html').includes('8363-qa-center-beta'),
+  'V8.363 Beta QA center missing network, visual, consistency, report or isolation');
 check(beta.includes('v8009-s12-v7081-account-capability-gate.js?v=8337-flat-diag-beta'),'Beta capability hotpath cache not updated');
 check(beta.includes('v8009-s1-v7042-unified-authority-bridge.js?v=8337-memo-diag-beta'),'Beta bridge hotpath cache not updated');
 check(beta.includes('v8009-extracted-v372-authoritative-header-css.css?v=8337-legacy-flow-beta'),'Beta retired header CSS cache not updated');
