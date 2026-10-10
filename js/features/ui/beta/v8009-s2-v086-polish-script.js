@@ -320,7 +320,14 @@ function v7207RenderCharacterProgressive(){
         }
         try{window.__GL_RUNTIME_WATCHDOG__?.report?.('character_render_profile','info',profile,{screen:'character',incidentKey:'progressive-v7207'})}catch(_){}
       };
-      if(typeof requestIdleCallback==='function')requestIdleCallback(inventory,{timeout:240});
+      /* V8.351 Beta: inventory is the default visible Character tab.
+         The old 240ms idle deadline fires at its maximum despite ~14ms of
+         actual inventory JS. Keep both progressive frames and idle semantics,
+         reduce only the Beta deadline; Server1 retains its original 240ms. */
+      const beta=String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta';
+      const idleBudgetMs=beta?96:240;
+      if(beta)profile.inventoryIdleBudgetMs=idleBudgetMs;
+      if(typeof requestIdleCallback==='function')requestIdleCallback(inventory,{timeout:idleBudgetMs});
       else setTimeout(inventory,32);
     });
   });
