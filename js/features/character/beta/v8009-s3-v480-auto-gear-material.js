@@ -302,12 +302,67 @@
   }
   window.v486FlushPendingAuto=flushPending;
 
-  function ensureBar(panel,id,title,sub,buttonText,onclick){
+  /* V8.353 Beta: measure just the visible material auto-action bar.
+     Do not mask real cloud-controlled disabled/actionable state transitions. */
+  function v8353MaterialMetric(name){
+    if(String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()!=='beta')return null;
+    const m=window.__V8348_VISUAL_METRICS__||(window.__V8348_VISUAL_METRICS__={});
+    if(name)m[name]=(Number(m[name])||0)+1;
+    return m;
+  }
+  function ensureBar(panel,id,title,sub,buttonText,onclick,finalDisabled){
     if(!panel)return null;
     let bar=document.getElementById(id);
+    const isBetaMaterial=id==='v480MaterialAutoBar'&&
+      String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta';
+    const fresh=!bar;
     if(!bar){
       bar=document.createElement('div');bar.id=id;bar.className='v480-auto-bar';
       bar.innerHTML=`<div class="v480-auto-copy"><b>${esc(title)}</b><span>${esc(sub)}</span></div><button type="button" class="btn v480-auto-btn"></button>`;
+    }
+    if(isBetaMaterial){
+      const m=v8353MaterialMetric('autoMaterialBarRefreshCalls');
+      const reasons=[];
+      const btn=bar.querySelector('button');
+      const heading=bar.querySelector('.v480-auto-copy b');
+      const description=bar.querySelector('.v480-auto-copy span');
+      /* Set the correct final text and disabled state BEFORE first insertion,
+         so the user never sees an intermediate enabled/empty button. */
+      if(heading&&heading.textContent!==title){heading.textContent=title;reasons.push('title')}
+      if(description&&description.textContent!==sub){
+        description.textContent=sub;reasons.push('available-uses-text');
+        v8353MaterialMetric('autoMaterialBarDescriptionChanges');
+      }
+      if(btn){
+        if(btn.textContent!==buttonText){
+          btn.textContent=buttonText;reasons.push('button-text');
+          v8353MaterialMetric('autoMaterialBarLabelChanges');
+        }
+        if(btn.onclick!==onclick)btn.onclick=onclick;
+        const disabled=!!finalDisabled;
+        if(btn.disabled!==disabled){
+          btn.disabled=disabled;reasons.push('disabled-state');
+          v8353MaterialMetric('autoMaterialBarDisabledChanges');
+        }
+      }
+      /* v546 Material layout owns the final position: immediately BELOW the
+         Materials header, never briefly at the panel top and then moved. */
+      const header=document.getElementById('v546MaterialsHeader');
+      const hasHeader=header?.parentElement===panel;
+      const needsMove=bar.parentElement!==panel||(hasHeader&&bar.previousElementSibling!==header);
+      if(needsMove){
+        panel.insertBefore(bar,hasHeader?header.nextSibling:panel.firstChild);
+        reasons.push(fresh?'first-mount':'position-corrected');
+        if(fresh)v8353MaterialMetric('autoMaterialBarFirstMounts');
+        else v8353MaterialMetric('autoMaterialBarMoves');
+      }
+      if(reasons.length){
+        v8353MaterialMetric('autoMaterialBarVisibleUpdates');
+        const trace=m.autoMaterialBarTrace||(m.autoMaterialBarTrace=[]);
+        trace.push({at:Date.now(),reasons,disabled:!!btn?.disabled,mounted:bar.parentElement===panel});
+        if(trace.length>12)trace.shift();
+      }else v8353MaterialMetric('autoMaterialBarNoopRefreshes');
+      return bar;
     }
     if(bar.parentElement!==panel)panel.insertBefore(bar,panel.firstChild);
     const btn=bar.querySelector('button');if(btn){btn.textContent=buttonText;btn.onclick=onclick;btn.disabled=busy}
@@ -327,8 +382,8 @@
       }else if(active==='materials'){
         const matPanel=document.getElementById('v459PanelMaterials');
         const p=materialPlan(),uses=p.gemAssignments.length+p.scrollAssignments.length;
-        const mb=ensureBar(matPanel,'v480MaterialAutoBar','💎 Auto-Sockeln & Rollen',uses?`${p.gemAssignments.length} Stein${p.gemAssignments.length===1?'':'e'} + ${p.scrollAssignments.length} Rolle${p.scrollAssignments.length===1?'':'n'} sinnvoll einsetzbar.`:'Keine bessere automatische Belegung möglich.','✨ Beste Steine & Rollen einsetzen',autoMaterials);
-        if(mb){const btn=mb.querySelector('button');if(btn)btn.disabled=busy||uses===0}
+        const mb=ensureBar(matPanel,'v480MaterialAutoBar','💎 Auto-Sockeln & Rollen',uses?`${p.gemAssignments.length} Stein${p.gemAssignments.length===1?'':'e'} + ${p.scrollAssignments.length} Rolle${p.scrollAssignments.length===1?'':'n'} sinnvoll einsetzbar.`:'Keine bessere automatische Belegung möglich.','✨ Beste Steine & Rollen einsetzen',autoMaterials,busy||uses===0);
+        if(mb&&String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()!=='beta'){const btn=mb.querySelector('button');if(btn)btn.disabled=busy||uses===0}
       }
     }catch(e){console.warn('V4.80 bars',e)}
     stamp();
