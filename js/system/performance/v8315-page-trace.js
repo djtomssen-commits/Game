@@ -576,7 +576,7 @@ function report(){
  const findings=qaState.extended?rankedFindings(pages):[];
  const counts={high:0,medium:0,low:0};
  for(const f of findings)if(counts[f.severity]!==undefined)counts[f.severity]++;
- return {version:betaAudit()?'V8.374':'V8.360',mode:'opt-in-device',server:state.channel,
+ return {version:betaAudit()?'V8.375':'V8.360',mode:'opt-in-device',server:state.channel,
   running:state.running,sweeping:state.sweeping,elapsedMs:Math.round((state.stoppedAt||clock())-state.startedAt),
   pages,totalScreens:pages.length,primaryScreens:pages.filter(p=>SCREENS.includes(p.screen)).length,
   linkedScreens:pages.filter(p=>LINKED_SCREENS.includes(p.screen)).map(p=>p.screen),slowTasks:state.slowTasks,layoutShiftEvents:state.shiftCount,
@@ -588,6 +588,7 @@ function report(){
     growRenderer:(()=>{try{return window.__V8365_GROW_RENDER_QA__?.()||null}catch(_){return null}})(),
     forgeShell:(()=>{try{return window.__V8367_FORGE_QA__?.()||null}catch(_){return null}})(),
     itemFx:(()=>{try{return window.__V8368_ITEM_FX_QA__?.()||null}catch(_){return null}})(),
+    inventoryCore:(()=>{try{return window.__V8375_INVENTORY_CORE_QA__?.()||null}catch(_){return null}})(),
     itemCompare:(()=>{try{return window.__V8369_COMPARE_QA__?.()||null}catch(_){return null}})(),
     comparisonRebuilds:(()=>{try{return window.__V8374_COMPARE_REBUILDS__?.()||null}catch(_){return null}})(),
     mutationDetail:(()=>{const out={};
