@@ -138,7 +138,7 @@
   window.__V8374_COMPARE_REBUILDS__=()=>({...V8374_COMPARE_REBUILDS});
   function paintInventoryComparisons(){
     if(paintingCompare)return;paintingCompare=true;
-    const beta=String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta';
+    const beta=String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta'||(window.__GROW_SERVER1_PERFORMANCE_V8376__===true&&String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='server1');
     const compareClasses=['v460-better','v460-worse','v460-same','v460-free'];
     const paintTitle=(card,value)=>{
       if(!beta||card.title!==value){
@@ -205,7 +205,7 @@
     if(uri){
       const current=box.querySelector(':scope > img.v470-slot-art,:scope > img.v466-item-art');
       if(current&&box.childElementCount===1&&(
-         String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta'
+         (String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta'||(window.__GROW_SERVER1_PERFORMANCE_V8376__===true&&String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='server1'))
            ?(current.getAttribute('src')===uri||current.src===uri)
            :box.dataset.v470Uri===uri)){
         /* V8.348: v6102/v4103 may have mounted the exact same artwork.
