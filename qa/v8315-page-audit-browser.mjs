@@ -228,6 +228,12 @@ try{
   window.v8144GameplayI18n.apply('quests');
   const dynamicGerman=value.nodeValue;
   window.__qaLanguage='en';window.v8144GameplayI18n.apply('quests');
+  const englishLabel=document.getElementById('qaTranslate').textContent;
+  const root=document.getElementById('quests'),mo=new MutationObserver(()=>{});
+  mo.observe(root,{subtree:true,characterData:true});
+  window.v8144GameplayI18n.apply('quests');
+  window.v8144GameplayI18n.apply('quests');
+  const identicalTranslationsSkipped=mo.takeRecords().length===0;mo.disconnect();
   window.__qaLanguage='de';window.v8144GameplayI18n.apply('quests');
   const dynamicAfterSwitch=value.nodeValue;
   window.v386RenderQuestShell();
@@ -241,10 +247,12 @@ try{
   const panel=document.getElementById('v6163Inline'),before=panel.firstElementChild;
   window.v6163GrowTabs.refresh();
   const sameOrders=before===panel.firstElementChild;
-  return {dynamicGerman,dynamicAfterSwitch,sameQuestCards,changedQuestCards,sameOrders};
+  return {dynamicGerman,dynamicAfterSwitch,englishLabel,identicalTranslationsSkipped,sameQuestCards,changedQuestCards,sameOrders};
  });
  assert.equal(ownerCheck.dynamicGerman,'2.000','German i18n reset updated dynamic stat');
  assert.equal(ownerCheck.dynamicAfterSwitch,'2.000','language switch reset current dynamic stat');
+ assert.equal(ownerCheck.englishLabel,'Buy VIP','translated gameplay text not applied');
+ assert.ok(ownerCheck.identicalTranslationsSkipped,'identical English text was rewritten repeatedly');
  assert.ok(ownerCheck.sameQuestCards,'identical Quest cards were remounted');
  assert.ok(ownerCheck.changedQuestCards,'changed quest offers did not rerender');
  assert.ok(ownerCheck.sameOrders,'identical server-authoritative Grow orders were remounted');
