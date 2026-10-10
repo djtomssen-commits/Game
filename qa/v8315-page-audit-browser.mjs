@@ -146,7 +146,7 @@ try{
   return {result,restored};
  });
  assert.equal(qaCenter.restored,true,'opt-in fetch instrumentation was not restored');
- assert.equal(qaCenter.result.version,'V8.366','QA Center version missing');
+ assert.equal(qaCenter.result.version,'V8.367','QA Center version missing');
  assert.ok(qaCenter.result.qaCenter.network.errors>=1,'QA network errors were not collected');
  assert.ok(qaCenter.result.qaCenter.network.endpoints.some(x=>x.endpoint==='REST qa_probe'&&x.failures>=1),
   'sanitized failed REST request missing: '+JSON.stringify(qaCenter.result.qaCenter.network.endpoints));
@@ -347,6 +347,49 @@ try{
   assert.ok(vipOwner.newHero&&vipOwner.updated&&vipOwner.final.fullRenders>vipOwner.after.fullRenders,
    'V8.366 changed VIP state did not update authoritative controls: '+JSON.stringify(vipOwner));
   await vipPage.close();
+
+  // V8.367: run real V488/V7240 owners. The Nebelschmied only needs
+  // its tab shell; leaving Enchant and returning to it must still work.
+  const forgePage=await browser.newPage({viewport:{width:390,height:844}});
+  const forgeErrors=[];forgePage.on('pageerror',e=>forgeErrors.push(String(e.stack||e.message||e)));
+  await forgePage.setContent('<!doctype html><html><body><main>'+
+   '<section id="forge" class="screen active"></section><section id="world" class="screen"></section>'+
+   '<section id="character" class="screen"></section></main></body></html>');
+  await forgePage.evaluate(()=>{
+   window.GROW_RELEASE_CHANNEL='beta';
+   window.s={level:30,gold:4500,inventory:[],equipment:{},v488Forge:{fragments:225}};
+   window.v073User={id:'qa-forge',is_anonymous:false};
+   window.v073Db={rpc:async()=>({data:{ok:true,items:[],gold:4500},error:null})};
+   window.v032Go=()=>{};
+   window.__qaEnchantBuilds=0;
+   window.v8198EnchantForgeHtml=()=>{window.__qaEnchantBuilds++;return '<section class="v8198-enchant-shell"><button type="button" data-v8198-enchant>Verzaubern</button></section>'};
+   window.v8198BindEnchantForge=()=>{};
+   window.v8144GameplayI18n={apply:()=>{}};
+  });
+  await forgePage.addScriptTag({path:path.join(process.cwd(),'js/features/forge/beta/v8009-s1-v488-harzschmiede-core.js')});
+  await forgePage.addScriptTag({path:path.join(process.cwd(),'js/beta/v7240-beta-gold-features.js')});
+  const forgeOwner=await forgePage.evaluate(async()=>{
+   const forge=document.getElementById('forge');
+   forge.querySelector('[data-v667-tab="enchant"]').click();
+   const start=!!forge.querySelector('.v8198-enchant-shell');
+   const enchantBuildsBefore=window.__qaEnchantBuilds;
+   await window.v7240OpenNebelforge();
+   const inNebelforge=forge.classList.contains('v7240-nebel-open')&&!!forge.querySelector('#v7240Nebelforge');
+   const hiddenEnchantSkipped=!forge.querySelector('.v8198-enchant-shell')&&window.__qaEnchantBuilds===enchantBuildsBefore;
+   const before=window.__V8367_FORGE_QA__?.();
+   forge.querySelector('[data-v667-tab="enchant"]').click();
+   const restored=!!forge.querySelector('.v8198-enchant-shell')&&!forge.classList.contains('v7240-nebel-open');
+   const after=window.__V8367_FORGE_QA__?.();
+   return {start,inNebelforge,hiddenEnchantSkipped,restored,enchantBuildsBefore,before,after};
+  });
+  assert.deepEqual(forgeErrors,[],'V8.367 canonical Forge + Nebelschmied boot errors');
+  assert.ok(forgeOwner.start&&forgeOwner.inNebelforge&&forgeOwner.hiddenEnchantSkipped&&forgeOwner.restored,
+   'V8.367 Nebelschmied hidden Enchant view persisted or tab return failed: '+JSON.stringify(forgeOwner));
+  assert.ok(forgeOwner.before?.lightNebelforgeShells>=1&&
+   forgeOwner.after?.enchantPanelsBuilt>forgeOwner.before?.enchantPanelsBuilt,
+   'V8.367 lightweight forge shell counters failed: '+JSON.stringify(forgeOwner));
+  await forgePage.close();
+
 
 
  assert.ok(errors.length===0,errors.join('; '));
