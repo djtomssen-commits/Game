@@ -125,28 +125,57 @@
   };
   try{comparison=detailedComparison;window.comparison=detailedComparison}catch(e){}
 
+  /* V8.369 Beta: v459 invokes this comparison painter on every Character
+     tab transition. The original remove+add of v460-* classes and the title
+     write generated attribute mutations for an unchanged comparison.
+     Preserve the existing comparison calculation/flag repair, but mutate
+     classes and title only when their actual desired value changes. */
+  const V8369_COMPARE_QA={cardChecks:0,classWrites:0,classNoops:0,titleWrites:0,titleNoops:0};
+  window.__V8369_COMPARE_QA__=()=>({...V8369_COMPARE_QA});
   function paintInventoryComparisons(){
     if(paintingCompare)return;paintingCompare=true;
+    const beta=String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta';
+    const compareClasses=['v460-better','v460-worse','v460-same','v460-free'];
+    const paintTitle=(card,value)=>{
+      if(!beta||card.title!==value){
+        card.title=value;
+        if(beta)V8369_COMPARE_QA.titleWrites++;
+      }else V8369_COMPARE_QA.titleNoops++;
+    };
     try{
       document.querySelectorAll('#character #inventory .inventory-grid > .inv-item').forEach((card,i)=>{
         const it=s?.inventory?.[i],c=compare(it);
-        card.classList.remove('v460-better','v460-worse','v460-same','v460-free');
+        if(beta){
+          V8369_COMPARE_QA.cardChecks++;
+          let changed=false;
+          for(const css of compareClasses){
+            const wanted=!!c&&css==='v460-'+c.state;
+            if(card.classList.contains(css)===wanted)continue;
+            card.classList.toggle(css,wanted);
+            V8369_COMPARE_QA.classWrites++;
+            changed=true;
+          }
+          if(!changed)V8369_COMPARE_QA.classNoops++;
+        }else{
+          card.classList.remove('v460-better','v460-worse','v460-same','v460-free');
+          if(c)card.classList.add('v460-'+c.state);
+        }
         if(!c){card.querySelectorAll('.v460-compare-flag').forEach(x=>x.remove());delete card.dataset.v470CompareKey;return}
-        card.classList.add('v460-'+c.state);
         const diff=c.state==='free'?'+?':c.diff==null?'—':signed(c.diff);
         const key=[c.state,c.mark,diff,c.reason,c.label].join('|');
         const final=card.querySelector('.v460-compare-flag.v470-final-compare');
         const legacy=[...card.querySelectorAll('.v460-compare-flag:not(.v470-final-compare)')];
         legacy.forEach(x=>x.remove());
+        const title=`${c.label} · ${c.diff==null?'':signed(c.diff)+' · '}${c.reason}`;
         if(final&&card.dataset.v470CompareKey===key){
-          card.title=`${c.label} · ${c.diff==null?'':signed(c.diff)+' · '}${c.reason}`;
+          paintTitle(card,title);
           return;
         }
         if(final)final.remove();
         const flag=document.createElement('div');flag.className='v460-compare-flag v470-final-compare';
         flag.innerHTML=`<span class="v460-diff">${esc(c.mark+' '+diff)}</span><span class="v460-reason">${esc(c.reason)}</span>`;
         card.appendChild(flag);card.dataset.v470CompareKey=key;
-        card.title=`${c.label} · ${c.diff==null?'':signed(c.diff)+' · '}${c.reason}`;
+        paintTitle(card,title);
       });
     }finally{paintingCompare=false}
   }
