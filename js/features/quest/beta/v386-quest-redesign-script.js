@@ -164,7 +164,7 @@
   /* V8.364 Beta: a duplicate quest repaint must not throw away identical
      quest cards, their per-card handlers, decorations and image nodes. */
   const lastQuestHtml=new WeakMap();
-  const betaQuest=()=>String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta';
+  const betaQuest=()=>String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta'||(window.__GROW_SERVER1_PERFORMANCE_V8376__===true&&String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='server1');
   function renderCards(){
     const list=document.querySelector('#quests .v386-list');
     if(!list)return;
