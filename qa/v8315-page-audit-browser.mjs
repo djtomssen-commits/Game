@@ -199,9 +199,9 @@ try{
  // remount identical Quest/Grow panels or call normal scrolling "flicker".
  const ownerPage=await browser.newPage({viewport:{width:390,height:844}});
  await ownerPage.setContent('<!doctype html><html><body>'+
-  '<section id="quests" class="screen active"><div class="quest-list"></div></section>'+
-  '<section id="grow" class="screen"><div class="v492-grow"><div class="v492-sign"></div></div></section>'+
-  '<div id="qaTranslate">VIP kaufen</div><span id="qaValue">1.997</span></body></html>');
+  '<section id="quests" class="screen active"><div class="quest-list"></div>'+
+  '<div id="qaTranslate">VIP kaufen</div><span id="qaValue">1.997</span></section>'+
+  '<section id="grow" class="screen"><div class="v492-grow"><div class="v492-sign"></div></div></section></body></html>');
  await ownerPage.evaluate(()=>{
   window.GROW_RELEASE_CHANNEL='beta';
   window.__qaLanguage='de';
