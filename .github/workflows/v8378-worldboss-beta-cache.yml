@@ -1,0 +1,39 @@
+name: V8.378 one-time worldboss Beta cache refresh
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/v8378-worldboss-beta-cache.yml']
+permissions:
+  contents: write
+jobs:
+  refresh-worldboss-beta-cache:
+    if: contains(github.event.head_commit.message, 'V8.378 initiate one-time Beta worldboss cache refresh')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Update canonical Beta entrypoint cache key
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path('beta.html')
+          s = p.read_text(encoding='utf-8')
+          needle = 'js/features/worldboss/beta/v8009-s5-v291-worldboss-upgrades-balance.js'
+          target = needle + '?v=8378-full-upgrades-worldboss-beta'
+          if target in s:
+              print('Already current')
+          else:
+              assert s.count(needle) == 1, 'Expected exactly one original v291 script'
+              p.write_text(s.replace(needle, target), encoding='utf-8')
+              print('Updated original Beta entrypoint')
+          assert target in p.read_text(encoding='utf-8')
+          PY
+      - name: Commit one-time cache update
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add beta.html
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m 'V8.378 Beta worldboss cache refresh (server1 unchanged)'
+          git push
