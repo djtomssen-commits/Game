@@ -357,10 +357,10 @@ async function claimServerQuest(){
      leave the finished Quest card visible. Any explicit server bundle/state
      below may still replace this value authoritatively. */
   ensureShape();s.quests.active=null;
-  /* V8.379 Beta only: receipt ACK and authoritative reconciliation run
-     during the existing battle animation, without granting any second reward.
-     Live/Server1 keeps its original sequential sequence pending validation. */
-  const fastClaimSync=String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta';
+  /* V8.380: Beta and verified Server1 use the same single receipt ACK
+     and canonical reconciliation while the existing battle animation runs.
+     Server remains authoritative; no second claim or reward is issued. */
+  const fastClaimSync=['beta','server1'].includes(String(window.GROW_RELEASE_CHANNEL||'').toLowerCase());
   const postClaimSync=fastClaimSync?(async()=>{
     const ackResult=await ack(runId);
     try{await canonicalQuestState(true)}catch(_){}
