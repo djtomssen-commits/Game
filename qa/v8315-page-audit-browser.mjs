@@ -152,7 +152,7 @@ try{
  });
  assert.equal(qaCenter.restored,true,'opt-in fetch instrumentation was not restored');
  assert.equal(qaCenter.restoredText,true,'V8.371 textContent instrumentation was not restored');
- assert.equal(qaCenter.result.version,'V8.374','QA Center version missing');
+ assert.equal(qaCenter.result.version,'V8.375','QA Center version missing');
  assert.ok(qaCenter.result.qaCenter.mutationDetail?.character?.identicalText>=1,
   'V8.370 same-text childList replacement classification missing');
  assert.ok(qaCenter.result.qaCenter.mutationDetail?.character?.textWriters?.some(x=>x.attempts>=1),
@@ -657,6 +657,60 @@ try{
  assert.ok(bookResult.stable&&bookResult.fixed&&bookResult.legacy,
   'V8.374 original V686 stable book-host/fix displaced pair/Server1: '+JSON.stringify(bookResult));
  await bookPage.close();
+
+ // V8.375: browser-execute the authentic renderInventory() from the
+ // V8009 core (not a reimplementation) with minimal surrounding game state.
+ // Identical state must preserve each card and its flags across base renders.
+ const coreSrc=fs.readFileSync(path.join(process.cwd(),
+  'js/features/core/beta/v8009-a1-legacy-state-core.js'),'utf8');
+ const coreStart=coreSrc.indexOf('/* V8.375 Beta: canonical inventory render');
+ const coreEnd=coreSrc.indexOf('\nfunction render(){regenEnergy();',coreStart);
+ assert.ok(coreStart>0&&coreEnd>coreStart,'V8.375 original inventory renderer block not found');
+ const corePage=await browser.newPage();
+ corePage.on('pageerror',e=>errors.push('v8375-inventory: '+String(e.message||e)));
+ await corePage.setContent('<!doctype html><html><body>'+
+  '<div id="invCount"></div><div id="inventory"></div></body></html>');
+ await corePage.evaluate(()=>{
+  window.GROW_RELEASE_CHANNEL='beta';
+  window.s={level:50,playerClass:'warrior',inventory:[
+   {slot:'head',name:'Test Helm',icon:'🪖',bonus:{staerke:2},price:10}
+  ],equipment:{head:{slot:'head',name:'Alter Helm',bonus:{staerke:10}}}};
+  window.normalizeItem=it=>it;
+  window.itemBonus=it=>String(it?.bonus?.staerke??0);
+  window.sellValue=it=>Number(it?.price||0);
+  window.comparison=it=>'<span class="worse">'+
+   ((Number(it?.bonus?.staerke)||0)-(Number(window.s.equipment?.head?.bonus?.staerke)||0))+'</span>';
+ });
+ await corePage.addScriptTag({content:coreSrc.slice(coreStart,coreEnd)});
+ const coreInventory=await corePage.evaluate(()=>{
+  const box=document.getElementById('inventory'),paint=window.renderInventory;
+  const getCard=()=>box.querySelector('.inv-item');
+  paint();const initial=getCard();
+  const originalMarker=document.createElement('div');originalMarker.className='v470-final-compare';
+  initial.appendChild(originalMarker);
+  const obs=new MutationObserver(()=>{});obs.observe(box,{childList:true,subtree:true,characterData:true});
+  paint();const stable=obs.takeRecords().length===0&&getCard()===initial&&
+   getCard().querySelector('.v470-final-compare')===originalMarker;
+  window.s.equipment.head.bonus.staerke=20;paint();
+  const equipmentUpdate=obs.takeRecords().length>0&&getCard()!==initial&&
+   getCard().querySelector('.compare').textContent.includes('-18');
+  const second=getCard();
+  window.s.inventory[0].bonus.staerke=7;paint();
+  const itemUpdate=obs.takeRecords().length>0&&getCard()!==second;
+  window.s.inventory.push({slot:'ring',name:'Zweiter Ring',icon:'💍',bonus:{staerke:2},price:15});
+  paint();const listUpdate=box.querySelectorAll('.inv-item').length===2;
+  box.replaceChildren();paint();const recovered=box.querySelectorAll('.inv-item').length===2;
+  window.GROW_RELEASE_CHANNEL='server1';const legacyBefore=getCard();
+  paint();const legacy=getCard()!==legacyBefore;
+  obs.disconnect();
+  return {stable,equipmentUpdate,itemUpdate,listUpdate,recovered,legacy,
+   metrics:window.__V8375_INVENTORY_CORE_QA__?.()};
+ });
+ assert.ok(coreInventory.stable&&coreInventory.equipmentUpdate&&coreInventory.itemUpdate&&
+  coreInventory.listUpdate&&coreInventory.recovered&&coreInventory.legacy&&
+  coreInventory.metrics?.noops>=1&&coreInventory.metrics?.fullRenders>=4,
+  'V8.375 authentic core inventory stable/change/reset/Server1: '+JSON.stringify(coreInventory));
+ await corePage.close();
 
  assert.ok(errors.length===0,errors.join('; '));
  fs.mkdirSync('qa/reports',{recursive:true});
