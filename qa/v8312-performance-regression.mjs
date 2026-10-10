@@ -423,7 +423,7 @@ check(hub354.includes('const wasActive=!!panel?.classList.contains(\'active\')')
 
 /* V8.360: opt-in Beta one-click page+tab coverage, read-only UI interactions. */
 const tabAudit=read('js/system/performance/v8315-page-trace.js');
-check(beta.includes('v8315-page-trace.js?v=8363-qa-center-beta')&&
+check(beta.includes('v8315-page-trace.js?v=8364-scroll-stability-beta')&&
   !read('server1.html').includes('8360-beta-all-tabs-audit')&&
   tech.includes('id="gl8315AllTabs"')&&
   tech.includes('includeTabs:true,extended:true,maxTabsPerScreen:32,maxTabsTotal:130')&&
@@ -448,7 +448,7 @@ check(tabAudit.includes('function safeDomOwner(node,root)')&&
   tabAudit.includes('idleMutationHotspots:')&&
   tabAudit.includes('layoutShiftHotspots:')&&
   tabAudit.includes('if(betaAudit())inspect(); /* caravan becomes visible synchronously')&&
-  tabAudit.includes("return {version:betaAudit()?'V8.363':'V8.360'")&&
+  tabAudit.includes("return {version:betaAudit()?'V8.364':'V8.360'")&&
   !read('server1.html').includes('8362-tab-owner-hotspots-beta'),
   'V8.362 Beta owner and idle-churn profiler contract missing');
 check(beta.includes('v8009-s1-v4107-systemtechnik.js?v=8363-qa-center-button-beta')&&
@@ -459,6 +459,26 @@ check(beta.includes('v8009-s1-v4107-systemtechnik.js?v=8363-qa-center-button-bet
   tabAudit.includes('qaState.extended=withTabs&&options.extended===true')&&
   !read('server1.html').includes('8363-qa-center-beta'),
   'V8.363 Beta QA center missing network, visual, consistency, report or isolation');
+/* V8.364: preserve real dynamic numbers, avoid identical Grow/Quest subtree
+   destruction, and ignore camera/inner-scroll displacement in GPU warnings. */
+const sourceI18n=read('js/features/i18n/v8144-i18n-gameplay.js');
+const sourceGrow=read('js/features/grow/beta/v8009-s6-v6163-growroom-primary-tabs-core.js');
+const sourceQuest=read('js/features/quest/beta/v386-quest-redesign-script.js');
+check(beta.includes('v8144-i18n-gameplay.js?v=8364-stable-live-text-beta')&&
+  beta.includes('v6163-growroom-primary-tabs-core.js?v=8364-stable-grow-tabs-beta')&&
+  beta.includes('v386-quest-redesign-script.js?v=8364-stable-quest-cards-beta')&&
+  beta.includes('v8315-page-trace.js?v=8364-scroll-stability-beta')&&
+  !read('server1.html').includes('8364-stable-live-text-beta')&&
+  !read('server1.html').includes('8364-stable-quest-cards-beta')&&
+  sourceI18n.includes('LAST_APPLIED_TEXT=new WeakMap()')&&
+  sourceI18n.includes('last!==undefined&&last!==existing')&&
+  sourceI18n.includes('ORDERED_TRANSLATIONS.set(lang,entries)')&&
+  sourceGrow.includes('const lastPanelHtml=new WeakMap()')&&
+  sourceGrow.includes('setPanelHtml(panel,')&&
+  sourceQuest.includes('const lastQuestHtml=new WeakMap()')&&
+  sourceQuest.includes('lastQuestHtml.get(list)===html')&&
+  tabAudit.includes('x+=parent.scrollLeft||0;y+=parent.scrollTop||0;'),
+  'V8.364 Beta live-text stability / no-op panel renderer / scroll-geometry cache missing');
 check(beta.includes('v8009-s12-v7081-account-capability-gate.js?v=8337-flat-diag-beta'),'Beta capability hotpath cache not updated');
 check(beta.includes('v8009-s1-v7042-unified-authority-bridge.js?v=8337-memo-diag-beta'),'Beta bridge hotpath cache not updated');
 check(beta.includes('v8009-extracted-v372-authoritative-header-css.css?v=8337-legacy-flow-beta'),'Beta retired header CSS cache not updated');
