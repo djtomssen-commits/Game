@@ -136,6 +136,7 @@ try{
  const qaCenter=await page.evaluate(async()=>{
   window.GROW_RELEASE_CHANNEL='beta';
   const originalFetch=window.fetch;
+  const originalTextSetter=Object.getOwnPropertyDescriptor(Node.prototype,'textContent').set;
   window.fetch=async()=>new Response('simulated failure',{status:503});
   const domProbe=document.createElement('span');
   domProbe.className='v8315-qa-text-probe';domProbe.textContent='test-only';
@@ -145,13 +146,17 @@ try{
   const result=await GL_PAGE_AUDIT.sweep({ids:['character'],dwellMs:170,
    tabDwellMs:250,includeTabs:true,extended:true});
   const restored=window.fetch!==originalFetch&&window.fetch.name!=='wrappedFetch';
+  const restoredText=Object.getOwnPropertyDescriptor(Node.prototype,'textContent').set===originalTextSetter;
   window.fetch=originalFetch;
-  return {result,restored};
+  return {result,restored,restoredText};
  });
  assert.equal(qaCenter.restored,true,'opt-in fetch instrumentation was not restored');
- assert.equal(qaCenter.result.version,'V8.370','QA Center version missing');
+ assert.equal(qaCenter.restoredText,true,'V8.371 textContent instrumentation was not restored');
+ assert.equal(qaCenter.result.version,'V8.371','QA Center version missing');
  assert.ok(qaCenter.result.qaCenter.mutationDetail?.character?.identicalText>=1,
   'V8.370 same-text childList replacement classification missing');
+ assert.ok(qaCenter.result.qaCenter.mutationDetail?.character?.textWriters?.some(x=>x.attempts>=1),
+  'V8.371 synthetic unchanged text source attribution missing');
  assert.ok(qaCenter.result.qaCenter.mutationDetail?.character?.textOnly>=1,
   'V8.370 synthetic text-only rewrite classification missing');
  assert.ok(qaCenter.result.qaCenter.network.errors>=1,'QA network errors were not collected');
