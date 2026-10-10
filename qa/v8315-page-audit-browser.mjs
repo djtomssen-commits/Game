@@ -792,6 +792,76 @@ try{
   v6107Result.counts?.kept>0,'V8.376 V6107 V459 node adoption/quality/source/Server1: '+JSON.stringify(v6107Result));
  await globalArtPage.close();
 
+
+ // V8.377: actual Server1 opt-in path, without changing the historical
+ // Server1 tests above (which deliberately have no performance feature flag).
+ const s1PerfCorePage=await browser.newPage();
+ s1PerfCorePage.on('pageerror',e=>errors.push('v8377-s1core: '+String(e.message||e)));
+ await s1PerfCorePage.setContent('<html><body><div id="invCount"></div><div id="inventory"></div></body></html>');
+ await s1PerfCorePage.evaluate(()=>{
+  window.GROW_RELEASE_CHANNEL='server1';
+  window.__GROW_SERVER1_PERFORMANCE_V8376__=true;
+  window.s={level:50,playerClass:'warrior',inventory:[
+   {slot:'head',name:'Helm',icon:'🪖',bonus:{staerke:2},price:10}
+  ],equipment:{head:{slot:'head',name:'Vorheriger Helm',bonus:{staerke:10}}}};
+  window.normalizeItem=it=>it;
+  window.itemBonus=it=>String(it?.bonus?.staerke??0);
+  window.sellValue=it=>Number(it?.price||0);
+  window.comparison=it=>'<span class="worse">'+
+   ((Number(it?.bonus?.staerke)||0)-(Number(window.s.equipment?.head?.bonus?.staerke)||0))+'</span>';
+ });
+ await s1PerfCorePage.addScriptTag({content:coreSrc.slice(coreStart,coreEnd)});
+ const s1Core=await s1PerfCorePage.evaluate(()=>{
+  renderInventory();
+  const card=document.querySelector('#inventory .inv-item');
+  const obs=new MutationObserver(()=>{});
+  const box=document.getElementById('inventory');
+  obs.observe(box,{childList:true,subtree:true,characterData:true});
+  renderInventory();
+  const stable=card===box.querySelector('.inv-item')&&obs.takeRecords().length===0;
+  s.inventory[0].bonus.staerke=7;renderInventory();
+  const changed=card!==box.querySelector('.inv-item')&&obs.takeRecords().length>0;
+  obs.disconnect();
+  return {stable,changed,metrics:window.__V8375_INVENTORY_CORE_QA__?.()};
+ });
+ assert.ok(s1Core.stable&&s1Core.changed&&s1Core.metrics?.noops>=1,
+  'V8.377 promoted original Server1 inventory: '+JSON.stringify(s1Core));
+ await s1PerfCorePage.close();
+
+ const s1PerfArtPage=await browser.newPage();
+ s1PerfArtPage.on('pageerror',e=>errors.push('v8377-s1art: '+String(e.message||e)));
+ await s1PerfArtPage.route('https://images.example.test/**',route=>route.abort());
+ await s1PerfArtPage.setContent(artMarkup,{waitUntil:'domcontentloaded'});
+ await s1PerfArtPage.evaluate(()=>{
+  window.GROW_RELEASE_CHANNEL='server1';
+  window.__GROW_SERVER1_PERFORMANCE_V8376__=true;
+  window.s={inventory:[{name:'Test Helm',art:'assets/a.webp',quality:'blue'}],equipment:{}};
+  window.v6106RealItemArt=it=>it.art;
+  window.v466ItemArtUri=it=>it.art;
+  window.renderInventory=()=>{};
+ });
+ await s1PerfArtPage.addScriptTag({path:path.join(process.cwd(),
+  'js/features/items/beta/v8009-s13-v468-single-item-art-owner.js')});
+ await s1PerfArtPage.addScriptTag({path:path.join(process.cwd(),
+  'js/features/items/beta/v8009-s4-v6107-global-item-art-authority.js')});
+ const s1Art=await s1PerfArtPage.evaluate(()=>{
+  const box=document.querySelector('.v459-inv-icon');
+  const image=box.querySelector('img');
+  const obs=new MutationObserver(()=>{});
+  obs.observe(box,{childList:true,subtree:true});
+  renderInventory();v6107PaintItemSurfaces();v6107PaintItemSurfaces();
+  const stable=image===box.querySelector('img')&&obs.takeRecords().length===0;
+  s.inventory[0].art='assets/b.webp';renderInventory();v6107PaintItemSurfaces();
+  const changed=box.querySelector('img')!==image&&
+   box.querySelector('img')?.getAttribute('src')==='assets/b.webp';
+  obs.disconnect();return {stable,changed,
+    v468:window.__V8376_V468_ART_QA__?.(),
+    v6107:window.__V8376_GLOBAL_ART_QA__?.()};
+ });
+ assert.ok(s1Art.stable&&s1Art.changed&&s1Art.v468?.kept>0&&s1Art.v6107?.kept>0,
+  'V8.377 promoted original Server1 artwork: '+JSON.stringify(s1Art));
+ await s1PerfArtPage.close();
+
  assert.ok(errors.length===0,errors.join('; '));
  fs.mkdirSync('qa/reports',{recursive:true});
  fs.writeFileSync('qa/reports/v8315-per-page-browser.json',JSON.stringify({
