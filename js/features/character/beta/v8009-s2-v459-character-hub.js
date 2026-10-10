@@ -275,7 +275,7 @@
     /* V8.371 Beta: v459 refreshes the same four labels on each tab.
        Preserve the DOM text node when its visible value is already correct. */
     const paintCount=(el,next)=>{
-      if(el&&(String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()!=='beta'||el.textContent!==next))
+      if(el&&(!(String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta'||(window.__GROW_SERVER1_PERFORMANCE_V8376__===true&&String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='server1'))||el.textContent!==next))
         el.textContent=next;
     };
     const ap=document.getElementById('v459AttrPoints');paintCount(ap,`${Math.max(0,Number(s?.points)||0)} Punkte`);
