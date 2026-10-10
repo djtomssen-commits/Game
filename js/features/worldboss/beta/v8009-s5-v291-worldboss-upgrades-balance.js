@@ -130,9 +130,9 @@ v290WorldBossModel=function(){
   m.playerBaseDamage=Math.round(
     idealDamage*(.72+.38*m.readiness)
   );
-  /* V8.378 Beta: mirror the original authoritative recovery_private fight model.
-     No entry restriction; both full gem and enchant socket progress matter. */
-  if(String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta'){
+  /* V8.378 Beta + Server1: mirror both original authoritative fight functions.
+     No entry restriction; full gem and enchant socket progress both matter. */
+  if(['beta','server1'].includes(String(window.GROW_RELEASE_CHANNEL||'').toLowerCase())){
     const pair=(Math.max(0,Math.min(6,gear.gemCount))/6)*
                (Math.max(0,Math.min(6,gear.enchantCount))/6);
     const upgradeRatio=Math.max(0,Math.min(1,gear.upgradeRatio));
