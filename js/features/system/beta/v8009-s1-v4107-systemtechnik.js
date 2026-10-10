@@ -624,7 +624,7 @@ function stopRuntimeProfiler(){
        ' px | Scroll '+Number(x.scrollY||0)+' px | Deckkraft '+String(x.opacity??'n/v')+
        ' | CSS-Animation '+String(x.animation??'n/v')+' | Transition '+String(x.transition??'n/v')+
        ' | Transform '+String(x.transform??'n/v')+' | Filter '+String(x.filter??'n/v')):[]),
-   'V8.354 MATERIALIEN VOR-EINBLENDEN: Hidden-Vorbereitungen '+visualCount('autoMaterialBarHiddenPrepares')+
+   'V8.359 MATERIALIEN VOR-EINBLENDEN: Hidden-Vorbereitungen '+visualCount('autoMaterialBarHiddenPrepares')+' | davon bereits aktiver Tab '+visualCount('materialRememberedTabFirstMountPrepares')+
      ' | erste Auto-Sockeln-Montagen '+visualCount('autoMaterialBarFirstMounts'),
    'V8.353 AUTO-SOCKELN-BUTTON (Delta im Profil): Aktualisierungsanfragen '+visualCount('autoMaterialBarRefreshCalls')+
      ' | sichtbare Änderungen '+visualCount('autoMaterialBarVisibleUpdates')+
