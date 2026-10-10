@@ -238,7 +238,8 @@ function endpointLabel(input){
  let raw='';
  try{raw=typeof input==='string'?input:input?.url||''}catch(_){}
  try{
-  const u=new URL(raw,location.href),p=u.pathname;
+  const base=/^https?:$/.test(location.protocol)?location.href:'https://qa.invalid/';
+  const u=new URL(raw,base),p=u.pathname;
   if(p.includes('/rest/v1/'))return 'REST '+(p.split('/').filter(Boolean).pop()||'resource').replace(/[^a-z0-9_-]/gi,'').slice(0,45);
   if(p.includes('/rpc/'))return 'RPC '+(p.split('/').filter(Boolean).pop()||'procedure').replace(/[^a-z0-9_-]/gi,'').slice(0,55);
   if(p.includes('/auth/v1'))return 'AUTH';
