@@ -132,6 +132,10 @@
      classes and title only when their actual desired value changes. */
   const V8369_COMPARE_QA={cardChecks:0,classWrites:0,classNoops:0,titleWrites:0,titleNoops:0};
   window.__V8369_COMPARE_QA__=()=>({...V8369_COMPARE_QA});
+  /* V8.374 Beta: count why comparison badges need reconstruction.
+     Counters are passive and scoped to the original canonical painter. */
+  const V8374_COMPARE_REBUILDS={stable:0,missingFinal:0,changedKey:0,legacyRemoved:0,missingItem:0};
+  window.__V8374_COMPARE_REBUILDS__=()=>({...V8374_COMPARE_REBUILDS});
   function paintInventoryComparisons(){
     if(paintingCompare)return;paintingCompare=true;
     const beta=String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta';
@@ -160,16 +164,25 @@
           card.classList.remove('v460-better','v460-worse','v460-same','v460-free');
           if(c)card.classList.add('v460-'+c.state);
         }
-        if(!c){card.querySelectorAll('.v460-compare-flag').forEach(x=>x.remove());delete card.dataset.v470CompareKey;return}
+        if(!c){
+          if(beta)V8374_COMPARE_REBUILDS.missingItem++;
+          card.querySelectorAll('.v460-compare-flag').forEach(x=>x.remove());delete card.dataset.v470CompareKey;return;
+        }
         const diff=c.state==='free'?'+?':c.diff==null?'—':signed(c.diff);
         const key=[c.state,c.mark,diff,c.reason,c.label].join('|');
         const final=card.querySelector('.v460-compare-flag.v470-final-compare');
         const legacy=[...card.querySelectorAll('.v460-compare-flag:not(.v470-final-compare)')];
+        if(beta)V8374_COMPARE_REBUILDS.legacyRemoved+=legacy.length;
         legacy.forEach(x=>x.remove());
         const title=`${c.label} · ${c.diff==null?'':signed(c.diff)+' · '}${c.reason}`;
         if(final&&card.dataset.v470CompareKey===key){
+          if(beta)V8374_COMPARE_REBUILDS.stable++;
           paintTitle(card,title);
           return;
+        }
+        if(beta){
+          if(!final)V8374_COMPARE_REBUILDS.missingFinal++;
+          else V8374_COMPARE_REBUILDS.changedKey++;
         }
         if(final)final.remove();
         const flag=document.createElement('div');flag.className='v460-compare-flag v470-final-compare';
