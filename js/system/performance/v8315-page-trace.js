@@ -24,7 +24,7 @@ function createPage(id){
    added:0,removed:0,mutations:0,rootReplacements:0,currentReplacements:0,
    visibilityChanges:0,layoutShifts:0,longTasks:0,longestTaskMs:0,
    frames:0,jankFrames:0,maxFrameGapMs:0,frameGaps:[],renderMarks:{},
-   navMeasuredMs:[],tabClicks:{},imageErrors:0,brokenImageHints:[]
+   navMeasuredMs:[],tabClicks:{},imageErrors:0,brokenImageHints:[],mutationTargets:{},layoutShiftTargets:{}
  });
 }
 let current='unknown',screenAt=0;
@@ -78,6 +78,27 @@ function relevantMutation(r,root){
  /* Includes direct replacement of the active root by another owner. */
  return [...r.addedNodes,...r.removedNodes].some(n=>n.nodeType===1&&(n===root||n.contains?.(root)));
 }
+/* V8.362: sanitize DOM component names. Never log text, URLs or player IDs.
+   Only constant vNNNN-namespace owners and generic fallback category. */
+function safeDomOwner(node,root){
+ for(let el=node?.nodeType===1?node:node?.parentElement;el&&el!==root;el=el.parentElement){
+  if(el.id&&/^v[0-9]{2,5}[A-Za-z][A-Za-z0-9_-]{0,36}$/.test(el.id))return '#'+el.id;
+  const cls=[...(el.classList||[])].find(c=>/^v[0-9]{2,5}-[A-Za-z][A-Za-z0-9_-]{0,36}$/.test(c));
+  if(cls)return '.'+cls;
+ }
+ return 'screen-unclassified';
+}
+function incrementTarget(targets,key,n=1){
+ if(Object.prototype.hasOwnProperty.call(targets,key)||Object.keys(targets).length<45)
+  targets[key]=(targets[key]||0)+n;
+}
+function topTargets(targets,max=6){
+ return Object.entries(targets).sort((a,b)=>b[1]-a[1]).slice(0,max).map(([component,records])=>({component,records}));
+}
+function deltaTargets(after,before,max=5){
+ const entries=Object.entries(after).map(([component,n])=>({component,records:n-(before[component]||0)})).filter(e=>e.records>0);
+ return entries.sort((a,b)=>b.records-a.records).slice(0,max);
+}
 function observeChanges(records){
  if(!state.running)return;
  const p=createPage(current),root=document.getElementById(current);
@@ -89,6 +110,7 @@ function observeChanges(records){
   if(betaAudit()&&!relevantMutation(r,root))continue;
   if(isOwn(r.target))continue;
   relevant++;
+  if(betaAudit())incrementTarget(p.mutationTargets,safeDomOwner(r.target,root));
   let added=0,removed=0;
   for(const n of r.addedNodes)if(n.nodeType===1&&!isOwn(n))added++;
   for(const n of r.removedNodes){
@@ -222,6 +244,10 @@ function setup(){
       if(e.duration>=120)log('longtask',current,{durationMs:Math.round(e.duration)});
      }else if(e.entryType==='layout-shift'&&!e.hadRecentInput){
       p.layoutShifts++;state.shiftCount++;
+      if(betaAudit())for(const source of e.sources||[]){
+       const root=document.getElementById(current);
+       if(source.node&&root?.contains(source.node))incrementTarget(p.layoutShiftTargets,safeDomOwner(source.node,root));
+      }
       if(e.value>=0.01)log('layout_shift',current,{score:Math.round(e.value*10000)/10000});
      }
     }
@@ -289,9 +315,9 @@ function report(){
   layoutShifts:p.layoutShifts,longTasks:p.longTasks,longestTaskMs:p.longestTaskMs,
   frameCount:p.frames,jankFrames:p.jankFrames,maxFrameGapMs:p.maxFrameGapMs,
   p95FrameGapMs:percentile(p.frameGaps,0.95),renderMarks:{...p.renderMarks},tabClicks:{...p.tabClicks},brokenImages:p.imageErrors,
-  ...(betaAudit()?{brokenImageHints:p.brokenImageHints||[]}:{} )
+  ...(betaAudit()?{brokenImageHints:p.brokenImageHints||[],mutationHotspots:topTargets(p.mutationTargets),layoutShiftHotspots:topTargets(p.layoutShiftTargets)}:{} )
  })).filter(p=>p.visits>0&&(SCREENS.includes(p.screen)||(betaAudit()&&LINKED_SCREENS.includes(p.screen))));
- return {version:betaAudit()?'V8.361':'V8.360',mode:'opt-in-device',server:state.channel,
+ return {version:betaAudit()?'V8.362':'V8.360',mode:'opt-in-device',server:state.channel,
   running:state.running,sweeping:state.sweeping,elapsedMs:Math.round((state.stoppedAt||clock())-state.startedAt),
   pages,totalScreens:pages.length,primaryScreens:pages.filter(p=>SCREENS.includes(p.screen)).length,
   linkedScreens:pages.filter(p=>LINKED_SCREENS.includes(p.screen)).map(p=>p.screen),slowTasks:state.slowTasks,layoutShiftEvents:state.shiftCount,
@@ -371,12 +397,15 @@ async function auditTabs(id,opts){
   if(active()!==id){state.tabSkipped.push({screen:id,tab:candidate.tab,reason:'route_changed'});break}
   const p=createPage(id),first=probeSnapshot(id);
   const old={mutations:p.mutations,added:p.added,removed:p.removed,layoutShifts:p.layoutShifts,longTasks:p.longTasks,jankFrames:p.jankFrames};
+  const ownerBefore={...p.mutationTargets},shiftBefore={...p.layoutShiftTargets};
   const errorBefore=state.log.filter(e=>e.kind==='runtime_error'&&e.screen===id).length;
   const started=clock();
   let status='tested';
   showProgress('SEITE '+id+' / TAB '+candidate.tab+' ('+(state.tabSweepDone+1)+')');
   try{candidate.button.click()}catch(_){status='click_error'}
-  await pause(status==='tested'?dwell:30);
+  if(status==='tested')await pause(Math.max(0,dwell-220));
+  const mid={mutations:p.mutations,removed:p.removed,layoutShifts:p.layoutShifts},idleOwnerBefore={...p.mutationTargets};
+  await pause(status==='tested'?Math.min(220,dwell):30);
   inspect();
   if(active()!==id){
    const dest=active();
@@ -394,7 +423,11 @@ async function auditTabs(id,opts){
   state.tabResults.push({screen:id,tab:candidate.tab,group:candidate.group,status,durationMs:Math.round(clock()-started),
    domNodesBefore:first.nodes,domNodesAfter:last.nodes,imagesBefore:first.images,imagesAfter:last.images,
    brokenImages:last.broken,mutationRecords:delta.mutations,nodesAdded:delta.added,nodesRemoved:delta.removed,
-   layoutShifts:delta.layoutShifts,longTasks:delta.longTasks,jankFrames:delta.jankFrames,javascriptErrors:errors,warnings});
+   layoutShifts:delta.layoutShifts,longTasks:delta.longTasks,jankFrames:delta.jankFrames,javascriptErrors:errors,
+   idleMutationRecords:Math.max(0,p.mutations-mid.mutations),idleNodesRemoved:Math.max(0,p.removed-mid.removed),
+   idleLayoutShifts:Math.max(0,p.layoutShifts-mid.layoutShifts),
+   mutationHotspots:deltaTargets(p.mutationTargets,ownerBefore),idleMutationHotspots:deltaTargets(p.mutationTargets,idleOwnerBefore,3),
+   layoutShiftHotspots:deltaTargets(p.layoutShiftTargets,shiftBefore),warnings});
   log('tab_probe',id,{tab:candidate.tab,status,warnings});
   if(status==='tested'||status==='linked_screen')state.tabSweepDone++;
   if(status==='unexpected_navigation'||status==='linked_screen')break;
@@ -422,6 +455,7 @@ async function sweep(options={}){
    const go=id==='caravan'&&betaAudit()&&typeof window.v7240OpenCaravan==='function'
      ?window.v7240OpenCaravan():window.v032Go(id);
    if(go&&typeof go.then==='function')await Promise.race([go,pause(3500)]);
+   if(betaAudit())inspect(); /* register async owned routes BEFORE dwell begins */
    log('sweep_route',id);
    showProgress('SEITE '+id+' ('+(state.sweepDone+1)+'/'+ids.length+')');
    await pause(dwell);
