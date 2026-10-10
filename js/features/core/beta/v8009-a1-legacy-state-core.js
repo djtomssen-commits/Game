@@ -455,14 +455,49 @@ function comparison(it){
 }
 window.unequip=sl=>{const it=s.equipment?.[sl];if(!it)return;s.inventory.push(it);s.equipment[sl]=null;persist()};
 window.sellEquipped=sl=>{const it=s.equipment?.[sl];if(!it)return;const value=sellValue(it);if(!confirm(`${it.name} für ${value} Gold verkaufen?`))return;s.gold+=value;s.equipment[sl]=null;persist()};
+/* V8.375 Beta: canonical inventory render keeps the existing item-card DOM
+   for identical player inventory/equipment. The legacy full renderer still
+   runs when actual items, their comparisons, the locale or DOM root change. */
+let v8375InventoryPaintCache=null;
+const v8375InventoryQA={fullRenders:0,noops:0,domInvalidations:0,stateInvalidations:0};
+window.__V8375_INVENTORY_CORE_QA__=()=>({...v8375InventoryQA});
+function v8375InventorySignature(){
+ try{
+  return JSON.stringify([
+   s.inventory,s.equipment,Number(s.level)||1,String(s.playerClass||''),
+   String(window.GROW_LANGUAGE||window.GROW_LANG||window.currentLanguage||'')
+  ]);
+ }catch(_){return null}
+}
 function renderInventory(){
  const count=document.querySelector('#invCount'),box=document.querySelector('#inventory');
  if(!count||!box)return;
  if(!Array.isArray(s.inventory))s.inventory=[];
- count.textContent=`${s.inventory.length} Item${s.inventory.length===1?'':'s'}`;
+ const beta=String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta';
+ const countText=`${s.inventory.length} Item${s.inventory.length===1?'':'s'}`;
+ if(!beta||count.textContent!==countText)count.textContent=countText;
+ let signature=null;
+ if(beta){
+  signature=v8375InventorySignature();
+  const grid=box.querySelector(':scope > .inventory-grid');
+  const valid=s.inventory.length
+   ?!!grid&&v8375InventoryPaintCache?.grid===grid&&
+    grid.querySelectorAll(':scope > .inv-item').length===s.inventory.length
+   :!!box.querySelector(':scope > .empty')&&!grid;
+  if(signature!==null&&signature===v8375InventoryPaintCache?.signature&&
+     v8375InventoryPaintCache?.box===box&&valid){
+    v8375InventoryQA.noops++;
+    return;
+  }
+  if(signature===v8375InventoryPaintCache?.signature)v8375InventoryQA.domInvalidations++;
+  else v8375InventoryQA.stateInvalidations++;
+  v8375InventoryQA.fullRenders++;
+ }
  box.replaceChildren();
  if(!s.inventory.length){
-   const empty=document.createElement('div');empty.className='empty';empty.textContent='Noch keine Ausrüstung gefunden.';box.appendChild(empty);return;
+   const empty=document.createElement('div');empty.className='empty';empty.textContent='Noch keine Ausrüstung gefunden.';box.appendChild(empty);
+   if(beta)v8375InventoryPaintCache={box,grid:null,signature:v8375InventorySignature()};
+   return;
  }
  const grid=document.createElement('div');grid.className='inventory-grid';box.appendChild(grid);
  s.inventory.forEach((raw,i)=>{
@@ -501,6 +536,7 @@ function renderInventory(){
      const fallback=document.createElement('div');fallback.className='inv-item';fallback.innerHTML=`<div class="item-name">🎁 Item ${i+1}</div><div class="item-bonus">Anzeige repariert – gespeicherte Daten konnten nur teilweise gelesen werden.</div>`;grid.appendChild(fallback);
    }
  });
+ if(beta)v8375InventoryPaintCache={box,grid,signature:v8375InventorySignature()};
 }
 
 function render(){regenEnergy();ensureQuests();renderClasses();renderSetPanel();renderClassAvatar();renderSkillTree();document.querySelector('#className')&&(document.querySelector('#className').textContent=classes[s.playerClass]?.name||'Noch nicht gewählt');
