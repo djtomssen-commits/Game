@@ -448,7 +448,7 @@ check(tabAudit.includes('function safeDomOwner(node,root)')&&
   tabAudit.includes('idleMutationHotspots:')&&
   tabAudit.includes('layoutShiftHotspots:')&&
   tabAudit.includes('if(betaAudit())inspect(); /* caravan becomes visible synchronously')&&
-  tabAudit.includes("return {version:betaAudit()?'V8.365':'V8.360'")&&
+  tabAudit.includes("return {version:betaAudit()?'V8.366':'V8.360'")&&
   !read('server1.html').includes('8362-tab-owner-hotspots-beta'),
   'V8.362 Beta owner and idle-churn profiler contract missing');
 check(beta.includes('v8009-s1-v4107-systemtechnik.js?v=8363-qa-center-button-beta')&&
