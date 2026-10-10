@@ -130,6 +130,17 @@ v290WorldBossModel=function(){
   m.playerBaseDamage=Math.round(
     idealDamage*(.72+.38*m.readiness)
   );
+  /* V8.378 Beta: mirror the original authoritative recovery_private fight model.
+     No entry restriction; both full gem and enchant socket progress matter. */
+  if(String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta'){
+    const pair=(Math.max(0,Math.min(6,gear.gemCount))/6)*
+               (Math.max(0,Math.min(6,gear.enchantCount))/6);
+    const upgradeRatio=Math.max(0,Math.min(1,gear.upgradeRatio));
+    const factor=.54+.70*pair*pair+.08*upgradeRatio;
+    m.playerBaseDamage=Math.round(idealDamage*(.72+.38*m.readiness)*factor);
+    m.bossHp=Math.round(idealDamage*11.5);
+    m.bossAtk=Math.round((760+level*12)*.125);
+  }
 
   /* Crit remains fully normalized for the Koloss. */
   m.critChance=.12;
