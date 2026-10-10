@@ -121,6 +121,7 @@
     }
   }
   function renderMaterials(){
+    materialMetric('materialRenderCalls');
     let p=document.getElementById('v030Materials');
     const character=document.getElementById('character');
     if(!character)return;
@@ -147,7 +148,8 @@
         materialMetric('materialGridRebuilds');
         let reason='first-render';
         if(previous){
-          if(previous.type!==activeType)reason='type-changed';
+          if(previous.html===html&&previous.grid!==grid)reason='grid-node-replaced-by-other-owner';
+          else if(previous.type!==activeType)reason='type-changed';
           else if(previous.quality!==activeQuality)reason='quality-filter-changed';
           else if(previous.count!==list.length)reason='visible-stack-count-changed';
           else reason='visible-markup-changed';
