@@ -2,6 +2,17 @@
   'use strict';
   let activeType=window.__v546MaterialType||'gem';
   let activeQuality=window.__v546MaterialQuality||'all';
+  /* V8.352 Beta: keep gem/scroll DOM nodes when the material picture and
+     all rendered content are identical. No polling or authority-state edits. */
+  const renderedGrids=new WeakMap(),renderedHeaders=new WeakMap();
+  const beta=()=>String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta';
+  function materialMetrics(){
+    if(!beta())return null;
+    return window.__V8348_VISUAL_METRICS__||(window.__V8348_VISUAL_METRICS__={});
+  }
+  function materialMetric(name,by=1){
+    const m=materialMetrics();if(m)m[name]=(Number(m[name])||0)+by;
+  }
   const esc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const qNorm=m=>{
     const raw=String(m?.quality||m?.rarity||'gray').toLowerCase();
@@ -46,17 +57,26 @@
     let h=document.getElementById('v546MaterialsHeader');
     if(!h){h=document.createElement('section');h.id='v546MaterialsHeader'}
     const total=(Array.isArray(s?.materials)?s.materials:[]).filter(m=>m&&['gem','scroll'].includes(m.type)).length;
-    h.innerHTML=`
+    const html=`
       <div class="v546-material-plaque"><span class="gem">💎</span><span>MATERIALIEN</span></div>
       <div class="v546-material-count">${total}</div>
       <div class="v546-type-tabs">
         <button type="button" class="v546-type-tab ${activeType==='gem'?'active':''}" data-type="gem"><span class="ico">💎</span><span>Edelsteine</span></button>
         <button type="button" class="v546-type-tab ${activeType==='scroll'?'active':''}" data-type="scroll"><span class="ico">📜</span><span>Schriftrollen</span></button>
       </div>`;
-    h.querySelectorAll('.v546-type-tab').forEach(btn=>btn.onclick=()=>{
-      activeType=btn.dataset.type||'gem';window.__v546MaterialType=activeType;
-      renderMaterials();
-    });
+    const keep=beta()&&renderedHeaders.get(h)===html&&!!h.querySelector('.v546-type-tabs');
+    if(keep)materialMetric('materialHeaderNoopSkips');
+    else{
+      h.innerHTML=html;
+      if(beta()){
+        renderedHeaders.set(h,html);
+        materialMetric('materialHeaderRebuilds');
+      }
+      h.querySelectorAll('.v546-type-tab').forEach(btn=>btn.onclick=()=>{
+        activeType=btn.dataset.type||'gem';window.__v546MaterialType=activeType;
+        renderMaterials();
+      });
+    }
     return h;
   }
   function filters(){
@@ -107,7 +127,7 @@
     if(!p){p=document.createElement('div');p.id='v030Materials';p.className='card';character.appendChild(p)}
     p.classList.add('v546-material-card');
     const list=filtered();
-    p.innerHTML=`
+    const html=`
       <div class="v546-material-section-head">
         <div class="ico">${activeType==='gem'?'💎':'📜'}</div>
         <div><b>${activeType==='gem'?'Edelsteine':'Schriftrollen'}</b><span>${activeType==='gem'?'Attribute dauerhaft auf einem ausgerüsteten Item verstärken.':'Einen zusätzlichen Effekt auf ein ausgerüstetes Item legen.'}</span></div>
@@ -115,12 +135,37 @@
       ${filters()}
       ${!list.length?emptyHint():''}
       <div class="v546-material-grid">${(()=>{const cards=list.map(card);const target=Math.max(6,Math.ceil(Math.max(cards.length,1)/3)*3);while(cards.length<target)cards.push(emptySlot(cards.length));return cards.join('')})()}</div>`;
-    p.querySelectorAll('.v546-quality').forEach(btn=>btn.onclick=()=>{
-      const q=btn.dataset.q||'all';activeQuality=activeQuality===q?'all':q;window.__v546MaterialQuality=activeQuality;renderMaterials();
-    });
-    p.querySelectorAll('.v546-use').forEach(btn=>btn.onclick=()=>{
-      const i=Number(btn.dataset.index);if(Number.isInteger(i)&&i>=0)window.v030UseMaterial?.(i);
-    });
+    const previous=beta()?renderedGrids.get(p):null;
+    const grid=previous?p.querySelector('.v546-material-grid'):null;
+    const keep=!!previous&&previous.html===html&&previous.grid===grid&&
+      !!p.querySelector('.v546-material-section-head')&&!!p.querySelector('.v546-quality-row');
+    if(keep)materialMetric('materialGridNoopSkips');
+    else{
+      if(beta()){
+        const oldImages=p.querySelectorAll('.v546-material-art img').length;
+        materialMetric('materialImageNodesRemovedByRebuild',oldImages);
+        materialMetric('materialGridRebuilds');
+        let reason='first-render';
+        if(previous){
+          if(previous.type!==activeType)reason='type-changed';
+          else if(previous.quality!==activeQuality)reason='quality-filter-changed';
+          else if(previous.count!==list.length)reason='visible-stack-count-changed';
+          else reason='visible-markup-changed';
+        }else if(p.querySelector('.v546-material-grid'))reason='external-grid-replaced';
+        const m=materialMetrics();
+        const trace=m.materialGridRebuildTrace||(m.materialGridRebuildTrace=[]);
+        trace.push({at:Date.now(),reason,visibleStacks:list.length,removedImages:oldImages});
+        if(trace.length>12)trace.shift();
+      }
+      p.innerHTML=html;
+      if(beta())renderedGrids.set(p,{html,grid:p.querySelector('.v546-material-grid'),type:activeType,quality:activeQuality,count:list.length});
+      p.querySelectorAll('.v546-quality').forEach(btn=>btn.onclick=()=>{
+        const q=btn.dataset.q||'all';activeQuality=activeQuality===q?'all':q;window.__v546MaterialQuality=activeQuality;renderMaterials();
+      });
+      p.querySelectorAll('.v546-use').forEach(btn=>btn.onclick=()=>{
+        const i=Number(btn.dataset.index);if(Number.isInteger(i)&&i>=0)window.v030UseMaterial?.(i);
+      });
+    }
     try{window.v480UpdateAutoBars?.()}catch(e){}
     arrange();
     try{window.v681EnhanceMaterials?.()}catch(e){}
