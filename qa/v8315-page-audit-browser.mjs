@@ -95,6 +95,10 @@ try{
  assert.ok(allTabs.tabSkipped.some(x=>x.screen==='guild'&&x.tab==='war'&&x.reason==='disabled'),'disabled tab not documented');
  assert.equal(await page.evaluate(()=>window.__qaActionClicks),0,'payment button was clicked');
  assert.ok(allTabs.tabResults.every(x=>x.durationMs>=0&&Array.isArray(x.warnings)),'tab measurements incomplete');
+ assert.ok(allTabs.tabResults.every(x=>Number.isFinite(x.idleMutationRecords)&&
+   Number.isFinite(x.idleNodesRemoved)&&Array.isArray(x.mutationHotspots)&&
+   Array.isArray(x.idleMutationHotspots)&&Array.isArray(x.layoutShiftHotspots)),
+   'V8.362 per-tab owner and idle measurements missing');
  // V8.361: a real async Caravan owner and a linked Gold Shop route
  // must not be mistaken for a missing/failed primary screen.
  await page.evaluate(()=>{
@@ -115,6 +119,7 @@ try{
  assert.equal(linked.sweepDone,2,'Caravan must be measured as an actually opened screen');
  assert.ok(linked.primaryScreens>=2,'requested primary screens must appear even when starting from another gameplay screen');
  assert.ok(linked.pages.some(x=>x.screen==='caravan'&&x.visits>0),'Caravan page visit missing');
+ assert.ok(linked.pages.find(x=>x.screen==='caravan')?.durationMs>=150,'Async Caravan dwell was lost');
  assert.ok(linked.linkedScreens.includes('goldShop'),'linked Gold Shop must be named in the report');
  assert.ok(linked.tabResults.some(x=>x.screen==='harzDealer'&&x.tab==='gold'&&x.status==='linked_screen'),
    'Gold Shop navigation is expected, not a broken Harz Dealer tab');
