@@ -73,6 +73,28 @@ try{
  });
  assert.equal(systemtechSweep.totalScreens,17,'Systemtechnik must not count as an 18th gameplay screen');
  assert.equal(systemtechSweep.sweepDone,17,'sweep from Systemtechnik must cover 17 screens');
+ // V8.360: semantic page+tab scan, nested sub-tabs, disabled and payment safety.
+ await page.evaluate(()=>{
+  window.GROW_RELEASE_CHANNEL='beta';window.__qaActionClicks=0;
+  document.getElementById('character').innerHTML=
+   '<div class="tabs"><button data-tab="inventory">Inventar</button><button data-tab="materials">Materialien</button></div>'+
+   '<div id="qaChild" hidden><div role="tablist"><button role="tab" data-subtab="gems">Edelsteine</button><button role="tab" data-subtab="scrolls">Schriftrollen</button></div></div>'+
+   '<button id="purchase" type="button">Harz-Taler kaufen</button>';
+  document.querySelector('#character [data-tab="materials"]').onclick=()=>{document.getElementById('qaChild').hidden=false};
+  document.getElementById('purchase').onclick=()=>window.__qaActionClicks++;
+  document.getElementById('guild').innerHTML=
+   '<div class="tabs"><button data-v254-tab="overview">Übersicht</button><button data-v254-tab="boss">Gildenboss</button><button data-v254-tab="war" disabled>Krieg</button></div>';
+  document.getElementById('bagDealer').innerHTML=
+   '<div role="tablist"><button role="tab" data-v8010-tab="bags">Tütchen</button><button role="tab" data-v8010-tab="machine">Automat</button></div>';
+ });
+ const allTabs=await page.evaluate(()=>GL_PAGE_AUDIT.sweep({ids:['character','guild','bagDealer'],dwellMs:170,tabDwellMs:250,includeTabs:true}));
+ assert.equal(allTabs.sweepDone,3,'tab sweep should visit all 3 requested screens');
+ assert.ok(allTabs.tabSweepDone>=8,'at least eight active semantic tabs should be tested');
+ assert.ok(allTabs.tabResults.some(x=>x.screen==='character'&&x.tab==='scrolls'),'nested scrolls tab missed');
+ assert.ok(allTabs.tabResults.some(x=>x.screen==='guild'&&x.tab==='boss'),'guild boss tab missed');
+ assert.ok(allTabs.tabSkipped.some(x=>x.screen==='guild'&&x.tab==='war'&&x.reason==='disabled'),'disabled tab not documented');
+ assert.equal(await page.evaluate(()=>window.__qaActionClicks),0,'payment button was clicked');
+ assert.ok(allTabs.tabResults.every(x=>x.durationMs>=0&&Array.isArray(x.warnings)),'tab measurements incomplete');
  // V8.319: the 30-second profiler must read the real V477 counters
  // rather than the retired __V4106_TECH__ store. Synthetic, no real account.
  const profilerStart=systemtechSource.indexOf('/* V8.319: canonical opt-in');
@@ -115,13 +137,14 @@ try{
  assert.ok(errors.length===0,errors.join('; '));
  fs.mkdirSync('qa/reports',{recursive:true});
  fs.writeFileSync('qa/reports/v8315-per-page-browser.json',JSON.stringify({
-  type:'synthetic-instrumentation-validation',world,manual,automatic:sweep
+  type:'synthetic-instrumentation-validation',world,manual,automatic:sweep,allTabs
  },null,2)+'\n');
  await page.screenshot({path:'qa/reports/v8315-per-page-browser.png',fullPage:false});
  console.log(JSON.stringify({pass:true,manualWorld:{
    currentReplacements:world.aktuellesReplacements,
    visibilityChanges:world.visibilityChanges,renderMarks:world.renderMarks
  },automatic:{screens:sweep.totalScreens,passed:sweep.sweepDone,ids:sweep.pages.map(x=>x.screen)},
+ allTabs:{screens:allTabs.sweepDone,tabs:allTabs.tabSweepDone,skipped:allTabs.tabSkipped.length},
  pageErrors:errors.length},null,2));
 }catch(e){
  console.error('V8.315 page recorder browser integration FAILED',e.stack||String(e));
