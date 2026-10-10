@@ -1385,6 +1385,11 @@ const OVERLAY_SELECTORS=[
 ];
 const ORIGINAL_TEXT=new WeakMap();
 const ORIGINAL_ATTR=new WeakMap();
+/* V8.364 Beta: remember only values actually applied by the translator.
+   The legacy text owner used to overwrite fresh renderer data with the first
+   remembered German value and repeatedly create childList mutations. */
+const LAST_APPLIED_TEXT=new WeakMap(),ORDERED_TRANSLATIONS=new Map();
+const betaI18n=()=>String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta';
 function translateText(raw,lang){
  const s=String(raw||'').trim();if(!s||lang==='de')return null;
  const dict=M[lang]||{};
@@ -1394,9 +1399,13 @@ function translateText(raw,lang){
   const m=s.match(re);
   if(m){try{return fn(...m)}catch(_){}}
  }
- const entries=Object.entries(dict)
-  .filter(([de,tr])=>de&&tr&&de.length>=4&&!/^[A-Z0-9 .:+%/-]+$/.test(de))
-  .sort((a,b)=>b[0].length-a[0].length);
+ let entries=ORDERED_TRANSLATIONS.get(lang);
+ if(!entries){
+  entries=Object.entries(dict)
+   .filter(([de,tr])=>de&&tr&&de.length>=4&&!/^[A-Z0-9 .:+%/-]+$/.test(de))
+   .sort((a,b)=>b[0].length-a[0].length);
+  if(betaI18n())ORDERED_TRANSLATIONS.set(lang,entries);
+ }
  let out=s,changed=false;
  for(const [de,tr] of entries){
   if(!out.includes(de))continue;
@@ -1412,11 +1421,26 @@ function applyRoot(root){
  while(walker.nextNode())nodes.push(walker.currentNode);
  nodes.forEach(node=>{
   if(node.parentElement&&node.parentElement.closest('script,style,input,textarea'))return;
-  if(!ORIGINAL_TEXT.has(node))ORIGINAL_TEXT.set(node,node.nodeValue||'');
+  const existing=node.nodeValue||'';
+  if(!ORIGINAL_TEXT.has(node))ORIGINAL_TEXT.set(node,existing);
+  /* V8.364 Beta: a changed raw node was painted by its real renderer, not
+     by this translation bridge. Never roll attributes, timers, stats or
+     resource labels back to the first value seen on page load. */
+  if(betaI18n()){
+   const last=LAST_APPLIED_TEXT.get(node);
+   if(last!==undefined&&last!==existing)ORIGINAL_TEXT.set(node,existing);
+  }
   const original=ORIGINAL_TEXT.get(node)||'';
-  if(lang==='de'){if(node.nodeValue!==original)node.nodeValue=original;return}
-  const v=translateText(original,lang);if(v===null){if(node.nodeValue!==original)node.nodeValue=original;return}
-  const a=(original.match(/^\s*/)||[''])[0],b=(original.match(/\s*$/)||[''])[0];node.nodeValue=a+v+b;
+  if(lang==='de'){
+   if(!betaI18n()||existing!==original){if(existing!==original)node.nodeValue=original}
+   if(betaI18n())LAST_APPLIED_TEXT.set(node,node.nodeValue||'');
+   return;
+  }
+  const v=translateText(original,lang);
+  const a=(original.match(/^\s*/)||[''])[0],b=(original.match(/\s*$/)||[''])[0];
+  const translated=v===null?original:a+v+b;
+  if(!betaI18n()||existing!==translated)node.nodeValue=translated;
+  if(betaI18n())LAST_APPLIED_TEXT.set(node,translated);
  });
  root.querySelectorAll('[aria-label],[title],[placeholder]').forEach(el=>{
   let originals=ORIGINAL_ATTR.get(el);if(!originals){originals={};ORIGINAL_ATTR.set(el,originals)}
