@@ -146,7 +146,7 @@ try{
   return {result,restored};
  });
  assert.equal(qaCenter.restored,true,'opt-in fetch instrumentation was not restored');
- assert.equal(qaCenter.result.version,'V8.368','QA Center version missing');
+ assert.equal(qaCenter.result.version,'V8.369','QA Center version missing');
  assert.ok(qaCenter.result.qaCenter.network.errors>=1,'QA network errors were not collected');
  assert.ok(qaCenter.result.qaCenter.network.endpoints.some(x=>x.endpoint==='REST qa_probe'&&x.failures>=1),
   'sanitized failed REST request missing: '+JSON.stringify(qaCenter.result.qaCenter.network.endpoints));
@@ -423,6 +423,52 @@ try{
    'V8.368 item FX stable render or enchanted level transition failed: '+JSON.stringify(itemFx));
   assert.ok(itemFx.qa?.noopRenders>=2&&itemFx.qa?.fullRenders>=3,
    'V8.368 character item FX counter mismatch: '+JSON.stringify(itemFx));
+  // V8.369: run the original V470 inventory comparison owner. An unchanged
+  // score must retain the flag AND produce zero DOM mutation records.
+  // A true comparison change or missing item must still fully update.
+  await forgePage.evaluate(()=>{
+   document.getElementById('character').innerHTML=
+    '<div id="inventory"><div class="inventory-grid"><div class="inv-item"></div></div></div>';
+   window.s.inventory=[{slot:'head',bonus:{staerke:2}}];
+   window.s.equipment={head:{slot:'head',bonus:{staerke:10}}};
+   window.v4103TotalCompareScore=it=>Number(it?.bonus?.staerke)||0;
+  });
+  await forgePage.addScriptTag({path:path.join(process.cwd(),
+   'js/features/character/beta/v8009-s4-v470-character-slot-art-canonical-comparison.js')});
+  const comparePaint=await forgePage.evaluate(()=>{
+   const card=document.querySelector('#character #inventory .inv-item');
+   const paint=window.v470PaintInventoryComparisons;
+   paint();
+   const initialWorse=card.classList.contains('v460-worse');
+   const flag=card.querySelector('.v470-final-compare');
+   const obs=new MutationObserver(()=>{});
+   obs.observe(card,{attributes:true,subtree:true,childList:true,characterData:true});
+   paint();
+   const stable=obs.takeRecords().length===0&&flag===card.querySelector('.v470-final-compare');
+   const counts=window.__V8369_COMPARE_QA__?.();
+   window.s.inventory[0].bonus.staerke=20;
+   paint();
+   const changed=card.classList.contains('v460-better')&&
+    !card.classList.contains('v460-worse')&&
+    !!card.querySelector('.v470-final-compare')&&
+    card.querySelector('.v470-final-compare')!==flag;
+   window.s.inventory[0]=null;
+   paint();
+   const cleared=!card.querySelector('.v460-compare-flag')&&
+    !card.classList.contains('v460-better')&&!card.classList.contains('v460-worse');
+   // Server1 still takes the original remove+add and repeated title path.
+   window.GROW_RELEASE_CHANNEL='server1';
+   window.s.inventory[0]={slot:'head',bonus:{staerke:2}};
+   paint();obs.takeRecords();
+   paint();
+   const server1Unchanged=obs.takeRecords().length>0;
+   obs.disconnect();window.GROW_RELEASE_CHANNEL='beta';
+   return {initialWorse,stable,changed,cleared,server1Unchanged,counts};
+  });
+  assert.ok(comparePaint.initialWorse&&comparePaint.stable&&comparePaint.changed&&
+   comparePaint.cleared&&comparePaint.server1Unchanged&&comparePaint.counts?.classNoops>0&&
+   comparePaint.counts?.titleNoops>0,
+   'V8.369 canonical Character compare no-op/update/Server1 regression: '+JSON.stringify(comparePaint));
   await forgePage.close();
 
 
