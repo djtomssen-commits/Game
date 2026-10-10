@@ -42,6 +42,8 @@ async function report(kind,severity='warn',details={},opt={}){
     }
   };
   remember(payload);
+  /* V8.383: unified read-only diagnostics, original watchdog RPC is unchanged. */
+  try{window.__GL_FLIGHT_RECORDER__?.watchdog?.({kind,severity,details})}catch(_){}
   if(!authed())return {ok:false,queued:true};
   try{
     const {data,error}=await db().rpc('v7092_report_runtime_incident',{

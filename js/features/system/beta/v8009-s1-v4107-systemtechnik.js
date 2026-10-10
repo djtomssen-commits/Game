@@ -1290,6 +1290,8 @@ try{if(typeof window.fetch==='function'&&!window.fetch.__v4107){
   finally{
    const ms=performance.now()-started;
    network.calls.push({at:Date.now(),url,ms,status,ok,retried,actionId:action?.id||0});while(network.calls.length>120)network.calls.shift();
+   /* V8.383: use existing actual fetch completion; no second transport wrapper. */
+   try{window.__GL_FLIGHT_RECORDER__?.network?.({url,ms,status,method,failed:!ok&&status===0,expectedReject:expectedRpcReject})}catch(_){};
    actionNetworkDone(action,ms,status);
    if(ms>2500){network.slow++;pushErr('SLOW_NETWORK',`${Math.round(ms)} ms · ${url}`,'warn')}
    if(status>=400&&!expectedRpcReject){network.errors++;pushErr('HTTP_'+status,url,'warn')}

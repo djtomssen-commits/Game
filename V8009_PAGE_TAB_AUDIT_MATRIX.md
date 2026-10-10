@@ -283,3 +283,6 @@ V8.287 – Aktive tägliche Verlustwache
 
 ### V8.382 – Server1 Attribut-Latenz (10.10.2026)
 - V7033-Originalowner instrumentiert nur auf Server1 maximal acht reale Attributklicks (Warteschlange, Gate, einzelner v6357_spend_attribute-RPC, Local-Mirror, gezielter Paint, Gesamt/Status). Systemtechnik erhält eigene V8.382-Karte/Kopierreport; nur Server1-HTML-Cache aktualisiert, Beta/SQL/Spielerwerte und Klassenbalance unverändert. Android-Nachtest mit 2–3 normalen Punkten offen.
+
+### V8.383 – Zentraler Beta-Flugschreiber (11.10.2026)
+- Automatisch laufender, admin-sichtbarer, einheitlicher Fehler-/Warnungsmonitor mit gruppierten JS-/Asset-/Promise-/Console-, Supabase-Transport- und vorhandenen V7092-Watchdog-Ereignissen. Bereits bestehender V4107-Fetchowner liefert Transportdaten, V8381/V8382 liefern Quest-/Attributphasen; keine zusätzlichen RPCs/Dauer-Timer/Observer oder Spielstandsänderungen. Beta früh im Head aktiviert, Server1-Entry unverändert, Android-/Beta-Abnahme offen. Fehlerbezug zu vorangegangenen Klicks ausdrücklich nur zeitlich, nicht bewiesene Ursache. QA-Guard und GitHub Action neu.
