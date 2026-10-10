@@ -746,6 +746,10 @@ try{
    const standalone=document.createElement('img');
    standalone.className='v466-item-art';standalone.src='assets/b.webp';
    box.replaceChildren(standalone);obs.takeRecords();
+   /* Legacy V468 intentionally rebuilds a relative-src image. Pause its
+      active-character repair observer before asserting the historical path:
+      otherwise the synthetic test itself can enter an endless microtask loop. */
+   document.getElementById('character').classList.remove('active');
    window.GROW_RELEASE_CHANNEL='server1';renderInventory();
    const legacy=box.querySelector('img')!==standalone&&obs.takeRecords().length>0;
    obs.disconnect();
