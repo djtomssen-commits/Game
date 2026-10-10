@@ -268,7 +268,7 @@
  const V8365_GROW_RENDER_QA={fullRenders:0,noopRenders:0,livePaints:0,tabRefreshes:0};
  window.__V8365_GROW_RENDER_QA__=()=>({...V8365_GROW_RENDER_QA});
  let lastGrowLayout=null;
- const betaGrowLayout=()=>String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta';
+ const betaGrowLayout=()=>String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta'||(window.__GROW_SERVER1_PERFORMANCE_V8376__===true&&String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='server1');
  function growLayoutSignature(){
   try{
    const z=ensure(),g=s.grow||{},weather=window.GL_WEATHER||{},boost=weather.bonus||{};
