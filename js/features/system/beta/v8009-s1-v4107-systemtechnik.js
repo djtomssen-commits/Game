@@ -616,6 +616,9 @@ function stopRuntimeProfiler(){
      ' | XP-Layout-Verschiebungen '+visualCount('xpNodeMoves')+
      ' | Ring-Slot-Neuaufbauten '+visualCount('ringRebuilds')+
      ' | Ring-Bild-Ersetzungen '+visualCount('ringImageReplaces'),
+   'V8.350 RING-ART SINGLE-OWNER: reine Roh-Icon-Wechsel bei gleicher sichtbarer Grafik '+visualCount('ringIconOnlyChangesSkipped')+
+     ' | tatsächliche Ring-Neuaufbauten '+visualCount('ringRebuilds')+
+     ' | Bild-Ersetzungen '+visualCount('ringImageReplaces'),
    'V8.349 XP-KORREKTUR: unterdrückte CSSOM-Rundungswrites '+visualCount('xpBarPrecisionSkips')+
      ' | echte/gegensätzliche Balkenbreitenänderungen '+visualCount('xpBarExternalOrRealChanges'),
    ...(isBetaProfile?(visualNow.ringRebuildTrace||[]).filter(x=>Number(x.at||0)>=runtimeProfile.startEpoch)
