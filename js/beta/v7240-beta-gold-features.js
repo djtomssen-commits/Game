@@ -201,7 +201,7 @@ async function openNebelforge(){
     then switch only the forge body into the server-owned Nebelschmied view. */
  forge.classList.remove('v7240-nebel-open');
  try{
-  if(String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta')window.v488ForgeRender?.({nebelforge:true});
+  if(String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta'||(window.__GROW_SERVER1_PERFORMANCE_V8376__===true&&String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='server1'))window.v488ForgeRender?.({nebelforge:true});
   else window.v488ForgeRender?.();
  }catch(_){}
  forge.classList.add('v7240-nebel-open');
