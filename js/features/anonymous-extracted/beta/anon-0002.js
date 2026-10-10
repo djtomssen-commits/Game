@@ -6,7 +6,7 @@ const V028_DAMPF_ICON='💨';
    canonical. This original owner runs after every base render. */
 function v028WriteText(el,value){
   if(!el)return;
-  if(!(String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta')||el.textContent!==value)el.textContent=value;
+  if(!(String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta'||(window.__GROW_SERVER1_PERFORMANCE_V8376__===true&&String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='server1'))||el.textContent!==value)el.textContent=value;
 }
 function v028ApplyDampfUI(){
   // Top resource label/value
@@ -17,7 +17,7 @@ function v028ApplyDampfUI(){
     if(stat){
       // Preserve only the resource label before the <b>
       const first=stat.childNodes[0];
-      if(first && first.nodeType===3 && (!(String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta')||first.nodeValue!=='DAMPF')) first.nodeValue='DAMPF';
+      if(first && first.nodeType===3 && (!(String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta'||(window.__GROW_SERVER1_PERFORMANCE_V8376__===true&&String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='server1'))||first.nodeValue!=='DAMPF')) first.nodeValue='DAMPF';
     }
   }
 
@@ -31,7 +31,7 @@ function v028ApplyDampfUI(){
           .replace(/⚡\s*/g,`${V028_DAMPF_ICON} `)
           .replace(/🍀\s*(\d+)/g,`${V028_DAMPF_ICON} $1`)
           .replace(/\bEnergie\b/g,'Dampf');
-        if(!(String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta')||canonical!==original)el.textContent=canonical;
+        if(!(String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta'||(window.__GROW_SERVER1_PERFORMANCE_V8376__===true&&String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='server1'))||canonical!==original)el.textContent=canonical;
       }
     });
   }
@@ -44,7 +44,7 @@ function v028ApplyDampfUI(){
   document.querySelectorAll('body *').forEach(el=>{
     if(el.children.length===0 && typeof el.textContent==='string'){
       const original=el.textContent;
-      if(!(String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta')){
+      if(!(String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta'||(window.__GROW_SERVER1_PERFORMANCE_V8376__===true&&String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='server1'))){
         el.textContent=original.replace(/\bEnergie\b/g,'Dampf');
       }else if(original.includes('Energie')){
         const canonical=original.replace(/\bEnergie\b/g,'Dampf');
