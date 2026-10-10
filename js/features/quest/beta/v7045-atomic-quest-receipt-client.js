@@ -357,6 +357,15 @@ async function claimServerQuest(){
      leave the finished Quest card visible. Any explicit server bundle/state
      below may still replace this value authoritatively. */
   ensureShape();s.quests.active=null;
+  /* V8.379 Beta only: receipt ACK and authoritative reconciliation run
+     during the existing battle animation, without granting any second reward.
+     Live/Server1 keeps its original sequential sequence pending validation. */
+  const fastClaimSync=String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta';
+  const postClaimSync=fastClaimSync?(async()=>{
+    const ackResult=await ack(runId);
+    try{await canonicalQuestState(true)}catch(_){}
+    return ackResult;
+  })():null;
   /* Presentation is never allowed to block the committed server reward. */
   try{if(typeof v311PlayFight==='function')await Promise.race([Promise.resolve(v311PlayFight(clone(q))),sleep(6000)])}catch(e){console.warn('[V7045] quest presentation',e)}
   /* A resolved claim must never resurrect the consumed run from a stale
@@ -366,7 +375,7 @@ async function claimServerQuest(){
   const oldLevel=Math.max(1,Number(before?.level)||Number(s.level)||1);
   const newLevel=Math.max(1,Number(rewardOnly.level)||oldLevel);
   applyBundle(rewardOnly);
-  try{await canonicalQuestState(true)}catch(_){}
+  if(!fastClaimSync){try{await canonicalQuestState(true)}catch(_){}}
   if(newLevel>oldLevel){
    try{
     if(typeof window.v420ShowLevelUp==='function')await Promise.resolve(window.v420ShowLevelUp(oldLevel,newLevel));
@@ -380,7 +389,7 @@ async function claimServerQuest(){
    else if(typeof v235ShowQuestReward==='function')v235ShowQuestReward(before);
    else toast('📜 Quest abgeschlossen','success',`+${Number(b.xp_awarded)||0} EXP · +${Number(b.gold_awarded)||0} Gold`);
   }catch(e){console.warn('[V7045] reward popup',e)}
-  const a=await ack(runId);
+  const a=fastClaimSync?await postClaimSync:await ack(runId);
   if(!a?.ok)toast('Belohnung serverseitig gesichert','warn','Der Spielstand wird weiter abgeglichen; es wird nichts doppelt vergeben.');
   return b;
  }finally{C.busy=false;window.__V7214_QUEST_MUTATION_BUSY__=false}
