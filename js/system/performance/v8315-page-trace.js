@@ -9,6 +9,11 @@ const SCREENS=['world','character','grow','quests','dungeon','tower','caravan','
 const LINKED_SCREENS=['goldShop'];
 const EXPECTED_TAB_ROUTES={'harzDealer:gold':'goldShop'};
 const betaAudit=()=>String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta';
+/* V8.363: additional diagnostic modes are explicitly opt-in on Beta.
+   No request bodies, query strings, headers, cookies, IDs or response data
+   are read or stored. All instrumentation is cleaned up at STOP. */
+const qaState={extended:false,requests:[],rpcStats:{},networkErrors:0,slowRequests:0,layoutChecks:0,visualChecks:0,findings:[],coverage:[]};
+let originalFetch=null,wrappedFetch=null,xhrOpen=null,xhrSend=null,wrappedXhrOpen=null,wrappedXhrSend=null;
 const state={running:false,sweeping:false,startedAt:0,stoppedAt:0,channel:'',pages:{},log:[],slowTasks:0,shiftCount:0,stopReason:'',sweepDone:0,tabResults:[],tabSkipped:[],tabSweepDone:0,tabSweepDiscovered:0,tabSweepLimited:false};
 let observer=null,perfObserver=null,ticker=0,raf=0,lastFrame=0,tracked=null,sweepCancelled=false,dock=null,watched=[];
 const clock=()=>performance.now();
@@ -227,6 +232,130 @@ function onTabClick(e){
  const p=createPage(current);p.tabClicks[tab]=(p.tabClicks[tab]||0)+1;
  log('tab_click',current,{tab});
 }
+/* Passive scope-limited network tracing. This wraps only while the opt-in
+   QA sweep runs and returns the untouched original response/promise. */
+function endpointLabel(input){
+ let raw='';
+ try{raw=typeof input==='string'?input:input?.url||''}catch(_){}
+ try{
+  const u=new URL(raw,location.href),p=u.pathname;
+  if(/\\/rest\\/v1\\//.test(p))return 'REST '+(p.split('/').filter(Boolean).pop()||'resource').replace(/[^a-z0-9_-]/gi,'').slice(0,45);
+  if(/\\/rpc\\//.test(p))return 'RPC '+(p.split('/').filter(Boolean).pop()||'procedure').replace(/[^a-z0-9_-]/gi,'').slice(0,55);
+  if(/\\/auth\\/v1/.test(p))return 'AUTH';
+  if(/\\/storage\\/v1/.test(p))return 'STORAGE';
+  return u.origin===location.origin?'LOCAL':'EXTERNAL';
+ }catch(_){return 'UNKNOWN'}
+}
+function recordNetwork(label,ms,status,failed,screen){
+ if(!state.running||!qaState.extended)return;
+ const key=label.slice(0,65),v=Math.max(0,Math.round(ms));
+ const entry={screen:SCREENS.includes(screen)||LINKED_SCREENS.includes(screen)?screen:'other',
+   endpoint:key,durationMs:v,status:Number.isFinite(status)?status:0,failed:!!failed};
+ qaState.requests.push(entry);
+ if(qaState.requests.length>220)qaState.requests.shift();
+ const st=qaState.rpcStats[key]||(qaState.rpcStats[key]={calls:0,failures:0,slow:0,longestMs:0});
+ st.calls++;st.longestMs=Math.max(st.longestMs,v);
+ if(failed||status>=400){st.failures++;qaState.networkErrors++}
+ if(v>=1200){st.slow++;qaState.slowRequests++}
+ if(failed||status>=500)log('network_problem',screen,{endpoint:key,status:status||0,durationMs:v});
+}
+function setupNetwork(){
+ if(!qaState.extended||!betaAudit())return;
+ const f=window.fetch;
+ if(typeof f==='function'){
+  originalFetch=f;
+  wrappedFetch=function(input,init){
+   const begin=clock(),label=endpointLabel(input),screen=active();
+   let promise;
+   try{promise=Reflect.apply(f,this,arguments)}catch(e){recordNetwork(label,clock()-begin,0,true,screen);throw e}
+   return Promise.resolve(promise).then(
+    response=>{recordNetwork(label,clock()-begin,Number(response?.status)||0,false,screen);return response},
+    error=>{recordNetwork(label,clock()-begin,0,true,screen);throw error}
+   );
+  };
+  window.fetch=wrappedFetch;
+ }
+ try{
+  const p=window.XMLHttpRequest?.prototype;
+  if(p?.open&&p?.send){
+   xhrOpen=p.open;xhrSend=p.send;
+   const xhrInfo=new WeakMap();
+   wrappedXhrOpen=function(method,url){
+    xhrInfo.set(this,{endpoint:endpointLabel(url)});
+    return Reflect.apply(xhrOpen,this,arguments);
+   };
+   wrappedXhrSend=function(){
+    const item=xhrInfo.get(this)||{endpoint:'XHR'},begin=clock(),screen=active();
+    let done=false;
+    const complete=()=>{
+     if(done)return;done=true;
+     this.removeEventListener('loadend',complete);
+     recordNetwork(item.endpoint,clock()-begin,Number(this.status)||0,Number(this.status)===0,screen);
+    };
+    this.addEventListener('loadend',complete);
+    try{return Reflect.apply(xhrSend,this,arguments)}
+    catch(e){complete();throw e}
+   };
+   p.open=wrappedXhrOpen;p.send=wrappedXhrSend;
+  }
+ }catch(_){/* JS fetch still collected if XHR cannot be patched */}
+}
+function teardownNetwork(){
+ if(originalFetch&&window.fetch===wrappedFetch)window.fetch=originalFetch;
+ originalFetch=null;wrappedFetch=null;
+ try{
+  const p=window.XMLHttpRequest?.prototype;
+  if(xhrOpen&&p?.open===wrappedXhrOpen)p.open=xhrOpen;
+  if(xhrSend&&p?.send===wrappedXhrSend)p.send=xhrSend;
+ }catch(_){}
+ xhrOpen=null;xhrSend=null;wrappedXhrOpen=null;wrappedXhrSend=null;
+}
+function rectSignature(root){
+ if(!qaState.extended||!root)return [];
+ const elements=[...root.querySelectorAll('button,[role="tab"],.v480-auto-btn,.v667-tab,.v8010-dealer-tabs')].slice(0,80);
+ return elements.filter(el=>el.isConnected&&el.getClientRects().length>0).slice(0,32)
+  .map((el,i)=>{
+    const r=el.getBoundingClientRect(),style=getComputedStyle(el);
+    return {k:safeDomOwner(el,root)+':'+i,
+     x:Math.round(r.x),y:Math.round(r.y),w:Math.round(r.width),h:Math.round(r.height),
+     display:style.display,opacity:Math.round(Number(style.opacity||1)*100)};
+  });
+}
+function visualDelta(a,b){
+ const lookup=new Map(a.map(x=>[x.k,x]));
+ let moved=0,appeared=0,vanished=0,opacityChanged=0;
+ for(const next of b){
+  const old=lookup.get(next.k);
+  if(!old){appeared++;continue}
+  lookup.delete(next.k);
+  if(Math.abs(next.x-old.x)>5||Math.abs(next.y-old.y)>5||
+    Math.abs(next.w-old.w)>5||Math.abs(next.h-old.h)>5)moved++;
+  if(Math.abs(next.opacity-old.opacity)>15||next.display!==old.display)opacityChanged++;
+ }
+ vanished=lookup.size;
+ return {moved,appeared,vanished,opacityChanged};
+}
+function layoutSample(root){
+ const info={clipped:0,overflow:0,examples:[]};
+ if(!qaState.extended||!root)return info;
+ qaState.layoutChecks++;
+ const viewW=document.documentElement.clientWidth||window.innerWidth||390;
+ const candidates=[root,...root.querySelectorAll('button,[role="tab"],.v667-tabs,.v254-tabs,.v514HeroTabs,.v8010-dealer-tabs,.v8184HallTabs')];
+ for(const el of candidates.slice(0,120)){
+  if(!el.isConnected||!el.getClientRects().length)continue;
+  const css=getComputedStyle(el),r=el.getBoundingClientRect();
+  if(css.visibility==='hidden'||css.display==='none')continue;
+  let kind='';
+  if((el===root||/tabs|tablist/.test(String(el.className)))&&el.clientWidth>0&&
+     el.scrollWidth>el.clientWidth+10&&css.overflowX!=='auto'&&css.overflowX!=='scroll')kind='horizontal_overflow';
+  if(el.tagName==='BUTTON'&&r.width>10&&r.left<viewW&&r.right>0&&
+     (r.left< -8||r.right>viewW+8)&&css.position!=='fixed')kind='clipped_button';
+  if(!kind)continue;
+  if(kind==='horizontal_overflow')info.overflow++;else info.clipped++;
+  if(info.examples.length<4)info.examples.push({component:safeDomOwner(el,root),kind});
+ }
+ return info;
+}
 function setup(){
  document.addEventListener('visibilitychange',onVisibility,{passive:true});
  document.addEventListener('click',onTabClick,{capture:true,passive:true});
@@ -268,6 +397,7 @@ function cleanup(){
  window.removeEventListener('growlegends:navigation-open-v7119',onNav);
  window.removeEventListener('error',onError);
  window.removeEventListener('unhandledrejection',onError);
+ teardownNetwork();
  observer?.disconnect();observer=null;
  perfObserver?.disconnect();perfObserver=null;
  for(const w of watched)w.disconnect();watched=[];
@@ -290,6 +420,8 @@ function start(){
  state.running=true;state.sweeping=false;state.startedAt=clock();
  state.stoppedAt=0;state.pages={};state.log=[];state.slowTasks=0;state.shiftCount=0;state.sweepDone=0;state.stopReason='';state.tabResults=[];state.tabSkipped=[];state.tabSweepDone=0;state.tabSweepDiscovered=0;state.tabSweepLimited=false;
  state.channel=String(window.GROW_RELEASE_CHANNEL||'unknown');
+ qaState.extended=false;qaState.requests=[];qaState.rpcStats={};qaState.networkErrors=0;qaState.slowRequests=0;
+ qaState.layoutChecks=0;qaState.visualChecks=0;qaState.findings=[];qaState.coverage=[];
  current='__init__';screenAt=state.startedAt;sweepCancelled=false;
  setup();switchScreen(active());dockUI();
  ticker=setInterval(inspect,350);
