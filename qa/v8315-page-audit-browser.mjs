@@ -131,6 +131,31 @@ try{
  await page.waitForTimeout(80);
  const scopeEnd=await page.evaluate(()=>GL_PAGE_AUDIT.stop('qa_scope').pages.find(x=>x.screen==='character').mutationRecords);
  assert.equal(scopeEnd,scopeStart,'inactive World DOM mutations must not be billed to Character');
+ // V8.363: only in an explicitly opted-in Beta QA run, trace HTTP status
+ // without ever recording query strings, request bodies or tokens.
+ const qaCenter=await page.evaluate(async()=>{
+  window.GROW_RELEASE_CHANNEL='beta';
+  const originalFetch=window.fetch;
+  window.fetch=async()=>new Response('simulated failure',{status:503});
+  document.querySelector('#character [data-tab="materials"]').addEventListener('click',
+   ()=>{void fetch('/rest/v1/qa_probe?secret=never_export')},{once:true});
+  const result=await GL_PAGE_AUDIT.sweep({ids:['character'],dwellMs:170,
+   tabDwellMs:250,includeTabs:true,extended:true});
+  const restored=window.fetch!==originalFetch&&window.fetch.name!=='wrappedFetch';
+  window.fetch=originalFetch;
+  return {result,restored};
+ });
+ assert.equal(qaCenter.restored,true,'opt-in fetch instrumentation was not restored');
+ assert.equal(qaCenter.result.version,'V8.363','QA Center version missing');
+ assert.ok(qaCenter.result.qaCenter.network.errors>=1,'QA network errors were not collected');
+ assert.ok(qaCenter.result.qaCenter.network.endpoints.some(x=>x.endpoint==='REST qa_probe'&&x.failures>=1),
+  'sanitized failed REST request missing');
+ assert.ok(qaCenter.result.qaCenter.findings.some(x=>x.code==='rpc_http_failures'),
+  'ranked network findings missing');
+ assert.ok(qaCenter.result.tabResults.every(x=>x.layoutAudit&&x.idleVisualDelta),
+  'tab layout / visual stability diagnostics missing');
+ assert.ok(!JSON.stringify(qaCenter.result).includes('never_export'),
+  'sensitive URL query was stored in QA report');
  // V8.319: the 30-second profiler must read the real V477 counters
  // rather than the retired __V4106_TECH__ store. Synthetic, no real account.
  const profilerStart=systemtechSource.indexOf('/* V8.319: canonical opt-in');
@@ -173,7 +198,7 @@ try{
  assert.ok(errors.length===0,errors.join('; '));
  fs.mkdirSync('qa/reports',{recursive:true});
  fs.writeFileSync('qa/reports/v8315-per-page-browser.json',JSON.stringify({
-  type:'synthetic-instrumentation-validation',world,manual,automatic:sweep,allTabs,linked
+  type:'synthetic-instrumentation-validation',world,manual,automatic:sweep,allTabs,linked,qaCenter:{network:qaCenter.result.qaCenter.network,counts:qaCenter.result.qaCenter.counts}
  },null,2)+'\n');
  await page.screenshot({path:'qa/reports/v8315-per-page-browser.png',fullPage:false});
  console.log(JSON.stringify({pass:true,manualWorld:{
@@ -182,6 +207,7 @@ try{
  },automatic:{screens:sweep.totalScreens,passed:sweep.sweepDone,ids:sweep.pages.map(x=>x.screen)},
  allTabs:{screens:allTabs.sweepDone,tabs:allTabs.tabSweepDone,skipped:allTabs.tabSkipped.length},
  scopedMutations:{before:scopeStart,after:scopeEnd},linked:{screens:linked.sweepDone,goldShop:linked.linkedScreens},
+ qaCenter:{networkErrors:qaCenter.result.qaCenter.network.errors,findings:qaCenter.result.qaCenter.findings.length},
  pageErrors:errors.length},null,2));
 }catch(e){
  console.error('V8.315 page recorder browser integration FAILED',e.stack||String(e));
