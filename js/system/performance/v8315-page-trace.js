@@ -239,10 +239,10 @@ function endpointLabel(input){
  try{raw=typeof input==='string'?input:input?.url||''}catch(_){}
  try{
   const u=new URL(raw,location.href),p=u.pathname;
-  if(/\\/rest\\/v1\\//.test(p))return 'REST '+(p.split('/').filter(Boolean).pop()||'resource').replace(/[^a-z0-9_-]/gi,'').slice(0,45);
-  if(/\\/rpc\\//.test(p))return 'RPC '+(p.split('/').filter(Boolean).pop()||'procedure').replace(/[^a-z0-9_-]/gi,'').slice(0,55);
-  if(/\\/auth\\/v1/.test(p))return 'AUTH';
-  if(/\\/storage\\/v1/.test(p))return 'STORAGE';
+  if(p.includes('/rest/v1/'))return 'REST '+(p.split('/').filter(Boolean).pop()||'resource').replace(/[^a-z0-9_-]/gi,'').slice(0,45);
+  if(p.includes('/rpc/'))return 'RPC '+(p.split('/').filter(Boolean).pop()||'procedure').replace(/[^a-z0-9_-]/gi,'').slice(0,55);
+  if(p.includes('/auth/v1'))return 'AUTH';
+  if(p.includes('/storage/v1'))return 'STORAGE';
   return u.origin===location.origin?'LOCAL':'EXTERNAL';
  }catch(_){return 'UNKNOWN'}
 }
