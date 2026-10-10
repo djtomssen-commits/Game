@@ -43,10 +43,12 @@ function switchScreen(id){
  log('screen_open',id);
 }
 function isOwn(node){return node?.nodeType===1&&(node.id==='v8315PerfDock'||node.closest?.('#v8315PerfDock'))}
+/* V8.362 Beta: only currently visible broken images count as visual defects;
+   invisible placeholder images remain discoverable in brokenImageHints. */
 function summaryImageErrors(root){
  let count=0;
  for(const x of root?.querySelectorAll?.('img')||[]){
-  if(x.complete&&x.naturalWidth===0)count++;
+  if(x.complete&&x.naturalWidth===0&&(!betaAudit()||(x.getClientRects?.().length&&getComputedStyle(x).visibility!=='hidden')))count++;
  }
  return count;
 }
