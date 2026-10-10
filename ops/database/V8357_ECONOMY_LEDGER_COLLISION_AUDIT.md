@@ -13,20 +13,20 @@ Date: 2026-10-10. Database: Grow Legends Supabase (project recorded in project s
 
 The original `server1.v7071_buy_grow_dealer` used constant `'grow_dealer:'||oid` as `source_ref` for every trade of the same offer, even on subsequent days. The server1 partial UNIQUE index on positive `player_gold_events(user_id,source_ref)` correctly rejected a second daily gold purchase. The production function has been replaced so all five reward ledger insert paths use `'grow_dealer:'||oid||':'||req`. Live metadata confirms five updated references, no static remnants, retained daily-claim and request-idempotency guards, no unique index removed. SQL backup: `ops/database/v8356_server1_grow_dealer_unique_trade_ledger_refs.sql`. User functional retest pending.
 
-## Finding 2 – CONFIRMED CODE DEFECT, NOT FIXED: repeated Google Play purchases (Beta AND Server 1) [HIGH]
+## Finding 2 – FIXED V8.358: repeated Google Play purchases (Beta AND Server 1) [HIGH, post-fix payment tests pending]
 
 Functions:
 - `server1.gl_credit_google_play_purchase(uuid,text,text,text,jsonb)`
 - `public.gl_credit_google_play_purchase(uuid,text,text,text,jsonb)`
 
-Both generate a **unique** `v_event_id := 'gplay_'||md5(p_purchase_token)` and protect the receipt using the shared `public.google_play_purchases` unique purchase token, but their positive Harz ledger entries use only:
+Before V8.358, both generated a **unique** `v_event_id := 'gplay_'||md5(p_purchase_token)` and protected the receipt using the shared `public.google_play_purchases` unique purchase token, but their positive Harz ledger entries used only:
 
 - Server1: `source_ref='google_play:server1:'||p_product_id`
 - Beta: `source_ref='google_play:beta:'||p_product_id`
 
 Both `player_harz_events` tables have a positive-only UNIQUE index on `(user_id,source_ref)`. Consequently, a **second distinct Google Play purchase token for the same product by the same account** can violate the UNIQUE constraint, rolling back the credit function and leaving a paid purchase needing retry/reconciliation. This is a **proven static schema/code incompatibility**, **not** evidence of a confirmed lost payment. The database shows at least one such product booking in each server and no successful duplicate per player+product reference. No user IDs, tokens, order IDs, or private purchase payloads recorded.
 
-**Proposed fix, not applied:** Change only the two trusted purchase functions' `source_ref` expressions to `'google_play:server1:'||v_event_id` and `'google_play:beta:'||v_event_id` respectively. Preserve purchase token acquisition/validation, server isolation checks, `v_event_id` idempotency and advisory lock, user/amount validation, all indexes, and all other function statements. Test duplicate-token replay returns `alreadyProcessed=true` with 0 extra Harz, while distinct tokens for the same SKU both credit exactly once. Also reconcile any verified paid tokens whose credit failed prior to the fix using existing authoritative receipts; never guess or issue blind player grants. Because this is an active real-money credit path, prioritize deployment after explicit authorization and QA verification.
+**Fix APPLIED and DB-verified on 2026-10-10:** Both authoritative functions now use token-scoped `source_ref` expressions `'google_play:server1:'||v_event_id` and `'google_play:beta:'||v_event_id` respectively. Supabase migrations `v8358_server1_google_play_token_scoped_ledger_ref` and `v8358_beta_google_play_token_scoped_ledger_ref` succeeded, and the live definitions and unchanged positive UNIQUE indexes were verified. Full notes: `ops/database/V8358_GOOGLE_PLAY_LEDGER_FIX.md`. Only this expression changed in each function. Preserve purchase token acquisition/validation, server isolation checks, `v_event_id` idempotency and advisory lock, user/amount validation, all indexes, and all other function statements. Test duplicate-token replay returns `alreadyProcessed=true` with 0 extra Harz, while distinct tokens for the same SKU both credit exactly once. Also reconcile any verified paid tokens whose credit failed prior to the fix using existing authoritative receipts; never guess or issue blind player grants. Deployment is complete following user authorization, but actual Play Billing end-to-end tests remain pending.
 
 ## Other high-priority samples with no identical reuse established
 
@@ -44,8 +44,8 @@ Both `player_harz_events` tables have a positive-only UNIQUE index on `(user_id,
 
 1. Do not remove the UNIQUE indexes to suppress errors; they detect duplicate rewards.
 2. Do not auto-credit unconfirmed purchases or manipulate live player balances during an audit.
-3. Fix Google Play purchase ledger references **in the authoritative SQL functions**, stage and verify first, then migrate both worlds separately.
+3. Google Play source references **already fixed in both authoritative SQL functions** (V8.358); next verify repeated real Play Billing purchase and same-token delivery safely.
 4. Follow up on original-user trade acceptance for V8.356 and independent test purchases for Google Play.
 5. Keep any further audit or corrective migration in `V8_CURRENT_STATUS.md` and `V8009_PAGE_TAB_AUDIT_MATRIX.md`.
 
-**Audit status:** Blüten-Dealer fixed server1, Google Play repeated-SKU vulnerability in BOTH databases awaits correction, other reviewed recurrent economy event paths no further definitively identical static source reference detected; global correctness is not certified.
+**Audit status (updated V8.358):** Blüten-Dealer fixed server1, Google Play repeated-SKU ledger references now fixed in BOTH databases and re-read/verified. Actual paid purchase replay and second valid token have not yet been tested. Other reviewed recurrent economy event paths show no further definitively identical static source reference; global correctness is not certified.
