@@ -28,7 +28,10 @@
       let lvl=el.querySelector('.v514-slot-level');
       if(!it){lvl?.remove();return}
       if(!lvl){lvl=document.createElement('div');lvl.className='v514-slot-level';el.appendChild(lvl)}
-      lvl.textContent=`Lv.${itemLevel(it)}`;
+      /* V8.371 Beta: an identical level is not a new text node. */
+      const levelText=`Lv.${itemLevel(it)}`;
+      if(String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()!=='beta'||lvl.textContent!==levelText)
+        lvl.textContent=levelText;
     });
   }
   function setData(box){
