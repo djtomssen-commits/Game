@@ -8,6 +8,17 @@ const STORE='growLegends:growTab:v6163';
 let active='grow',mountQueued=false,lastRoot=null,ordersLoadPromise=null,lastOrdersLoadAt=0;
 try{const x=sessionStorage.getItem(STORE);if(['grow','stock','genetics','orders'].includes(x))active=x}catch(_){}
 const $=(s,r=document)=>r?.querySelector?.(s)||null;
+/* V8.364 Beta: only repaint a tab body when its canonical HTML changes.
+   A returning background fetch must not remount the same cards repeatedly. */
+const betaTabs=()=>String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta';
+const lastPanelHtml=new WeakMap();
+function setPanelHtml(panel,html){
+ if(!betaTabs()||lastPanelHtml.get(panel)!==html||(!panel.hasChildNodes()&&html)){
+  panel.innerHTML=html;
+  if(betaTabs())lastPanelHtml.set(panel,html);
+ }
+}
+
 function growRoot(){return $('#grow .v492-grow')}
 function contractSnapshot(){try{return window.v6160GrowContracts?.state?.()||null}catch(_){return null}}
 function geneticsSnapshot(){try{return window.v6130QA?.()||null}catch(_){return null}}
@@ -24,36 +35,36 @@ function tabsHtml(){return `<div class="v6163-tabs" role="tablist" aria-label="G
  </div>`}
 function paintTabs(root=growRoot()){
  if(!root)return;const st=stats();
- root.querySelectorAll('[data-v6163-tab]').forEach(b=>{const on=b.dataset.v6163Tab===active;b.classList.toggle('active',on);b.setAttribute('aria-selected',on?'true':'false')});
- const ob=$('[data-v6163-tab="orders"]',root),badge=$('.v6163-badge',ob);if(badge)badge.textContent=`${Math.max(0,Math.min(6,st.done))}/6`;ob?.classList.toggle('v6163-has-ready',st.ready>0);
+ root.querySelectorAll('[data-v6163-tab]').forEach(b=>{const on=b.dataset.v6163Tab===active;b.classList.toggle('active',on);(!betaTabs()||b.getAttribute('aria-selected')!==(on?'true':'false'))&&b.setAttribute('aria-selected',on?'true':'false')});
+ const ob=$('[data-v6163-tab="orders"]',root),badge=$('.v6163-badge',ob);if(badge){const next=`${Math.max(0,Math.min(6,st.done))}/6`;if(!betaTabs()||badge.textContent!==next)badge.textContent=next;}ob?.classList.toggle('v6163-has-ready',st.ready>0);
  const gb=$('[data-v6163-tab="genetics"]',root),dot=$('.v6163-dot',gb);if(dot)dot.hidden=!st.pending;gb?.classList.toggle('v6163-has-ready',st.pending);
- const sb=$('[data-v6163-tab="stock"]',root),stockBadge=$('.v6282-stock-badge',sb);if(stockBadge)stockBadge.textContent=String(Math.max(0,Number(s?.grow?.v492?.bag?.length)||0));
+ const sb=$('[data-v6163-tab="stock"]',root),stockBadge=$('.v6282-stock-badge',sb);if(stockBadge){const next=String(Math.max(0,Number(s?.grow?.v492?.bag?.length)||0));if(!betaTabs()||stockBadge.textContent!==next)stockBadge.textContent=next;}
 }
 function markBase(root){
  [...root.children].forEach(el=>{if(el.classList.contains('v492-sign')||el.classList.contains('v6163-tabs')||el.id==='v6163Inline')return;el.classList.add('v6163-base')});
 }
 function copyGenetics(panel){
  const g=geneticsSnapshot(),html=typeof window.v6130RenderLabHtml==='function'?window.v6130RenderLabHtml():'';
- panel.innerHTML=`<div class="v6163-inline-head"><div><h3>🧬 Genetik-Labor</h3><small>KREUZEN · HYBRID ZIEHEN · ESSENZ GEWINNEN</small></div><div class="v6163-inline-meta">${g?.pending?'KREUZUNG AKTIV':`${Number(g?.totalCrosses)||0} Kreuzungen · ${Number(g?.totalEssences)||0} Essenzen`}</div></div><div class="v6163-inline-genetics">${html||'<div class="v6130-help">Genetikdaten werden geladen …</div>'}</div>`;
+ setPanelHtml(panel,`<div class="v6163-inline-head"><div><h3>🧬 Genetik-Labor</h3><small>KREUZEN · HYBRID ZIEHEN · ESSENZ GEWINNEN</small></div><div class="v6163-inline-meta">${g?.pending?'KREUZUNG AKTIV':`${Number(g?.totalCrosses)||0} Kreuzungen · ${Number(g?.totalEssences)||0} Essenzen`}</div></div><div class="v6163-inline-genetics">${html||'<div class="v6130-help">Genetikdaten werden geladen …</div>'}</div>`);
 }
 function copyOrders(panel){
  const c=contractSnapshot(),rows=Array.isArray(c?.contracts)?c.contracts:[],canonicalRows=Array.isArray(window.__V7208_GROW_ORDERS_CANONICAL__?.contracts)?window.__V7208_GROW_ORDERS_CANONICAL__.contracts:[];
  if(window.v7081UseAuthority?.('grow')&&(canonicalRows.length!==6||rows.length!==6)){
-  panel.innerHTML='<div class="v6163-inline-head"><div><h3>📋 Grow-Aufträge</h3><small>TÄGLICH NEU · SERVERAUTORITATIV</small></div><div class="v6163-inline-meta">Server …</div></div><div class="v6163-inline-orders"><div class="v6160-note">Grow-Aufträge werden vom Server geladen …</div></div>';
+  setPanelHtml(panel,'<div class="v6163-inline-head"><div><h3>📋 Grow-Aufträge</h3><small>TÄGLICH NEU · SERVERAUTORITATIV</small></div><div class="v6163-inline-meta">Server …</div></div><div class="v6163-inline-orders"><div class="v6160-note">Grow-Aufträge werden vom Server geladen …</div></div>');
   const now=Date.now();if(!ordersLoadPromise&&now-lastOrdersLoadAt>900){lastOrdersLoadAt=now;ordersLoadPromise=Promise.resolve(window.v7065GrowAuthorityRefresh?.()).catch(()=>null).finally(()=>{ordersLoadPromise=null;if(active==='orders')queueMicrotask(refreshActive)})}
   return;
  }
  const ready=rows.filter(x=>x?.completed&&!x?.claimed).length,html=typeof window.v6160RenderBoardHtml==='function'?window.v6160RenderBoardHtml():'';
- panel.innerHTML=`<div class="v6163-inline-head"><div><h3>📋 Grow-Aufträge</h3><small>TÄGLICH NEU · LEICHT BIS MEISTERAUFTRAG</small></div><div class="v6163-inline-meta">${ready?`🎁 ${ready} abholbereit`:`${rows.filter(x=>x?.completed).length}/6 geschafft`}</div></div><div class="v6163-inline-orders">${html||'<div class="v6160-note">Grow-Aufträge werden geladen …</div>'}</div>`;
+ setPanelHtml(panel,`<div class="v6163-inline-head"><div><h3>📋 Grow-Aufträge</h3><small>TÄGLICH NEU · LEICHT BIS MEISTERAUFTRAG</small></div><div class="v6163-inline-meta">${ready?`🎁 ${ready} abholbereit`:`${rows.filter(x=>x?.completed).length}/6 geschafft`}</div></div><div class="v6163-inline-orders">${html||'<div class="v6160-note">Grow-Aufträge werden geladen …</div>'}</div>`);
 }
 function copyStock(panel){
  const api=window.v6282GrowEconomy;
- panel.innerHTML=api?.render?api.render():'<div class="v6160-note">Blütenlager wird geladen …</div>';
+ setPanelHtml(panel,api?.render?api.render():'<div class="v6160-note">Blütenlager wird geladen …</div>');
 }
 function applyView(root=growRoot()){
  if(!root)return;markBase(root);paintTabs(root);const panel=$('#v6163Inline',root);if(!panel)return;
  const inGrow=active==='grow';root.querySelectorAll(':scope > .v6163-base').forEach(el=>el.classList.toggle('v6163-hidden',!inGrow));
- panel.hidden=inGrow;if(inGrow){panel.innerHTML='';return}
+ panel.hidden=inGrow;if(inGrow){setPanelHtml(panel,'');return}
  if(active==='stock')copyStock(panel);else if(active==='genetics')copyGenetics(panel);else copyOrders(panel);
  try{window.v6283GrowGuide?.refresh?.()}catch(_){}
 }
