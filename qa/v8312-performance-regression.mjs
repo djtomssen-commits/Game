@@ -89,7 +89,7 @@ check(hudJs.includes("panel.classList.remove('open','show')")&&hudJs.includes("p
 check(hudJs.includes("legacy.style.setProperty('display','none','important')"),'V8.338 must eliminate old header inline-important layout footprint');
 const tech=read('js/features/system/beta/v8009-s1-v4107-systemtechnik.js');
 check(tech.includes("const basename=match[1].split('/').pop().split(/[?#]/)[0]"),'V8.338 must resolve JSON caller cache-query URLs and SDK bundles');
-check(beta.includes('v8009-s1-v4107-systemtechnik.js?v=8349-ring-xp-cause-nav-beta'),'V8.344 profiler cache not updated');
+check(beta.includes('v8009-s1-v4107-systemtechnik.js?v=8350-icon-churn-counter-beta'),'V8.344 profiler cache not updated');
 check(tech.includes('const longShort=long.filter(x=>x.ms>=50&&x.ms<100).length')&&
   tech.includes('...longPrint.map(x=>'),'V8.340 profiler must print measured 50-99ms long tasks');
 check(tech.includes("'LONGTASK-BEREICHE: 50–99 ms '"),'V8.340 profiler must explain longtask thresholds');
@@ -251,7 +251,7 @@ check(xpLayoutOwner.includes('el.nextElementSibling!==next')&&
   'V8.348 XP layout stabilization or profiler diagnosis missing');
 check(beta.includes('v8009-a1-legacy-state-core.js?v=8348-core-xp-slot-owner-beta')&&
   beta.includes('v8009-s3-v6167-longterm-xp-balance.js?v=8349-xp-cssom-precision-beta')&&
-  beta.includes('v8009-s8-v6102-character-equipment-scroll-fix.js?v=8349-ring-rebuild-reason-beta')&&
+  beta.includes('v8009-s8-v6102-character-equipment-scroll-fix.js?v=8350-art-backed-icon-signature-beta')&&
   beta.includes('v511-character-reference-polish-js.js?v=8349-xp-node-navigation-diagnostic-beta')&&
   beta.includes('v7154-character-frame-stability.js?v=8348-hero-single-settle-beta')&&
   beta.includes('v8009-s7-v123-character-equipment-redesign.js?v=8348-rarity-classes-stable-beta'),
@@ -276,9 +276,22 @@ check(tech.includes('V8.349 XP-KORREKTUR:')&&
   tech.includes('v7154CharacterNavDiagnostics'),
   'V8.349 current profiler telemetry missing');
 check(beta.includes('v8009-s2-v4103-item-ui-consistency.js?v=8349-item-dataset-stability-beta')&&
-  beta.includes('v8009-s1-v4107-systemtechnik.js?v=8349-ring-xp-cause-nav-beta')&&
+  beta.includes('v8009-s1-v4107-systemtechnik.js?v=8350-icon-churn-counter-beta')&&
   beta.includes('v8009-s3-v6167-longterm-xp-balance.js?v=8349-xp-cssom-precision-beta'),
   'V8.349 Beta original-owner caches missing');
+
+/* V8.350: raw icon may alternate while canonical visible ring art stays
+   identical. Preserve genuine item, image and emoji-fallback changes. */
+check(slotOwner.includes('const ringVisualSnapshot=new WeakMap()')&&
+  slotOwner.includes('const visualIcon=beta&&visibleArtUri?visibleArtUri:rawIcon')&&
+  slotOwner.includes('ringIconOnlyChangesSkipped')&&
+  slotOwner.includes('icon:visualIcon,bonus:')&&
+  tech.includes('V8.350 RING-ART SINGLE-OWNER:'),
+  'V8.350 ring visible-art signature or profiler counter missing');
+check(beta.includes('v8009-s8-v6102-character-equipment-scroll-fix.js?v=8350-art-backed-icon-signature-beta')&&
+  beta.includes('v8009-s1-v4107-systemtechnik.js?v=8350-icon-churn-counter-beta')&&
+  !read('server1.html').includes('8350-art-backed-icon-signature-beta'),
+  'V8.350 Beta only cache activation missing');
 
 check(beta.includes('v8009-s12-v7081-account-capability-gate.js?v=8337-flat-diag-beta'),'Beta capability hotpath cache not updated');
 check(beta.includes('v8009-s1-v7042-unified-authority-bridge.js?v=8337-memo-diag-beta'),'Beta bridge hotpath cache not updated');
