@@ -440,6 +440,40 @@ function percentile(values,q){
  const a=[...values].sort((x,y)=>x-y);
  return Math.round((a[Math.min(a.length-1,Math.floor(a.length*q))]||0)*10)/10;
 }
+/* The QA center ranks observed failures without claiming that expected
+   tab-content rebuilds, transitions or hidden image placeholders are bugs. */
+function rankedFindings(pages){
+ const findings=[];
+ const add=(severity,screen,tab,code,detail={})=>{
+  if(findings.length<95)findings.push({severity,screen,tab:tab||null,code,...detail});
+ };
+ for(const p of pages){
+  if(p.brokenImages>0)add('medium',p.screen,null,'visible_broken_images',{count:p.brokenImages});
+  if(p.longestTaskMs>=250)add('medium',p.screen,null,'slow_main_thread',{longestMs:p.longestTaskMs});
+  if(p.rootReplacements>0)add('high',p.screen,null,'page_root_replaced',{count:p.rootReplacements});
+ }
+ for(const t of state.tabResults){
+  if(t.status==='unexpected_navigation'||t.status==='click_error')add('high',t.screen,t.tab,t.status);
+  if(t.javascriptErrors)add('high',t.screen,t.tab,'javascript_error',{count:t.javascriptErrors});
+  if(t.idleMutationRecords>=120)add('medium',t.screen,t.tab,'idle_dom_churn',
+   {records:t.idleMutationRecords,owner:t.idleMutationHotspots?.[0]?.component||'unclassified'});
+  if(t.idleVisualDelta&&(t.idleVisualDelta.moved+t.idleVisualDelta.opacityChanged>=2))
+   add('medium',t.screen,t.tab,'idle_control_geometry_changed',{detail:t.idleVisualDelta});
+  if(t.layoutAudit?.clipped)add('medium',t.screen,t.tab,'clipped_controls',{count:t.layoutAudit.clipped});
+  if(t.layoutAudit?.overflow)add('low',t.screen,t.tab,'horizontal_overflow',{count:t.layoutAudit.overflow});
+ }
+ for(const [endpoint,st]of Object.entries(qaState.rpcStats)){
+  if(st.failures)add('high','network',null,'rpc_http_failures',{endpoint,count:st.failures,requests:st.calls});
+  else if(st.slow>=3)add('low','network',null,'repeated_slow_rpc',{endpoint,count:st.slow,maxMs:st.longestMs});
+ }
+ if(state.sweeping===false&&state.stopReason==='sweep_complete'){
+  const present=new Set(pages.map(p=>p.screen));
+  for(const id of SCREENS)if(!present.has(id))add('high',id,null,'screen_not_observed');
+ }
+ if(state.tabSweepLimited)add('medium','audit',null,'tab_coverage_limit');
+ findings.sort((a,b)=>({critical:0,high:1,medium:2,low:3}[a.severity]||4)-({critical:0,high:1,medium:2,low:3}[b.severity]||4));
+ return findings;
+}
 function report(){
  const pages=Object.entries(state.pages).map(([screen,p])=>({
   screen,visits:p.visits,durationMs:Math.round(p.observedMs+(state.running&&screen===current?clock()-screenAt:0)),
@@ -451,12 +485,23 @@ function report(){
   p95FrameGapMs:percentile(p.frameGaps,0.95),renderMarks:{...p.renderMarks},tabClicks:{...p.tabClicks},brokenImages:p.imageErrors,
   ...(betaAudit()?{brokenImageHints:p.brokenImageHints||[],mutationHotspots:topTargets(p.mutationTargets),layoutShiftHotspots:topTargets(p.layoutShiftTargets)}:{} )
  })).filter(p=>p.visits>0&&(SCREENS.includes(p.screen)||(betaAudit()&&LINKED_SCREENS.includes(p.screen))));
- return {version:betaAudit()?'V8.362':'V8.360',mode:'opt-in-device',server:state.channel,
+ const findings=qaState.extended?rankedFindings(pages):[];
+ const counts={high:0,medium:0,low:0};
+ for(const f of findings)if(counts[f.severity]!==undefined)counts[f.severity]++;
+ return {version:betaAudit()?'V8.363':'V8.360',mode:'opt-in-device',server:state.channel,
   running:state.running,sweeping:state.sweeping,elapsedMs:Math.round((state.stoppedAt||clock())-state.startedAt),
   pages,totalScreens:pages.length,primaryScreens:pages.filter(p=>SCREENS.includes(p.screen)).length,
   linkedScreens:pages.filter(p=>LINKED_SCREENS.includes(p.screen)).map(p=>p.screen),slowTasks:state.slowTasks,layoutShiftEvents:state.shiftCount,
   sweepDone:state.sweepDone,stopReason:state.stopReason,tabSweepDone:state.tabSweepDone,tabSweepDiscovered:state.tabSweepDiscovered,tabSweepLimited:state.tabSweepLimited,tabResults:state.tabResults,tabSkipped:state.tabSkipped,events:state.log.slice(-220),
-  note:'UI navigation and tab timing/DOM metrics only. Visual GPU flicker, gameplay functionality, server persistence and transaction correctness are not automatically proven.'};
+  ...(qaState.extended?{qaCenter:{
+    mode:'safe-readonly-diagnostics',network:{requests:qaState.requests.length,errors:qaState.networkErrors,slow:qaState.slowRequests,
+      endpoints:Object.entries(qaState.rpcStats).sort((a,b)=>b[1].failures-a[1].failures||b[1].calls-a[1].calls).slice(0,35).map(([endpoint,value])=>({endpoint,...value}))},
+    layoutChecks:qaState.layoutChecks,visualChecks:qaState.visualChecks,
+    findings,counts,coverage:{primaryScreens:pages.filter(p=>SCREENS.includes(p.screen)).length,totalPrimary:SCREENS.length,
+      tabs:state.tabSweepDone,discoveredTabs:state.tabSweepDiscovered,skippedTabs:state.tabSkipped.length},
+    limitations:['No screenshot/GPU pixel diff','No server-side reward integrity write test','No real purchase or battle mutation','No guarantee of catching intermittent bugs']
+  }}:{}),
+  note:'Safe beta QA center: page/tab transitions, passive HTTP/RPC, DOM/layout/button geometry, ranked findings; cannot prove full gameplay, real purchases, pixel-level GPU flicker or server persistence.'};
 }
 function showResult(){
  const data=report();
@@ -480,6 +525,7 @@ function showResult(){
  if(summary)summary.textContent='Hauptseiten '+data.sweepDone+'/'+SCREENS.length+
    ' · Tabs geprüft '+(data.tabSweepDone||0)+'/'+(data.tabSweepDiscovered||0)+
    ' · Auffällige Tabs '+flagged.length+' · übersprungene Tabs '+(data.tabSkipped||[]).length+
+   (data.qaCenter?' · Befunde '+data.qaCenter.counts.high+' hoch / '+data.qaCenter.counts.medium+' mittel / '+data.qaCenter.counts.low+' gering':'')+
    (data.tabSweepLimited?' · PRÜF-LIMIT ERREICHT':'')+
    ' · Nur UI/Performance, kein Gameplay-Funktionstest.';
  el.querySelector('textarea').value=JSON.stringify(data,null,2);
@@ -539,6 +585,7 @@ async function auditTabs(id,opts){
   try{candidate.button.click()}catch(_){status='click_error'}
   if(status==='tested')await pause(Math.max(0,dwell-220));
   const mid={mutations:p.mutations,removed:p.removed,layoutShifts:p.layoutShifts},idleOwnerBefore={...p.mutationTargets};
+  const stableBefore=rectSignature(document.getElementById(id));
   await pause(status==='tested'?Math.min(220,dwell):30);
   inspect();
   if(active()!==id){
@@ -547,12 +594,18 @@ async function auditTabs(id,opts){
    if(status==='linked_screen')inspect();
   }
   const last=probeSnapshot(id),warnings=[];
+  const stableAfter=rectSignature(document.getElementById(id)),visual=visualDelta(stableBefore,stableAfter);
+  const layout=layoutSample(document.getElementById(id));
+  if(qaState.extended)qaState.visualChecks++;
   const delta={};for(const [key,value]of Object.entries(old))delta[key]=Math.max(0,p[key]-value);
   const errors=Math.max(0,state.log.filter(e=>e.kind==='runtime_error'&&e.screen===id).length-errorBefore);
   if(last.broken>first.broken)warnings.push('broken_images');
   if(delta.layoutShifts>=2)warnings.push('multiple_layout_shifts');
   if(delta.removed>=100)warnings.push('heavy_dom_rebuild');
   if(errors)warnings.push('javascript_error');
+  if(qaState.extended&&visual.moved+visual.opacityChanged>=2)warnings.push('idle_visual_instability');
+  if(qaState.extended&&layout.clipped>0)warnings.push('clipped_controls');
+  if(qaState.extended&&layout.overflow>0)warnings.push('horizontal_overflow');
   if(status!=='tested'&&status!=='linked_screen')warnings.push(status);
   state.tabResults.push({screen:id,tab:candidate.tab,group:candidate.group,status,durationMs:Math.round(clock()-started),
    domNodesBefore:first.nodes,domNodesAfter:last.nodes,imagesBefore:first.images,imagesAfter:last.images,
@@ -561,7 +614,8 @@ async function auditTabs(id,opts){
    idleMutationRecords:Math.max(0,p.mutations-mid.mutations),idleNodesRemoved:Math.max(0,p.removed-mid.removed),
    idleLayoutShifts:Math.max(0,p.layoutShifts-mid.layoutShifts),
    mutationHotspots:deltaTargets(p.mutationTargets,ownerBefore),idleMutationHotspots:deltaTargets(p.mutationTargets,idleOwnerBefore,3),
-   layoutShiftHotspots:deltaTargets(p.layoutShiftTargets,shiftBefore),warnings});
+   layoutShiftHotspots:deltaTargets(p.layoutShiftTargets,shiftBefore),
+   ...(qaState.extended?{idleVisualDelta:visual,layoutAudit:layout}:{}),warnings});
   log('tab_probe',id,{tab:candidate.tab,status,warnings});
   if(status==='tested'||status==='linked_screen')state.tabSweepDone++;
   if(status==='unexpected_navigation'||status==='linked_screen')break;
@@ -579,6 +633,8 @@ async function sweep(options={}){
  const ids=Array.isArray(options.ids)?options.ids.filter(x=>SCREENS.includes(x)):SCREENS;
  const dwell=Math.max(150,Math.min(10000,Number(options.dwellMs)||2200));
  const withTabs=options.includeTabs===true&&String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta';
+ qaState.extended=withTabs&&options.extended===true;
+ if(qaState.extended)setupNetwork();
  state.sweeping=true;sweepCancelled=false;
  const restore=active();
  for(const id of ids){
