@@ -5,7 +5,7 @@
 'use strict';
 if(window.GL_PAGE_AUDIT)return;
 const SCREENS=['world','character','grow','quests','dungeon','tower','caravan','endgame','shop','forge','harzDealer','bagDealer','pvp','guild','hall','friends','mail'];
-const state={running:false,sweeping:false,startedAt:0,stoppedAt:0,channel:'',pages:{},log:[],slowTasks:0,shiftCount:0,stopReason:'',sweepDone:0};
+const state={running:false,sweeping:false,startedAt:0,stoppedAt:0,channel:'',pages:{},log:[],slowTasks:0,shiftCount:0,stopReason:'',sweepDone:0,tabResults:[],tabSkipped:[],tabSweepDone:0,tabSweepDiscovered:0,tabSweepLimited:false};
 let observer=null,perfObserver=null,ticker=0,raf=0,lastFrame=0,tracked=null,sweepCancelled=false,dock=null,watched=[];
 const clock=()=>performance.now();
 const active=()=>{
@@ -219,7 +219,7 @@ function dockUI(){
 function start(){
  if(state.running)return false;
  state.running=true;state.sweeping=false;state.startedAt=clock();
- state.stoppedAt=0;state.pages={};state.log=[];state.slowTasks=0;state.shiftCount=0;state.sweepDone=0;state.stopReason='';
+ state.stoppedAt=0;state.pages={};state.log=[];state.slowTasks=0;state.shiftCount=0;state.sweepDone=0;state.stopReason='';state.tabResults=[];state.tabSkipped=[];state.tabSweepDone=0;state.tabSweepDiscovered=0;state.tabSweepLimited=false;
  state.channel=String(window.GROW_RELEASE_CHANNEL||'unknown');
  current='__init__';screenAt=state.startedAt;sweepCancelled=false;
  setup();switchScreen(active());dockUI();
@@ -249,11 +249,11 @@ function report(){
   frameCount:p.frames,jankFrames:p.jankFrames,maxFrameGapMs:p.maxFrameGapMs,
   p95FrameGapMs:percentile(p.frameGaps,0.95),renderMarks:{...p.renderMarks},tabClicks:{...p.tabClicks},brokenImages:p.imageErrors
  })).filter(p=>p.visits>0&&SCREENS.includes(p.screen));
- return {version:'V8.315',mode:'opt-in-device',server:state.channel,
+ return {version:'V8.360',mode:'opt-in-device',server:state.channel,
   running:state.running,sweeping:state.sweeping,elapsedMs:Math.round((state.stoppedAt||clock())-state.startedAt),
   pages,totalScreens:pages.length,slowTasks:state.slowTasks,layoutShiftEvents:state.shiftCount,
-  sweepDone:state.sweepDone,stopReason:state.stopReason,events:state.log.slice(-220),
-  note:'Only timing/DOM statistics, no player data; trace is opt-in and cannot prove server latency without network instrumentation.'};
+  sweepDone:state.sweepDone,stopReason:state.stopReason,tabSweepDone:state.tabSweepDone,tabSweepDiscovered:state.tabSweepDiscovered,tabSweepLimited:state.tabSweepLimited,tabResults:state.tabResults,tabSkipped:state.tabSkipped,events:state.log.slice(-220),
+  note:'UI navigation and tab timing/DOM metrics only. Visual GPU flicker, gameplay functionality, server persistence and transaction correctness are not automatically proven.'};
 }
 function showResult(){
  const data=report();
@@ -274,12 +274,89 @@ function showResult(){
  el.querySelector('textarea').value=JSON.stringify(data,null,2);
  return data;
 }
+/* V8.360: opt-in Beta semantic-tab sweep. NEVER click generic game actions.
+   Only buttons which explicitly declare tab semantics or occur in a genuine
+   multi-button tab navigation container. No gameplay/reward/purchase actions. */
+const tabAttr=/^data-(?:tab|grow-tab|subtab|v[0-9]{2,5}-(?:tab|subtab))$/i;
+const pause=ms=>new Promise(resolve=>setTimeout(resolve,ms));
+function semanticTab(button){
+ if(button.tagName!=='BUTTON'||button.closest('#v8315PerfDock'))return null;
+ if(button.type==='submit'||button.hasAttribute('formaction'))return null;
+ const attribute=[...button.attributes].find(a=>tabAttr.test(a.name));
+ const parent=button.parentElement;
+ const role=button.getAttribute('role')==='tab';
+ const inTabList=!!parent?.matches?.('nav,[role="tablist"],.tabs,.tabbar,.tab-nav,[class*="-tabs"],[class*="-tab-nav"]');
+ if(!attribute&&!role&&!inTabList)return null;
+ if(inTabList&&!attribute&&!role&&[...parent.children].filter(x=>x.tagName==='BUTTON').length<2)return null;
+ const raw=String(attribute?.value||button.id||'');
+ const token=/^[a-z0-9_-]{1,40}$/i.test(raw)?raw:'slot'+Math.max(0,[...parent.children].indexOf(button));
+ const group=String(parent.id||parent.className||'tabs').split(/\s+/)[0].slice(0,40).replace(/[^a-z0-9_-]/gi,'');
+ return {button,tab:token,group,key:(attribute?.name||'role-tab')+':'+token+':'+group};
+}
+function tabVisible(btn){
+ if(!btn.isConnected||btn.closest('[hidden],[inert],[aria-hidden="true"]')||!btn.getClientRects?.().length)return false;
+ const css=getComputedStyle(btn);
+ return css.display!=='none'&&css.visibility!=='hidden';
+}
+function availableTabs(id){
+ const root=document.getElementById(id);
+ return root?[...root.querySelectorAll('button')].map(semanticTab).filter(t=>t&&tabVisible(t.button)):[];
+}
+function probeSnapshot(id){
+ const root=document.getElementById(id);
+ return {nodes:root?.getElementsByTagName('*').length||0,images:root?.querySelectorAll('img').length||0,broken:summaryImageErrors(root)};
+}
+function showProgress(message){if(dock?.firstElementChild)dock.firstElementChild.textContent=message.slice(0,72)}
+async function auditTabs(id,opts){
+ const dwell=Math.max(250,Math.min(4000,Number(opts.tabDwellMs)||650));
+ const limit=Math.max(1,Math.min(50,Number(opts.maxTabsPerScreen)||32));
+ const globalLimit=Math.max(1,Math.min(220,Number(opts.maxTabsTotal)||130));
+ const seen=new Set();let count=0;
+ while(state.running&&!sweepCancelled&&count<limit&&state.tabSweepDone<globalLimit){
+  const candidate=availableTabs(id).find(t=>!seen.has(t.key));
+  if(!candidate)break;
+  seen.add(candidate.key);count++;state.tabSweepDiscovered++;
+  if(candidate.button.disabled){state.tabSkipped.push({screen:id,tab:candidate.tab,reason:'disabled'});continue}
+  if(active()!==id){state.tabSkipped.push({screen:id,tab:candidate.tab,reason:'route_changed'});break}
+  const p=createPage(id),first=probeSnapshot(id);
+  const old={mutations:p.mutations,added:p.added,removed:p.removed,layoutShifts:p.layoutShifts,longTasks:p.longTasks,jankFrames:p.jankFrames};
+  const errorBefore=state.log.filter(e=>e.kind==='runtime_error'&&e.screen===id).length;
+  const started=clock();
+  let status='tested';
+  showProgress('SEITE '+id+' / TAB '+candidate.tab+' ('+(state.tabSweepDone+1)+')');
+  try{candidate.button.click()}catch(_){status='click_error'}
+  await pause(status==='tested'?dwell:30);
+  inspect();
+  if(active()!==id)status='unexpected_navigation';
+  const last=probeSnapshot(id),warnings=[];
+  const delta={};for(const [key,value]of Object.entries(old))delta[key]=Math.max(0,p[key]-value);
+  const errors=Math.max(0,state.log.filter(e=>e.kind==='runtime_error'&&e.screen===id).length-errorBefore);
+  if(last.broken>first.broken)warnings.push('broken_images');
+  if(delta.layoutShifts>=2)warnings.push('multiple_layout_shifts');
+  if(delta.removed>=100)warnings.push('heavy_dom_rebuild');
+  if(errors)warnings.push('javascript_error');
+  if(status!=='tested')warnings.push(status);
+  state.tabResults.push({screen:id,tab:candidate.tab,group:candidate.group,status,durationMs:Math.round(clock()-started),
+   domNodesBefore:first.nodes,domNodesAfter:last.nodes,imagesBefore:first.images,imagesAfter:last.images,
+   brokenImages:last.broken,mutationRecords:delta.mutations,nodesAdded:delta.added,nodesRemoved:delta.removed,
+   layoutShifts:delta.layoutShifts,longTasks:delta.longTasks,jankFrames:delta.jankFrames,javascriptErrors:errors,warnings});
+  log('tab_probe',id,{tab:candidate.tab,status,warnings});
+  if(status==='tested')state.tabSweepDone++;
+  else if(status==='unexpected_navigation')break;
+ }
+ if(count>=limit||state.tabSweepDone>=globalLimit)state.tabSweepLimited=true;
+ for(const candidate of availableTabs(id)){
+  if(!seen.has(candidate.key)&&!state.tabSkipped.some(e=>e.screen===id&&e.tab===candidate.tab))
+   state.tabSkipped.push({screen:id,tab:candidate.tab,reason:'unvisited'});
+ }
+}
 async function sweep(options={}){
  if(!state.running)start();
  if(state.sweeping)return false;
  if(typeof window.v032Go!=='function')throw new Error('Navigation ist noch nicht geladen');
  const ids=Array.isArray(options.ids)?options.ids.filter(x=>SCREENS.includes(x)):SCREENS;
  const dwell=Math.max(150,Math.min(10000,Number(options.dwellMs)||2200));
+ const withTabs=options.includeTabs===true&&String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta';
  state.sweeping=true;sweepCancelled=false;
  const restore=active();
  for(const id of ids){
@@ -288,10 +365,14 @@ async function sweep(options={}){
   try{
    window.v032Go(id);
    log('sweep_route',id);
-   await new Promise(resolve=>setTimeout(resolve,dwell));
+   showProgress('SEITE '+id+' ('+(state.sweepDone+1)+'/'+ids.length+')');
+   await pause(dwell);
    const p=createPage(id);p.navMeasuredMs.push(Math.round(clock()-t));
    if(active()!==id)log('route_inactive',id,{actual:active()});
-   else state.sweepDone++;
+   else{
+     state.sweepDone++;
+     if(withTabs&&!sweepCancelled)await auditTabs(id,options);
+   }
   }catch(_){log('route_error',id);}
  }
  if(!sweepCancelled&&state.running&&SCREENS.includes(restore)){
