@@ -14,7 +14,11 @@ assert.equal(a.promotedSharedAssets.length,108);
 assert.equal(a.excludedProtectedAssets.length,32);
 const escaped=s=>s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
 for(const p of a.promotedSharedAssets){
- const version=p==='js/features/i18n/v8144-i18n-gameplay.js'?'8396-server1-i18n-tdz':
+ const version=p==='js/features/grow/beta/v8009-s1-v492-growroom2.js'?'8397-grow-confirmed-server1':
+  p==='js/features/quest/beta/v7045-atomic-quest-receipt-client.js'?'8397-quest-confirmed-server1':
+  p==='js/features/dungeon/beta/v8009-s1-v7051-atomic-dungeon-receipt-client.js'?'8397-dungeon-confirmed-server1':
+  p==='js/features/system/beta/v8009-s7-v7092-runtime-watchdog.js'?'8397-replay-aware-server1':
+  p==='js/features/i18n/v8144-i18n-gameplay.js'?'8396-server1-i18n-tdz':
   p==='js/features/push/beta/v8009-s1-gl-push-scheduling-v2.js'?'8396-server1-push-serialize':
   '8395-server1-sync';
  assert.ok(server1.includes(p+'?v='+version),'Promoted source missing: '+p);
@@ -27,7 +31,7 @@ assert.ok(server1.includes('js/features/account/server1-release-channel.js'),'Se
 assert.ok(server1.includes('js/features/admin/beta/v8243-admin-bot-management.js'),'Server1 bot manager remains');
 assert.ok(!beta.includes('v8395-server1-sync'),'Beta entry is not modified by promotion');
 assert.ok(server1.includes('css/features/hall/beta/v8009-s1-v6145-hall-pagination-css.css?v=8395-server1-podium'));
-assert.ok(server1.includes('v8383-unified-flight-recorder.js?v=8395-server1-flight'));
+assert.ok(server1.includes('v8383-unified-flight-recorder.js?v=8397-flight-recorder-server1'));
 assert.equal((sql.match(/CREATE OR REPLACE FUNCTION/g)||[]).length,2,'Only two existing Server1 functions promoted');
 assert.ok(sql.includes('CREATE OR REPLACE FUNCTION server1.v8388_grow_rewarded_apply_verified'));
 assert.ok(sql.includes('CREATE OR REPLACE FUNCTION server1.v6358_care_plant'));
