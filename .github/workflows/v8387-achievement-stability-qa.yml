@@ -1,0 +1,22 @@
+name: V8.387 Achievement Stability QA
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'js/features/book/beta/v8009-s2-v106-illegal-book.js'
+      - 'qa/v8387-authoritative-achievement-stability.mjs'
+      - 'beta.html'
+      - 'server1.html'
+      - '.github/workflows/v8387-achievement-stability-qa.yml'
+  workflow_dispatch:
+jobs:
+  achievement-stability:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify achievement source of truth and server isolation
+        run: node qa/v8387-authoritative-achievement-stability.mjs

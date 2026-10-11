@@ -74,11 +74,25 @@ function v106CheckAchievements(show=true){
   return changed;
 }
 
-/* Every completed achievement permanently contributes +1 to the class main attribute. */
+/* Every completed achievement permanently contributes +1 to the class main attribute.
+   V8.387 Beta: authoritative V7080 serverDone survives temporary local
+   s.v106Achievements replacement by background hydration. Never mutate rewards. */
+function v8387AttributeAchievementCount(){
+  if(String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()!=='beta')return v106CompletedCount();
+  try{
+    const d=window.v7080AchievementDiagnostics?.();
+    const currentUid=String((typeof v073User!=='undefined'&&v073User?.id)||window.v073User?.id||'');
+    if(currentUid && d?.ready && d?.enforce &&
+       String(d.serverUid||'')===currentUid &&
+       d.serverDone && typeof d.serverDone==='object'&&!Array.isArray(d.serverDone))
+      return Object.keys(d.serverDone).length;
+  }catch(_){}
+  return v106CompletedCount();
+}
 const v106OldTotalAttr=totalAttr;
 totalAttr=function(k){
   let value=v106OldTotalAttr(k);
-  if(k===v106MainAttrKey())value+=v106CompletedCount();
+  if(k===v106MainAttrKey())value+=v8387AttributeAchievementCount();
   return value;
 };
 
