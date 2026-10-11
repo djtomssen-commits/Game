@@ -66,7 +66,9 @@ function begin(name,meta={},opt={}){
   const id=++state.seq,start=now();
   /* V8.385 Beta: a finished combat replay is not a stuck server request.
      Measure the existing phase calls; do not change combat, RPCs or rewards. */
-  const phaseAware=String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta'&&
+  /* Both released worlds run animated server-verified replays. The replay is
+     not RPC slowness; genuine stalls after 30 seconds still generate an error. */
+  const phaseAware=['beta','server1'].includes(String(window.GROW_RELEASE_CHANNEL||'').toLowerCase())&&
     ['tower_action','tower_fight','dungeon_fight'].includes(String(name||''));
   const inReplay=r=>phaseAware&&(r.phase==='replay'||r.phase==='door_open');
   const rec={
