@@ -1391,7 +1391,10 @@ const ORIGINAL_ATTR=new WeakMap();
    The legacy text owner used to overwrite fresh renderer data with the first
    remembered German value and repeatedly create childList mutations. */
 const LAST_APPLIED_TEXT=new WeakMap(),ORDERED_TRANSLATIONS=new Map();
-const betaI18n=()=>String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta';
+/* V8.396: the proven V8.364 non-destructive translation path is now the
+   default for both released game worlds; it also caches ordered dictionary
+   entries instead of sorting them afresh on every translated render. */
+const betaI18n=()=>['beta','server1'].includes(String(window.GROW_RELEASE_CHANNEL||'').toLowerCase());
 function translateText(raw,lang){
  const s=String(raw||'').trim();if(!s||lang==='de')return null;
  const dict=M[lang]||{};
