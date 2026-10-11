@@ -5,6 +5,15 @@ window.__V7065_GROW_FAIL_CLOSED__=true;
 const VERSION='V7.091';
 const D={enabled:false,ready:false,busy:false,lastError:'',checks:0,actions:0,lastAction:null};
 let chain=Promise.resolve(), gatePromise=null, refreshFlight=null, pollCount=0, authorityUid='';
+/* V8.393 Beta: a same-account re-login may replace s.grow while the previous
+   server READY flag still references that uid. Bind readiness to the actual
+   authoritative state object; do not treat an empty login shell as real data. */
+let v8393GrowRef=null,v8393SessionEpoch=0;
+const v8393Beta=()=>String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta';
+const v8393SnapshotCurrent=()=>{
+ if(!v8393Beta())return true;
+ try{return !!v8393GrowRef&&v8393GrowRef===s?.grow}catch(_){return false}
+};
 const db=()=>{try{return (typeof v073Db!=='undefined'&&v073Db)||null}catch(_){return null}};
 const uid=()=>{try{return String((typeof v073User!=='undefined'&&v073User?.id)||'')}catch(_){return ''}};
 const row=d=>Array.isArray(d)?d[0]:d;
@@ -86,11 +95,23 @@ async function refresh(){
  const requestUid=uid();
  if(!requestUid)throw new Error('SERVER_NOT_READY');
  if(refreshFlight)return refreshFlight;
+ const epoch=v8393SessionEpoch;
+ const growAtStart=(()=>{try{return s?.grow||null}catch(_){return null}})();
  refreshFlight=(async()=>{
   const r=await rpc('v7064_grow_state');
   if(!r?.ok)throw new Error(String(r?.reason||'GROW_STATE_FAILED'));
   if(uid()!==requestUid)throw new Error('ACCOUNT_CHANGED_DURING_GROW_REFRESH');
-  apply(r);authorityUid=requestUid;D.enabled=true;D.ready=true;D.lastError='';window.__V7065_GROW_SERVER_MODE__=true;window.__V7064_GROW_SERVER_MODE__=true;
+  /* Logout or a replaced same-uid shell invalidates any in-flight reply. */
+  if(v8393Beta()&&(epoch!==v8393SessionEpoch||
+       (growAtStart&&s?.grow!==growAtStart)))
+   throw new Error('GROW_SESSION_CHANGED_DURING_REFRESH');
+  if(v8393Beta()&&(!r.grow_state||!Array.isArray(r.plants)||
+       ![r.grow_state.room_level,r.grow_state.lamp_level,r.grow_state.pots_level]
+         .every(n=>Number.isInteger(Number(n))&&Number(n)>=0)))
+   throw new Error('INCOMPLETE_CANONICAL_GROW_SNAPSHOT');
+  apply(r);
+  if(v8393Beta())v8393GrowRef=s.grow;
+  authorityUid=requestUid;D.enabled=true;D.ready=true;D.lastError='';window.__V7065_GROW_SERVER_MODE__=true;window.__V7064_GROW_SERVER_MODE__=true;
   return r;
  })();
  try{return await refreshFlight}finally{refreshFlight=null}
@@ -99,8 +120,10 @@ async function gate(force=false){
   if(!window.v7081UseAuthority?.('grow')){D.enabled=false;D.ready=true;window.__V7065_GROW_SERVER_MODE__=false;window.__V7064_GROW_SERVER_MODE__=false;return false;}
  const currentUid=uid();
  if(D.enabled&&authorityUid&&authorityUid!==currentUid){D.enabled=false;D.ready=false;authorityUid='';window.__V7065_GROW_SERVER_MODE__=false;window.__V7064_GROW_SERVER_MODE__=false;}
- if(D.enabled&&D.ready&&authorityUid===currentUid&&!force)return true;
+ if(D.enabled&&D.ready&&authorityUid===currentUid&&!force&&v8393SnapshotCurrent())return true;
  if(gatePromise)return gatePromise;
+ /* A forced account-ready refresh must never show the previous ready state. */
+ if(v8393Beta())D.ready=false;
  gatePromise=(async()=>{
    D.checks++;
    try{await refresh();return true}
@@ -236,6 +259,14 @@ const poll=setInterval(async()=>{
  if(window.v7081UseAuthority?.('grow')&&uid()&&db())await gate(false);
  if(D.enabled||(!window.v7081UseAuthority?.('grow')&&window.v7081CapabilitiesDiagnostics?.()?.ready)||pollCount>=4)clearInterval(poll);
 },5000);
+/* Retire the previous authenticated Grow snapshot, even if the next login
+   uses exactly the same uid. Never modify any persisted player state. */
+window.addEventListener('growlegends:account-transition-reset',()=>{
+ if(!v8393Beta())return;
+ ++v8393SessionEpoch;v8393GrowRef=null;D.enabled=false;D.ready=false;
+ authorityUid='';window.__V7065_GROW_SERVER_MODE__=false;
+ window.__V7064_GROW_SERVER_MODE__=false;
+},{passive:true});
 window.addEventListener('growlegends:account-ready',()=>{if(!window.v7206StartupBusy?.())void gate(true)},{passive:true});
 window.addEventListener('growlegends:authority-capabilities-ready',e=>{
  const id=uid(),eventUid=String(e?.detail?.uid||''),growEnabled=!!e?.detail?.caps?.grow;
@@ -268,5 +299,9 @@ window.v8194DonateGuildBloom=async bloomId=>{
  return act('v8194_donate_guild_bloom',{p_bloom_id:bid},'Gilden-Gewächshaus','');
 };
 window.v7065GrowAuthorityRefresh=async()=>{try{return await refresh()}catch(e){D.lastError=String(e?.message||e);return null}};
-window.v7065GrowAuthorityDiagnostics=()=>clone({version:VERSION,...D,uid:!!uid(),uidValue:uid(),authorityUid,db:!!db(),serverMode:!!window.__V7065_GROW_SERVER_MODE__});
+window.v7065GrowAuthorityDiagnostics=()=>clone({version:VERSION,...D,
+ ready:D.ready&&v8393SnapshotCurrent(),
+ snapshotCurrent:v8393SnapshotCurrent(),
+ uid:!!uid(),uidValue:uid(),authorityUid,db:!!db(),
+ serverMode:!!window.__V7065_GROW_SERVER_MODE__});
 })();
