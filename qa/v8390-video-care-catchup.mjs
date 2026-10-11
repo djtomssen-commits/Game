@@ -20,7 +20,7 @@ assert.ok(sql.includes("where user_id=u for update"),'Original account row lock 
 assert.ok(sql.includes("harvested_at is null"),'Never care after harvest');
 assert.ok(sql.includes('BEGIN;')&&sql.trimEnd().endsWith('COMMIT;'),'Transactional deployment');
 assert.ok(!sql.includes('UPDATE public.player_seed_state SET care='),'No mass user data modification');
-assert.equal(beta.split('v492-growroom2.js?v=8391-grow-video-15-percent-beta').length-1,1);
+assert.equal(beta.split('v492-growroom2.js?v=8393-relogin-canonical-beta').length-1,1);
 assert.equal(beta.split('v4114-grow-care-authority.js?v=8390-video-care-catchup-beta').length-1,1);
 assert.ok(!server1.includes('8390-video-care-catchup-beta'),'Do not activate on Server1 HTML');
 assert.ok(grow.includes('Pflege nachholen (')&&care.includes('Pflege nachholen ('),'Visible catchup label');
