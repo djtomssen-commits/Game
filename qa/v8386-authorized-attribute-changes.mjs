@@ -27,7 +27,7 @@ function buildApp(channel){
  const classes={grower:{bonus:{staerke:4,ausdauer:3}}};
  const box={dataset:{},innerHTML:'',querySelectorAll:()=>[]};
  const pLabel={textContent:''},active={classList:{contains:x=>x==='active'}};
- const document={getElementById:id=>({character:active,attrs:box,v459AttrPoints:pLabel})[id]||null};
+ const document={getElementById:id=>({character:active,attrs:box,v459AttrPoints:pLabel})[id]||null,querySelectorAll:()=>[]};
  const window={GROW_RELEASE_CHANNEL:channel,GROW_LEGENDS_VERSION:{short:'V8.386'},v073User:{id:'local-test'},
   __GL_RUNTIME_WATCHDOG__:{report:(...args)=>reports.push(args)}};
  const totalAttr=k=>s.attrs[k]+(classes.grower.bonus[k]||0)+Object.values(s.equipment)
