@@ -298,3 +298,6 @@ V8.287 – Aktive tägliche Verlustwache
 
 ### V8.387 – Stabile Erfolge im Hauptattribut (11.10.2026)
 - Android Beta 185 s: Stärke 452→516 bei Basis 115, Equipment 333,28, Klasse 4, Set 0 und ohne Ausrüstungsänderungen. Fehlende 64 sind der V106-Erfolgszuschlag; keine v6357-RPCs im Sekundenfenster. Der V106-Originalcalculator benutzt in Beta bei bestätigtem gleichem Account den stabilen V7080-serverDone-Snapshot statt transienter lokaler done-Daten. Keine Vergabe-/SQL-/Balanceänderung; auf Server1 weiterhin Legacy-Pfad. Beta-Script Cache und synthetische QA neu, echter Android-Nachtest offen; separater 912-ms-Longtask auf World bleibt offen.
+
+### V8.388 – Growroom Rewarded-Video pro Pflanzeninstanz (11.10.2026)
+- Beta-only: Im originalen V492-Growroom-Plant-Card direkt **unter** der V4114-Slot-Pflege, mit 0/3–3/3 Anzeige. Belohnung ausschließlich nach Native AdMob Rewarded + bereits vorhandener Google-signierter Supabase-SSV (v8388) und erneuter kanonischer Grow-RPC-Bestätigung; je Video 25 % ursprüngliche Wachstumszeit, maximal drei pro `srv_grow_<32hex>`-Pflanze. Zeit/Zähler ausschließlich serverseitig, kein lokaler Skip. Pflege-Owner-CSS vergrößert Slots nach unten. Beta-Script/CSS-Caches aktualisiert, Server1-HTML unverändert, Android-Test noch offen. Neuer statischer QA-Workflow.

@@ -1,0 +1,23 @@
+name: V8.388 Grow Rewarded Videos QA
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'js/features/grow/beta/v8009-s1-v492-growroom2.js'
+      - 'v8009-extracted-v4114-grow-care-css.css'
+      - 'qa/v8388-grow-video-skip.mjs'
+      - 'beta.html'
+      - 'server1.html'
+      - '.github/workflows/v8388-grow-video-qa.yml'
+  workflow_dispatch:
+jobs:
+  grow-video:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check signed per-plant reward, growroom button and server isolation
+        run: node qa/v8388-grow-video-skip.mjs

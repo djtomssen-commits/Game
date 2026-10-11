@@ -246,6 +246,73 @@
   return `<div class="v497-plant-art ${detail?'detail':''} v497-stage-${stageKey} v497-seed-${esc(seed)} ${mut?`v497-mut-${esc(mut)}`:''}"><img src="${V497_PLANT_ART[stageKey]}" alt="${esc(SEEDS[seed]?.name||'Pflanze')} · ${stageKey}"></div>`
  }
  function seedCard(id,d){const z=ensure(),stock=s.grow.seeds[id]||0,sel=z.selectedSeed===id,known=!!z.discovered[id],buy=d.buy>0;return `<div class="v492-seed v492-r-${d.rarity} ${sel?'selected':''} ${!known&&!stock?'locked':''}" data-v492-seed="${id}"><span class="stock">×${stock}</span><div class="seedico">${d.icon}</div><b>${esc(d.name)}</b><small>${RARITY_LABEL[d.rarity]} · ${Math.round(d.growMs/60000)} Min.</small><small class="src">${esc(d.source)}</small><small>${affinityStars(d)} ${d.affinity==='all'?'Flexibel':className(d.affinity)}</small>${buy?`<button class="btn secondary buy" data-v492-buy="${id}">Kaufen · ${fmt(d.buy)} G</button>`:''}</div>`}
+
+ /* V8.388: Beta-only per-plant Rewarded AdMob. Only Google's SSV may
+    advance the server plant. No local duration/start/save mutation. */
+ const v8388Pending=new Map();
+ const v8388Ad=()=>{try{return window.Capacitor?.Plugins?.GrowLegendsAds||null}catch(_){return null}};
+ const v8388Used=p=>Math.max(0,Math.min(3,Math.floor(Number(p?.v8388VideoUses)||0)));
+ const v8388Find=id=>(s?.grow?.plants||[]).find(p=>p&&String(p.uid)===String(id))||null;
+ const v8388Beta=()=>String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta';
+ const v8388Valid=id=>/^srv_grow_[0-9a-f]{32}$/.test(String(id||''));
+ function v8388VideoHtml(p,x){
+  if(!v8388Beta()||!v8388Valid(p.uid))return '';
+  const uses=v8388Used(p),pending=v8388Pending.has(p.uid),ready=x>=1;
+  const supported=typeof v8388Ad()?.showRewarded==='function';
+  const disabled=uses>=3||pending||ready||!supported;
+  const title=uses>=3?'✓ Video-Bonus 3/3':ready?'✓ Pflanze erntereif':pending?'🎬 Video wird bestätigt …':!supported?'🎬 Video nur in der App':'🎬 Pflanzenzeit −25 %';
+  const caption=uses>=3?'Alle 3 Videos genutzt':ready?'Kein Zeitbonus mehr':pending?'Google bestätigt das Video':uses+'/3 Videos genutzt';
+  const props=disabled?'aria-disabled="true"':`role="button" tabindex="0" data-v8388-video="${esc(p.uid)}"`;
+  return `<span class="v8388-grow-skip ${disabled?'disabled':''}" ${props} aria-label="${title} · ${caption}"><strong>${title}</strong><small>${caption}</small></span>`;
+ }
+ async function v8388WatchGrowVideo(id){
+  id=String(id||'');
+  if(!v8388Beta()||!v8388Valid(id)||v8388Pending.has(id))return false;
+  const p=v8388Find(id);
+  if(!p||v8388Used(p)>=3||progress(p)>=1)return false;
+  const native=v8388Ad();
+  if(!native?.showRewarded){toast('Video nicht verfügbar','info','Nur in der Android-App verfügbar.');return false}
+  const account=(()=>{try{return (!v073User?.is_anonymous&&v073User?.id)?String(v073User.id):''}catch(_){return''}})();
+  if(!account){toast('Account erforderlich','warn','Bitte einloggen.');return false}
+  const oldCount=v8388Used(p);
+  v8388Pending.set(id,{account});
+  let rewarded=false,verified=false;
+  try{
+   renderGrow2();
+   const result=await native.showRewarded({
+    placement:'grow_time_25',userId:account,customData:'growlegends_grow25_v1:'+id
+   });
+   if(!(String(result?.status||'').toLowerCase()==='rewarded'||result?.rewarded===true||result?.completed===true)){
+    toast('Keine Zeit übersprungen','info','Nur vollständig angesehene Videos zählen.');return false;
+   }
+   rewarded=true;
+   /* Confirmation is the server Grow snapshot, NEVER the client's ad status. */
+   for(let n=0;n<20;n++){
+    if(String((typeof v073User!=='undefined'&&v073User?.id)||'')!==account)break;
+    const response=await window.v7065GrowAuthorityRefresh?.();
+    const current=v8388Find(id);
+    if(response?.ok&&current&&v8388Used(current)>oldCount){
+     verified=true;
+     toast('Pflanzenzeit verkürzt','success','25 % der ursprünglichen Wachstumszeit · '+v8388Used(current)+'/3 Videos.');
+     return true;
+    }
+    if(!current)break;
+    await new Promise(done=>setTimeout(done,650));
+   }
+   toast('Video wird bestätigt','info','Google hat das Video bestätigt; die serverseitige Gutschrift kann noch dauern.');
+   return false;
+  }catch(error){
+   if(/closed|dismiss|not.completed|abgebrochen/i.test(String(error?.message||error)))
+    toast('Kein Zeitbonus','info','Video abgebrochen.');
+   else{console.warn('[V8.388] Grow-Ad',error);toast('Video nicht verfügbar','warn','Das Werbevideo konnte nicht abgeschlossen werden.')}
+   return false;
+  }finally{
+   if(rewarded&&!verified){
+    setTimeout(()=>{if(v8388Pending.get(id)?.account===account){v8388Pending.delete(id);try{renderGrow2()}catch(_){}}},60000);
+   }else v8388Pending.delete(id);
+   try{renderGrow2()}catch(_){}
+  }
+ }
  function plantCard(p,i,cap){
   if(i>=cap)return `<button class="v492-plant locked"><div class="plantico">🔒</div><b>Topf ${i+1}</b><small>Raum-Upgrade nötig</small></button>`;
   if(!p)return `<button class="v492-plant empty" data-v492-plant="${i}"><div class="plantico">🪴</div><b>Freier Topf ${i+1}</b><small>${esc(SEEDS[ensure().selectedSeed].name)} pflanzen</small></button>`;
@@ -256,7 +323,7 @@
   const careAction=cs.available>=0
     ?`<span class="v4114-slot-care" role="button" tabindex="0" data-v4114-care="${esc(p.uid)}" data-v4114-care-index="${cs.available}" title="${esc(CARE[cs.available].name)} jetzt durchführen">${CARE[cs.available].icon} ${esc(CARE[cs.available].name)} · ${careDone}/4</span>`
     :`<span class="v4114-slot-care done" title="Aktuell keine Pflegeaktion verfügbar">🌿 Pflege ${careDone}/4</span>`;
-  return `<button class="v492-plant ${ensure().selectedPlantUid===p.uid?'selected':''} ${x>=1?'ready':''} ${cs.available>=0?'care':''}" data-v492-detail="${esc(p.uid)}">${careMini}<span class="mut">${mut?.icon||''}</span>${v497PlantArt(p)}<b>${esc(SEEDS[p.seed].name)}</b><small data-v492-time="${esc(p.uid)}">${st[0]} · ${st[1]}</small><div class="v492-mini-bar"><i data-v492-pbar="${esc(p.uid)}" style="width:${Math.round(x*100)}%"></i></div><span class="v492-quality">${q}${cs.available>=0?' · Pflege!':''}</span>${careAction}</button>`;
+  return `<button class="v492-plant ${ensure().selectedPlantUid===p.uid?'selected':''} ${x>=1?'ready':''} ${cs.available>=0?'care':''}" data-v492-detail="${esc(p.uid)}">${careMini}<span class="mut">${mut?.icon||''}</span>${v497PlantArt(p)}<b>${esc(SEEDS[p.seed].name)}</b><small data-v492-time="${esc(p.uid)}">${st[0]} · ${st[1]}</small><div class="v492-mini-bar"><i data-v492-pbar="${esc(p.uid)}" style="width:${Math.round(x*100)}%"></i></div><span class="v492-quality">${q}${cs.available>=0?' · Pflege!':''}</span>${careAction}${v8388VideoHtml(p,x)}</button>`;
  }
  function detailHtml(p){if(!p){const id=ensure().selectedSeed,d=SEEDS[id];return `<div class="v492-details"><div class="v492-detail-name">${esc(d.name)}</div><div class="v492-detail-sub">${RARITY_LABEL[d.rarity]} · Quelle: ${esc(d.source)}</div><div class="v492-stage"><b>🌰 Samen ausgewählt</b><div class="v492-detail-sub">${Math.round(d.growMs/60000)} Minuten Grundzeit · ${affinityStars(d)} für ${d.affinity==='all'?'alle Klassen':className(d.affinity)}</div></div><div class="v492-quality-big"><span><small>CHARAKTERBUFF</small><br><span class="v492-detail-sub">nach der Ernte</span></span><b>${esc(statsText(d.stats))}</b></div><div class="v492-care"><div class="v492-care-title">🌱 Bereit zum Pflanzen</div><p>Freien Topf in der Mitte antippen. Pflege ist optional: Die Pflanze verdorrt niemals, aber gute Pflege verbessert Qualität und Belohnung.</p></div></div>`}const d=SEEDS[p.seed],x=progress(p),st=stage(p),q=qualityFrom(p),cs=careState(p),avail=cs.available>=0?CARE[cs.available]:null,mut=mutationVisible(p)?MUT[p.mutation]:null;return `<div class="v492-details"><div class="v497-detail-head">${v497PlantArt(p,true)}<div><div class="v492-detail-name">${mut?mut.icon+' ':''}${esc(d.name)}</div><div class="v492-detail-sub">${RARITY_LABEL[d.rarity]} · ${affinityStars(d)} ${d.affinity==='all'?'Flexibel':className(d.affinity)}${mut?` · ${esc(mut.name)} Mutation`:''}</div></div></div><div class="v492-stage"><b data-v492-detail-time="${esc(p.uid)}">${st[0]} · ${st[1]}</b><div class="v492-progress"><i data-v492-detail-bar="${esc(p.uid)}" style="width:${Math.round(x*100)}%"></i></div></div><div class="v492-quality-big"><span><small>QUALITÄT</small><br><span class="v492-stars">${'★'.repeat(Math.max(1,GRADES.indexOf(q)+1))}</span></span><b>${q}</b></div><div class="v492-yield v497-yield"><div><small>GOLD</small><b>🪙 ${fmt(estimatedGold(p))}</b></div><div><small>CHARAKTER-EXP</small><b>⭐ ${fmt(xpFor(p))}</b></div><div><small>SAMENFRAGMENTE</small><b>💠 ${fragFor(p)}</b></div></div><div class="v492-care"><div class="v492-care-title">${avail?`${avail.icon} Pflegeaktion verfügbar`:(x>=1?'✂️ Erntebereit':'🌿 Pflege-Status')}</div><p>${avail?avail.text:(x>=1?'Ernte jetzt und sichere Qualität, Buff und mögliche Mutation.':cs.missed?`${cs.missed} Pflegechance${cs.missed===1?'':'n'} verpasst. Nichts geht verloren.`:'Die nächste Pflegeaktion erscheint automatisch während des Wachstums.')}</p>${avail?`<button class="btn" data-v492-care="${esc(p.uid)}" data-v492-care-index="${cs.available}">${avail.icon} ${avail.name} · Qualität steigern</button>`:''}</div><div class="v492-perfect"><div class="v492-perfect-top"><span>🔥 PERFECT GROW</span><span>${(p.care||[]).filter(Boolean).length}/4</span></div><div class="v492-care-pips">${CARE.map((_,i)=>{const miss=!p.care[i]&&x>=(i===3?1:CARE[i+1].at),avail=!p.care[i]&&!miss&&cs.available===i;return `<i class="${p.care[i]?'done':miss?'missed':avail?'available':''}"></i>`}).join('')}</div></div></div>`}
  function activeHtml(){const z=ensure(),a=z.active;let og='';try{const ob=typeof v077Buff==='function'?v077Buff():null;if(ob)og=`<div class="v492-buff-lines" style="color:#f0c96e">🎁 OG-Sonderbuff: ${esc(v077BuffLabel(ob.type))} · ${esc(v077Fmt(ob.until-Date.now()))}</div>`}catch(e){}if(!a)return `<div class="v492-active-row"><div class="v492-hero">${s.playerClass==='scout'?'🏹':s.playerClass==='bruiser'?'🧙':s.playerClass==='summoner'?'🕯️':s.playerClass==='frost'?'❄️':'🪓'}</div><div class="v492-active"><b>Keine aktive Sorte</b><small>Ernte gute Pflanzen und aktiviere eine Blüte aus deinem Grow-Beutel.</small>${og}</div></div>`;const d=SEEDS[a.seed],m=a.mutation?MUT[a.mutation]:null;return `<div class="v492-active-row"><div class="v492-hero">${m?.icon||'🌿'}</div><div class="v492-active"><b>${esc(d.name)} · ${a.quality}${m?` · ${esc(m.name)}`:''}</b><small>Aktiv: ${buffLeft()}</small><div class="v492-buff-lines">${esc(statsText(bloomStats(a)))}</div><div class="v494-balance-note">⚖️ Dungeon 60 % · Nebelriss/Gildenboss 50 % · Smaragd-Koloss 35 % · PvP/Gildenkrieg 0 %</div>${og}</div></div>`}
@@ -407,7 +474,8 @@
  function statusSig(){ensure();return s.grow.plants.map(p=>{if(!p)return'-';const x=progress(p),bucket=x>=1?4:x>=.70?3:x>=.35?2:1,cs=careState(p);return `${p.uid}:${bucket}:${cs.available}:${qualityFrom(p)}:${p.mutation||''}`}).join('|')}
  function livePaint(){try{s.grow.plants.forEach(p=>{if(!p)return;const st=stage(p),pct=Math.round(progress(p)*100);document.querySelectorAll(`[data-v492-time="${CSS.escape(p.uid)}"]`).forEach(el=>el.textContent=`${st[0]} · ${st[1]}`);document.querySelectorAll(`[data-v492-pbar="${CSS.escape(p.uid)}"]`).forEach(el=>el.style.width=pct+'%');document.querySelectorAll(`[data-v492-detail-time="${CSS.escape(p.uid)}"]`).forEach(el=>el.textContent=`${st[0]} · ${st[1]}`);document.querySelectorAll(`[data-v492-detail-bar="${CSS.escape(p.uid)}"]`).forEach(el=>el.style.width=pct+'%')});const a=ensure().active;if(a){const c=document.querySelector('#v492CharGrowBuff .top small');if(c)c.textContent=buffLeft()}}catch(e){}}
  function stamp(){}
- document.addEventListener('click',e=>{const t=e.target instanceof Element?e.target:null;if(!t)return;if(t.closest('[data-v492-og]')){e.preventDefault();e.stopImmediatePropagation();const a=t.closest('[data-v492-og]').dataset.v492Og;try{if(a==='buy')return v077BuySeed();if(a==='plant')return v077Plant();if(a==='harvest')return v077Harvest()}catch(err){return toast('Wundertüte OG','warn','Spezial-Samen konnte nicht ausgeführt werden.')}}if(t.closest('[data-v492-buy]')){e.preventDefault();e.stopImmediatePropagation();return buySeed(t.closest('[data-v492-buy]').dataset.v492Buy)}if(t.closest('[data-v492-seed]')&&!t.closest('[data-v492-buy]')){e.preventDefault();return selectSeed(t.closest('[data-v492-seed]').dataset.v492Seed)}if(t.closest('[data-v492-plant]')){e.preventDefault();return plant(Number(t.closest('[data-v492-plant]').dataset.v492Plant))}if(t.closest('[data-v492-detail]')){e.preventDefault();return selectPlantDetail(t.closest('[data-v492-detail]').dataset.v492Detail)}if(t.closest('[data-v492-care]')){const b=t.closest('[data-v492-care]');return carePlant(b.dataset.v492Care,Number(b.dataset.v492CareIndex))};if(t.closest('[data-v492-harvest]'))return harvest();if(t.closest('[data-v492-activate]'))return activateBloom(t.closest('[data-v492-activate]').dataset.v492Activate);if(t.closest('[data-v492-donate]'))return void donate(t.closest('[data-v492-donate]').dataset.v492Donate);if(t.closest('[data-v492-book]'))return openBook();if(t.closest('[data-v492-week]'))return claimWeek();if(t.closest('[data-v492-upgrade]'))return upgrade(t.closest('[data-v492-upgrade]').dataset.v492Upgrade);if(t.closest('[data-v492-room]'))return roomUpgrade()},true);
+ document.addEventListener('click',e=>{const t=e.target instanceof Element?e.target:null;if(!t)return;const video=t.closest('[data-v8388-video]');if(video){e.preventDefault();e.stopImmediatePropagation();void v8388WatchGrowVideo(video.dataset.v8388Video);return}if(t.closest('[data-v492-og]')){e.preventDefault();e.stopImmediatePropagation();const a=t.closest('[data-v492-og]').dataset.v492Og;try{if(a==='buy')return v077BuySeed();if(a==='plant')return v077Plant();if(a==='harvest')return v077Harvest()}catch(err){return toast('Wundertüte OG','warn','Spezial-Samen konnte nicht ausgeführt werden.')}}if(t.closest('[data-v492-buy]')){e.preventDefault();e.stopImmediatePropagation();return buySeed(t.closest('[data-v492-buy]').dataset.v492Buy)}if(t.closest('[data-v492-seed]')&&!t.closest('[data-v492-buy]')){e.preventDefault();return selectSeed(t.closest('[data-v492-seed]').dataset.v492Seed)}if(t.closest('[data-v492-plant]')){e.preventDefault();return plant(Number(t.closest('[data-v492-plant]').dataset.v492Plant))}if(t.closest('[data-v492-detail]')){e.preventDefault();return selectPlantDetail(t.closest('[data-v492-detail]').dataset.v492Detail)}if(t.closest('[data-v492-care]')){const b=t.closest('[data-v492-care]');return carePlant(b.dataset.v492Care,Number(b.dataset.v492CareIndex))};if(t.closest('[data-v492-harvest]'))return harvest();if(t.closest('[data-v492-activate]'))return activateBloom(t.closest('[data-v492-activate]').dataset.v492Activate);if(t.closest('[data-v492-donate]'))return void donate(t.closest('[data-v492-donate]').dataset.v492Donate);if(t.closest('[data-v492-book]'))return openBook();if(t.closest('[data-v492-week]'))return claimWeek();if(t.closest('[data-v492-upgrade]'))return upgrade(t.closest('[data-v492-upgrade]').dataset.v492Upgrade);if(t.closest('[data-v492-room]'))return roomUpgrade()},true);
+ document.addEventListener('keydown',e=>{if(e.key!=='Enter'&&e.key!==' ')return;const el=e.target instanceof Element?e.target.closest('[data-v8388-video]'):null;if(!el)return;e.preventDefault();e.stopImmediatePropagation();void v8388WatchGrowVideo(el.dataset.v8388Video)},true);
  ensure();try{if(typeof v077InjectGrow==='function')v077InjectGrow=function(){}}catch(e){}installAchievements();installBuffBridge();installEventDrops();
  renderGrow=renderGrow2;window.renderGrow=renderGrow2;
  function syncGrowUi(){try{

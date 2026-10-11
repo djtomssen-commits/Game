@@ -20,3 +20,26 @@
  .v4114-slot-care{font-size:7.3px;min-height:27px;left:5px;right:5px;bottom:5px}
  .v492-plant{padding-bottom:36px!important}
 }
+
+/* V8.388 Beta: rewarded grow time directly UNDER the existing slot care action.
+   Use a span because the original entire plant card is already a button. */
+#grow .v492-plant[data-v492-detail]{padding-bottom:71px!important;min-height:155px}
+#grow .v492-plant .v4114-slot-care{bottom:37px}
+#grow .v8388-grow-skip{
+ position:absolute;left:7px;right:7px;bottom:6px;z-index:13;min-height:28px;
+ display:flex;flex-direction:column;justify-content:center;align-items:center;gap:1px;
+ padding:3px 5px;border:1px solid #58aacb;border-radius:8px;
+ background:linear-gradient(180deg,#24556b,#143044);color:#e4faff;
+ font-size:7.5px;line-height:1.1;font-weight:900;text-align:center;
+ box-shadow:0 2px 8px #0008;cursor:pointer;touch-action:manipulation
+}
+#grow .v8388-grow-skip strong{font:inherit;color:inherit;font-weight:900}
+#grow .v8388-grow-skip small{display:block;font-size:6.6px;color:#bee6f4;margin:0}
+#grow .v8388-grow-skip:not(.disabled):active{transform:translateY(1px);filter:brightness(.93)}
+#grow .v8388-grow-skip:not(.disabled):focus-visible{outline:2px solid #e3fbfc;outline-offset:2px}
+#grow .v8388-grow-skip.disabled{opacity:.66;cursor:default;border-color:#5b646b;background:#222e35}
+@media(max-width:560px){
+ #grow .v492-plant[data-v492-detail]{padding-bottom:74px!important;min-height:163px}
+ #grow .v492-plant .v4114-slot-care{bottom:38px}
+ #grow .v8388-grow-skip{left:5px;right:5px;bottom:5px;min-height:29px}
+}

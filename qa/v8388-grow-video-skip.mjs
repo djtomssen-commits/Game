@@ -1,0 +1,35 @@
+import assert from 'node:assert/strict';
+import vm from 'node:vm';
+import {readFileSync} from 'node:fs';
+
+const read=p=>readFileSync(p,'utf8');
+const grow=read('js/features/grow/beta/v8009-s1-v492-growroom2.js');
+const css=read('v8009-extracted-v4114-grow-care-css.css');
+const beta=read('beta.html'),server1=read('server1.html');
+new vm.Script(grow,{filename:'v492-growroom2.js'});
+assert.ok(grow.includes('function v8388VideoHtml(p,x)'),'Video renderer is part of original Growroom owner');
+assert.ok(grow.includes('\${careAction}\${v8388VideoHtml(p,x)}'),'Video sits directly below canonical care slot');
+assert.ok(grow.includes("document.addEventListener('keydown'"),'Video control supports keyboard input');
+assert.ok(grow.includes("t.closest('[data-v8388-video]')"),'Capture delegated click before plant card selection');
+assert.ok(grow.includes("e.stopImmediatePropagation();void v8388WatchGrowVideo"),'Prevent nested plant click side effects');
+assert.ok(grow.includes('Math.min(3,Math.floor(Number(p?.v8388VideoUses)||0))'),'Counter is canonical per-plant 0..3');
+assert.ok(grow.includes('v8388Pending=new Map()'),'Duplicate video requests guarded');
+assert.ok(grow.includes("customData:'growlegends_grow25_v1:'+id"),'Exact server-signed custom_data');
+assert.ok(grow.includes("placement:'grow_time_25'"),'AdMob placement for grow video');
+assert.ok(grow.includes("await window.v7065GrowAuthorityRefresh?.()"),'Canonical Grow refresh used for verification');
+assert.ok(grow.includes("response?.ok&&current&&v8388Used(current)>oldCount"),'Reward is recognized only after server count increases');
+assert.ok(!/v8388WatchGrowVideo[\s\S]*?p\.start\s*=/.test(grow),'No unauthorized local time write in ad client');
+assert.ok(!/v8388WatchGrowVideo[\s\S]*?p\.duration\s*=/.test(grow),'No unauthorized local duration write in ad client');
+assert.ok(grow.includes("if(!v8388Beta()||!v8388Valid(p.uid))return ''"),'Only Beta server-authored plants');
+assert.ok(css.includes('.v8388-grow-skip')&&css.includes('.v4114-slot-care{bottom:37px}'),'Care above video layout');
+assert.ok(beta.includes('v492-growroom2.js?v=8388-grow-video-beta'),'Beta original Growroom cache bump');
+assert.ok(beta.includes('v4114-grow-care-css.css?v=8388-grow-video-beta'),'Beta original care CSS cache bump');
+assert.equal(server1.includes('8388-grow-video-beta'),false,'Server 1 entry untouched');
+
+const count=(p)=>Math.max(0,Math.min(3,Math.floor(Number(p?.v8388VideoUses)||0)));
+assert.deepEqual([undefined,0,1,2,3,4,-1].map(x=>count({v8388VideoUses:x})),[0,0,1,2,3,3,0]);
+assert.equal(count({uid:'srv_grow_a',v8388VideoUses:3}),3,'Per-plant max never exceeds 3');
+const valid=id=>/^srv_grow_[0-9a-f]{32}$/.test(id);
+assert.equal(valid('srv_grow_'+'a'.repeat(32)),true);
+assert.equal(valid('v492_12345'),false);
+console.log('V8.388 PASS: real Growroom card location, 3/video server counter, signed AdMob protocol, Beta-only, no local reward');
