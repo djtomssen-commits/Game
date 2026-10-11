@@ -6,10 +6,10 @@ const source=read('js/features/book/beta/v8009-s2-v106-illegal-book.js');
 const beta=read('beta.html'),live=read('server1.html');
 new vm.Script(source,{filename:'v106-illegal-book.js'});
 assert.equal(beta.split('v106-illegal-book.js?v=8387-achievement-snapshot-beta').length-1,1,'Beta cache missing');
-assert.equal(live.includes('v106-illegal-book.js?v=8387-achievement-snapshot-beta'),false,'Server1 must retain old entry');
+assert.ok(live.includes('v106-illegal-book.js?v=8395-server1-sync'),'Server1 achievement-count owner promoted');
 assert.ok(source.includes('v8387AttributeAchievementCount'), 'Original V106 source must use authoritative count');
 assert.ok(source.includes('String(d.serverUid||\'\')===currentUid'), 'Account isolation required');
-assert.ok(source.includes('String(window.GROW_RELEASE_CHANNEL||\'\').toLowerCase()!==\'beta\''),'Beta-only behavior');
+assert.ok(source.includes("['beta','server1'].includes"),'Beta/Server1 verified achievement snapshot');
 
 function run(channel){
  const s={playerClass:'grower',v106Achievements:{done:{},stats:{}}};
@@ -41,5 +41,5 @@ assert.equal(state.totalAttr('staerke'),452.28,'Fallback preserves previous clie
 const liveApp=run('server1');
 liveApp.s.v106Achievements.done={};
 liveApp.diag.ready=true;liveApp.diag.enforce=true;
-assert.equal(liveApp.state.totalAttr('staerke'),452.28,'Server1 keeps original local calculation');
-console.log('V8.387 PASS: canonical achievement contribution, hydration stability, no reward mutation, account/channel isolation');
+assert.equal(liveApp.state.totalAttr('staerke'),516.28,'Server1 now uses verified achievement count too, no class balance change');
+console.log('V8.395 PASS: canonical achievement contribution, hydration stability across worlds, no reward mutation, account isolation');
