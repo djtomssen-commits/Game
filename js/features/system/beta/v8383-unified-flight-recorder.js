@@ -1,17 +1,73 @@
-/* Grow Legends V8.383 – passive, admin-visible flight recorder.
+/* Grow Legends V8.397 – bounded, admin-visible flight recorder.
    No interval, gameplay changes, database writes, DOM observers or fetch wrappers.
    Actual network outcomes come from the existing V4107 owner. */
 (function(){
  'use strict';
  if(window.__GL_FLIGHT_RECORDER__)return;
- var MAX_EVENTS=120,MAX_GROUPS=60,VERSION='V8.383';
+ var MAX_EVENTS=120,MAX_GROUPS=60,VERSION='V8.397';
  var events=[],groups=[],breadcrumbs=[],lastAction=null,started=Date.now();
  var ui=null,alertNode=null,open=false,scheduled=false,revision=0,shownRevision=-1;
+ var checkpoints=[],loafFrames=[],priorRun=null,restoreOwner='',saveTimer=null,loafObserver=null,appInfo=null,appInfoAsked=false;
+ var MAX_CHECKPOINTS=24,MAX_LOAF=12,STORE_TTL_MS=24*60*60*1000;
  var nativeError=console.error.bind(console);
  var isAdmin=function(){try{return typeof v093IsAdmin!=='undefined'&&v093IsAdmin===true}catch(_){return false}};
  var channel=function(){return String(window.GROW_RELEASE_CHANNEL||'unknown').toLowerCase()};
  var screen=function(){try{return document.querySelector('section.screen.active')?.id||document.querySelector('.screen.active')?.id||'boot'}catch(_){return 'unknown'}};
  var now=function(){try{return performance.now()}catch(_){return Date.now()}};
+ var adminUid=function(){try{return String(window.v073User?.id||(typeof v073User!=='undefined'&&v073User?.id)||'')}catch(_){return ''}};
+ var storeKey=function(){return 'gl8383:admin-flight:'+channel()};
+ function buildInfo(){
+  var game='unbekannt',label='',release='',platform='web',app='nicht verfügbar';
+  try{game=String(window.GROW_LEGENDS_VERSION?.short||'unbekannt');label=String(window.GROW_LEGENDS_VERSION?.label||'');release=String(window.__GROW_LEGENDS_RELEASE__||'');}catch(_){}
+  try{platform=String(window.Capacitor?.getPlatform?.()||'web')}catch(_){}
+  try{app=appInfo?String(appInfo.version||appInfo.build||'nicht verfügbar'):String(window.__GL_APP_VERSION__||'nicht verfügbar')}catch(_){}
+  return {game:scrub(game,35),label:scrub(label,70),release:scrub(release,50),platform:scrub(platform,25),app:scrub(app,25)};
+ }
+ function askAppInfo(){
+  if(appInfoAsked||!isAdmin())return;appInfoAsked=true;
+  try{var fn=window.Capacitor?.Plugins?.App?.getInfo;if(typeof fn==='function')Promise.resolve(fn()).then(function(x){if(x&&typeof x==='object')appInfo={version:scrub(x.version||'',25),build:scrub(x.build||'',25)}}).catch(function(){});}catch(_){}
+ }
+ function persistSoon(){
+  if(!isAdmin()||!adminUid()||saveTimer!==null)return;
+  saveTimer=setTimeout(function(){saveTimer=null;try{
+    var payload={at:Date.now(),owner:adminUid(),build:buildInfo(),groups:groups.slice(0,18),events:events.slice(-26),breadcrumbs:breadcrumbs.slice(-14),checkpoints:checkpoints.slice(-12),loafFrames:loafFrames.slice(-6)};
+    localStorage.setItem(storeKey(),JSON.stringify(payload).slice(0,18000));
+  }catch(_){}},550);
+ }
+ function restorePrior(){
+  if(!isAdmin())return;
+  var id=adminUid();if(!id||restoreOwner===id)return;restoreOwner=id;priorRun=null;
+  try{var raw=localStorage.getItem(storeKey());if(!raw)return;var p=JSON.parse(raw);
+   if(p&&p.owner===id&&Number.isFinite(Number(p.at))&&Date.now()-Number(p.at)>=0&&Date.now()-Number(p.at)<=STORE_TTL_MS){
+    priorRun={at:Number(p.at),build:p.build||{},groups:(p.groups||[]).slice(0,18),events:(p.events||[]).slice(-26),breadcrumbs:(p.breadcrumbs||[]).slice(-14),checkpoints:(p.checkpoints||[]).slice(-12),loafFrames:(p.loafFrames||[]).slice(-6)};
+   }
+  }catch(_){}
+ }
+ function observeLoaf(){
+  if(loafObserver||!isAdmin()||typeof PerformanceObserver!=='function')return;
+  try{var supported=PerformanceObserver.supportedEntryTypes||[];
+   if(!supported.includes('long-animation-frame'))return;
+   loafObserver=new PerformanceObserver(function(list){
+    list.getEntries().forEach(function(e){try{
+     if(Number(e.duration)<350)return;
+     var scripts=Array.from(e.scripts||[]).sort(function(a,b){return Number(b.duration||0)-Number(a.duration||0)}).slice(0,3).map(function(x){return {ms:Math.round(Number(x.duration)||0),url:safePath(x.sourceURL||''),fn:scrub(x.sourceFunctionName||x.invoker||'unbekannt',65)}});
+     loafFrames.push({at:Date.now(),screen:screen(),durationMs:Math.round(Number(e.duration)||0),blockingMs:Math.round(Number(e.blockingDuration)||0),scripts:scripts});
+     if(loafFrames.length>MAX_LOAF)loafFrames.shift();persistSoon();
+    }catch(_){} });
+   });loafObserver.observe({type:'long-animation-frame',buffered:false});
+  }catch(_){loafObserver=null}
+ }
+ function checkpoint(system,action,status,meta){
+  try{
+   var verdict=['confirmed','rejected','pending','displayed'].includes(String(status))?String(status):'observed';
+   var row={at:Date.now(),screen:screen(),system:scrub(system,32),action:scrub(action,65),status:verdict,meta:{}};
+   if(meta&&typeof meta==='object')Object.keys(meta).slice(0,10).forEach(function(k){
+    var v=meta[k];if(typeof v==='string'||typeof v==='number'||typeof v==='boolean')row.meta[scrub(k,28)]=scrub(v,80);
+   });
+   checkpoints.push(row);if(checkpoints.length>MAX_CHECKPOINTS)checkpoints.shift();persistSoon();return row;
+  }catch(_){return null}
+ }
+
  function scrub(value,max){
   var s=String(value==null?'':value);
   s=s.replace(/(?:https?:\/\/)[^\s<>"']+/ig,function(u){try{return new URL(u).pathname}catch(_){return '[URL]'}});
@@ -57,7 +113,7 @@
    var entry={at:at,kind:type,severity:sev,screen:place,detail:msg,path:path,action:action?action.label:null,
     actionAgeMs:action?Math.max(0,contextAt-action.at):null,elapsedMs:Math.max(0,Math.round(Number(meta&&meta.elapsedMs)||0))};
    events.push(entry);if(events.length>MAX_EVENTS)events.shift();
-   revision++;renderSoon();
+   revision++;persistSoon();renderSoon();
   }catch(_){}
  }
  function network(input){
@@ -99,6 +155,7 @@
   var errs=groups.filter(function(x){return x.severity==='error'});
   var warns=groups.filter(function(x){return x.severity!=='error'});
   return {version:VERSION,channel:channel(),at:Date.now(),uptimeMs:Date.now()-started,
+   build:buildInfo(),priorAvailable:!!priorRun,checkpoints:checkpoints.slice(-12),loafFrames:loafFrames.slice(-6),
    errors:errs.length,warnings:warns.length,errorOccurrences:errs.reduce(function(n,x){return n+x.count},0),
    warningOccurrences:warns.reduce(function(n,x){return n+x.count},0),
    groups:groups.map(function(x){return Object.assign({},x)}),
@@ -108,7 +165,7 @@
  function renderSoon(){
   if(scheduled)return;scheduled=true;
   var later=typeof requestAnimationFrame==='function'?requestAnimationFrame:function(fn){setTimeout(fn,20)};
-  later(function(){scheduled=false;if(isAdmin())render()});
+  later(function(){scheduled=false;if(isAdmin()){restorePrior();askAppInfo();observeLoaf();render()}});
  }
  function ensureUI(){
   if(ui||!isAdmin()||!document.body)return;
@@ -140,7 +197,7 @@
    var action=btn.dataset.gl8383;
    if(action==='close'){open=false;render();return}
    if(action==='copy'){copyReport();return}
-   if(action==='clear'){events.length=0;groups.length=0;breadcrumbs.length=0;lastAction=null;revision++;render();return}
+   if(action==='clear'){events.length=0;groups.length=0;breadcrumbs.length=0;checkpoints.length=0;loafFrames.length=0;lastAction=null;priorRun=null;try{localStorage.removeItem(storeKey())}catch(_){}revision++;render();return}
    if(btn.classList.contains('gl8383-pill')){open=!open;render()}
   });
  }
@@ -165,13 +222,19 @@
   list.innerHTML=html;
  }
  function reportText(){
-  var q=summary(),lines=['GROW LEGENDS FLUGSCHREIBER '+VERSION,'Server: '+q.channel,'Dauer: '+Math.round(q.uptimeMs/1000)+' s',
+  restorePrior();var q=summary(),v=q.build,lines=['GROW LEGENDS FLUGSCHREIBER '+VERSION,'Server: '+q.channel,'Dauer: '+Math.round(q.uptimeMs/1000)+' s',
+   'Spiel-Build: '+v.game+' | '+v.label+' | Release '+v.release,'Plattform: '+v.platform+' | Android-App: '+v.app,
    'Fehlergruppen: '+q.errors+' | Warnungen: '+q.warnings,'',
    'FEHLERGRUPPEN'];
   q.groups.forEach(function(x){lines.push(x.severity.toUpperCase()+' | '+x.count+'x | '+x.screen+' | '+x.kind+' | '+x.message+
    (x.action?' | Vorher: '+x.action+' ('+x.actionAgeMs+' ms; Zeitbezug)':''))});
   lines.push('','ZEITLICHER VERLAUF');
   q.recentEvents.forEach(function(x){lines.push(new Date(x.at).toISOString()+' | '+x.screen+' | '+x.kind+' | '+x.detail)});
+  lines.push('','SERVER-/ANZEIGEBESTÄTIGUNGEN (nur instrumentierte Original-Owner)');
+  q.checkpoints.forEach(function(x){lines.push(new Date(x.at).toISOString()+' | '+x.screen+' | '+x.system+' | '+x.action+' | '+x.status+' | '+Object.entries(x.meta||{}).map(function(k){return k[0]+'='+k[1]}).join(' · '))});
+  lines.push('','LANGE ANIMATIONSFRAMES (Browser-LoAF, nur wenn unterstützt; Script-Zeit ist Attribution, keine sichere Ursache)');
+  if(!q.loafFrames.length)lines.push('Keine unterstützten oder hinreichend langen Animationsframes erfasst.');
+  q.loafFrames.forEach(function(x){lines.push(new Date(x.at).toISOString()+' | '+x.screen+' | Frame '+x.durationMs+' ms | blockierend '+x.blockingMs+' ms | '+x.scripts.map(function(z){return z.ms+' ms '+z.url+' '+z.fn}).join(' ; '))});
   lines.push('','LETZTE AKTIONEN (nur Kontext, kein Ursachenbeweis)');
   q.breadcrumbs.forEach(function(x){lines.push(new Date(x.at).toISOString()+' | '+x.screen+' | '+x.kind+' | '+x.label)});
   try{
@@ -184,6 +247,11 @@
    lines.push('','ATTRIBUT-PHASEN '+attributes.length);
    attributes.slice(-8).forEach(function(x){lines.push('Attribut '+scrub(x.status,40)+' | Queue '+x.queueStartMs+' ms | Gate '+(x.gateDoneMs-x.gateStartMs)+' ms | RPC '+(x.rpcDoneMs-x.rpcStartMs)+' ms | Gesamt '+x.doneMs+' ms')});
   }catch(_){}
+  if(priorRun){
+    lines.push('','VORHERIGE ADMIN-SITZUNG (maximal 24 Stunden, gesichert '+new Date(priorRun.at).toISOString()+')');
+    (priorRun.groups||[]).slice(0,12).forEach(function(x){lines.push(String(x.severity||'')+' | '+String(x.count||1)+'x | '+String(x.screen||'')+' | '+String(x.kind||'')+' | '+String(x.message||''))});
+    (priorRun.checkpoints||[]).slice(-6).forEach(function(x){lines.push('BESTÄTIGUNG '+String(x.system||'')+' '+String(x.action||'')+' '+String(x.status||''))});
+  }
   return lines.join('\n').slice(0,30000);
  }
  function copyReport(){
@@ -217,7 +285,8 @@
     return;
    }
    var source=safePath(e.filename||'');
-   fire('JAVASCRIPT','error',String(e.message||'JavaScript error')+' '+source+':'+Number(e.lineno||0),{path:source});
+   var stack='';try{stack=String(e.error?.stack||'').split('\n').slice(0,4).map(function(v){return scrub(v,180)}).join(' | ')}catch(_){}
+   fire('JAVASCRIPT','error',String(e.message||'JavaScript error')+' '+source+':'+Number(e.lineno||0)+':'+Number(e.colno||0)+(stack?' | '+stack:''),{path:source});
   }catch(_){}
  },true);
  window.addEventListener('unhandledrejection',function(e){
@@ -235,7 +304,7 @@
  document.addEventListener('DOMContentLoaded',renderSoon,{once:true});
  window.addEventListener('pageshow',renderSoon,{passive:true});
  window.addEventListener('growlegends:account-ready',renderSoon,{passive:true});
- window.__GL_FLIGHT_RECORDER__=Object.freeze({version:VERSION,network:network,watchdog:watchdog,
+ window.__GL_FLIGHT_RECORDER__=Object.freeze({version:VERSION,network:network,watchdog:watchdog,checkpoint:checkpoint,
   capture:function(kind,level,message){fire(kind,level,message,{})},snapshot:summary,report:reportText,
   mount:renderSoon,open:function(){if(isAdmin()){open=true;render()}},copy:copyReport});
 })();
