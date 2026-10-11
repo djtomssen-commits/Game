@@ -9,14 +9,14 @@ let chain=Promise.resolve(), gatePromise=null, refreshFlight=null, pollCount=0, 
    server READY flag still references that uid. Bind readiness to the actual
    authoritative state object; do not treat an empty login shell as real data. */
 let v8393GrowRef=null,v8393SessionEpoch=0;
-const v8393Beta=()=>String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta';
+const v8393ProtectedWorld=()=>['beta','server1'].includes(String(window.GROW_RELEASE_CHANNEL||'').toLowerCase());
 const v8393SnapshotCurrent=()=>{
- if(!v8393Beta())return true;
+ if(!v8393ProtectedWorld())return true;
  try{return !!v8393GrowRef&&v8393GrowRef===s?.grow}catch(_){return false}
 };
 /* V8.394: an invalidated prior-session RPC is an expected safety rejection,
    not a Grow-bridge error. Still count it in read-only diagnostics. */
-const v8394ExpectedSessionAbort=e=>v8393Beta()&&
+const v8394ExpectedSessionAbort=e=>v8393ProtectedWorld()&&
  String(e?.message||e)==='GROW_SESSION_CHANGED_DURING_REFRESH';
 const db=()=>{try{return (typeof v073Db!=='undefined'&&v073Db)||null}catch(_){return null}};
 const uid=()=>{try{return String((typeof v073User!=='undefined'&&v073User?.id)||'')}catch(_){return ''}};
@@ -101,26 +101,26 @@ async function refresh(){
  if(refreshFlight)return refreshFlight;
  const epoch=v8393SessionEpoch;
  const growAtStart=(()=>{try{return s?.grow||null}catch(_){return null}})();
- const revealAfterHydration=v8393Beta()&&
+ const revealAfterHydration=v8393ProtectedWorld()&&
    (!D.ready||!v8393SnapshotCurrent()||authorityUid!==requestUid);
  refreshFlight=(async()=>{
   const r=await rpc('v7064_grow_state');
   if(!r?.ok)throw new Error(String(r?.reason||'GROW_STATE_FAILED'));
   if(uid()!==requestUid)throw new Error('ACCOUNT_CHANGED_DURING_GROW_REFRESH');
   /* Logout or a replaced same-uid shell invalidates any in-flight reply. */
-  if(v8393Beta()&&(epoch!==v8393SessionEpoch||
+  if(v8393ProtectedWorld()&&(epoch!==v8393SessionEpoch||
        (growAtStart&&s?.grow!==growAtStart))){
    D.expectedSessionAborts=(D.expectedSessionAborts||0)+1;
    throw new Error('GROW_SESSION_CHANGED_DURING_REFRESH');
   }
-  if(v8393Beta()&&(!r.grow_state||!Array.isArray(r.plants)||
+  if(v8393ProtectedWorld()&&(!r.grow_state||!Array.isArray(r.plants)||
        !Number.isInteger(r.grow_state.room_level)||r.grow_state.room_level<1||
        r.grow_state.room_level>4||
        ![r.grow_state.lamp_level,r.grow_state.pots_level]
          .every(n=>Number.isInteger(n)&&n>=0&&n<=5)))
    throw new Error('INCOMPLETE_CANONICAL_GROW_SNAPSHOT');
   apply(r);
-  if(v8393Beta())v8393GrowRef=s.grow;
+  if(v8393ProtectedWorld())v8393GrowRef=s.grow;
   authorityUid=requestUid;D.enabled=true;D.ready=true;D.lastError='';window.__V7065_GROW_SERVER_MODE__=true;window.__V7064_GROW_SERVER_MODE__=true;
   /* The first canonical load can have been blocked by the render barrier.
      Paint once now that readiness is bound to the real server snapshot.
@@ -138,7 +138,7 @@ async function gate(force=false){
  if(D.enabled&&D.ready&&authorityUid===currentUid&&!force&&v8393SnapshotCurrent())return true;
  if(gatePromise)return gatePromise;
  /* A forced account-ready refresh must never show the previous ready state. */
- if(v8393Beta())D.ready=false;
+ if(v8393ProtectedWorld())D.ready=false;
  gatePromise=(async()=>{
    D.checks++;
    try{await refresh();return true}
@@ -291,7 +291,7 @@ const poll=setInterval(async()=>{
 /* Retire the previous authenticated Grow snapshot, even if the next login
    uses exactly the same uid. Never modify any persisted player state. */
 window.addEventListener('growlegends:account-transition-reset',()=>{
- if(!v8393Beta())return;
+ if(!v8393ProtectedWorld())return;
  ++v8393SessionEpoch;v8393GrowRef=null;D.enabled=false;D.ready=false;
  authorityUid='';window.__V7065_GROW_SERVER_MODE__=false;
  window.__V7064_GROW_SERVER_MODE__=false;
