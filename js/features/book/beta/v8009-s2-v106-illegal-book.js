@@ -78,7 +78,7 @@ function v106CheckAchievements(show=true){
    V8.387 Beta: authoritative V7080 serverDone survives temporary local
    s.v106Achievements replacement by background hydration. Never mutate rewards. */
 function v8387AttributeAchievementCount(){
-  if(String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()!=='beta')return v106CompletedCount();
+  if(!['beta','server1'].includes(String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()))return v106CompletedCount();
   try{
     const d=window.v7080AchievementDiagnostics?.();
     const currentUid=String((typeof v073User!=='undefined'&&v073User?.id)||window.v073User?.id||'');
