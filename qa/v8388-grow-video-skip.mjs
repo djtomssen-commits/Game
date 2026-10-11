@@ -20,12 +20,14 @@ assert.ok(grow.includes("await window.v7065GrowAuthorityRefresh?.()"),'Canonical
 assert.ok(grow.includes("response?.ok&&current&&v8388Used(current)>oldCount"),'Reward is recognized only after server count increases');
 assert.ok(!/v8388WatchGrowVideo[\s\S]*?p\.start\s*=/.test(grow),'No unauthorized local time write in ad client');
 assert.ok(!/v8388WatchGrowVideo[\s\S]*?p\.duration\s*=/.test(grow),'No unauthorized local duration write in ad client');
-assert.ok(grow.includes("if(!v8388Beta()||!v8388Valid(p.uid))return ''"),'Only Beta server-authored plants');
-assert.ok(css.includes('html.v8388-grow-beta #grow .v8388-grow-skip')&&css.includes('html.v8388-grow-beta #grow .v492-plant .v4114-slot-care{bottom:37px}'),'Beta-only care above video; Server1 CSS unchanged');
-assert.ok(grow.includes("document.documentElement.classList.add('v8388-grow-beta')"),'Original Beta JS enables isolated slot CSS');
+assert.ok(grow.includes("if(!v8388EnabledWorld()||!v8388Valid(p.uid))return ''"),'Only Beta/Server1 canonical server-authored plants');
+assert.ok(css.includes('html.v8388-grow-beta #grow .v8388-grow-skip')&&css.includes('html.v8388-grow-beta #grow .v492-plant .v4114-slot-care{bottom:37px}'),'Shared isolated care/video CSS works in both worlds');
+assert.ok(grow.includes("document.documentElement.classList.add('v8388-grow-beta')"),'Both eligible worlds enable isolated slot CSS');
 assert.ok(beta.includes('v492-growroom2.js?v=8393-relogin-canonical-beta'),'Beta original Growroom cache bump');
 assert.ok(beta.includes('v4114-grow-care-css.css?v=8388b-grow-video-beta'),'Beta original care CSS cache bump');
-assert.equal(server1.includes('8388-grow-video-beta'),false,'Server 1 entry untouched');
+assert.ok(server1.includes('v492-growroom2.js?v=8395-server1-sync'),'Server1 Grow owner promoted');
+assert.ok(server1.includes('v4114-grow-care-css.css?v=8395-server1-sync'),'Server1 care CSS promoted');
+assert.ok(grow.includes("?':server1':''"),'Server1 signed ad custom_data is world-scoped');
 
 const count=(p)=>Math.max(0,Math.min(3,Math.floor(Number(p?.v8388VideoUses)||0)));
 assert.deepEqual([undefined,0,1,2,3,4,-1].map(x=>count({v8388VideoUses:x})),[0,0,1,2,3,3,0]);
@@ -33,4 +35,4 @@ assert.equal(count({uid:'srv_grow_a',v8388VideoUses:3}),3,'Per-plant max never e
 const valid=id=>/^srv_grow_[0-9a-f]{32}$/.test(id);
 assert.equal(valid('srv_grow_'+'a'.repeat(32)),true);
 assert.equal(valid('v492_12345'),false);
-console.log('V8.388 PASS: real Growroom card location, 3/video server counter, signed AdMob protocol, Beta-only, no local reward');
+console.log('V8.395 PASS: real Growroom card, 3-video cap, signed world-scoped SSV, Beta and Server1, no local reward');
