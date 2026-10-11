@@ -1,0 +1,21 @@
+name: V8.397 Flight Recorder and Dungeon QA
+on:
+  push:
+    paths:
+      - 'beta.html'
+      - 'server1.html'
+      - 'qa/v8397-flight-dungeon.mjs'
+      - 'js/features/system/beta/v8383-unified-flight-recorder.js'
+      - 'js/features/system/beta/v8009-s7-v7092-runtime-watchdog.js'
+      - 'js/features/dungeon/**'
+      - '.github/workflows/v8397-flight-dungeon.yml'
+  workflow_dispatch:
+jobs:
+  flight-dungeon:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node qa/v8397-flight-dungeon.mjs
