@@ -1,0 +1,24 @@
+name: V8.390 Video Care Catchup QA
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'supabase/migrations/v8390_video_care_catchup.sql'
+      - 'js/features/grow/beta/v8009-s1-v492-growroom2.js'
+      - 'js/features/grow/beta/v8009-s3-v4114-grow-care-authority.js'
+      - 'qa/v8390-video-care-catchup.mjs'
+      - 'beta.html'
+      - 'server1.html'
+      - '.github/workflows/v8390-video-care-catchup-qa.yml'
+  workflow_dispatch:
+jobs:
+  care-catchup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Test signed-video-only catchup and normal care isolation
+        run: node qa/v8390-video-care-catchup.mjs

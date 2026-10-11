@@ -486,9 +486,9 @@ check(beta.includes('v8144-i18n-gameplay.js?v=8364-stable-live-text-beta')&&
    refreshes while another Grow tab is in front. Identical plant, seed and
    progress state must never destroy the whole .v492-grow subtree again. */
 const sourceGrowScene=read('js/features/grow/beta/v8009-s1-v492-growroom2.js');
-check(beta.includes('v492-growroom2.js?v=8365-layout-key-beta')&&
+check(beta.includes('v492-growroom2.js?v=8390-video-care-catchup-beta')&&
  beta.includes('v8315-page-trace.js?v=8376-item-art-reuse-probe-beta')&&
- !read('server1.html').includes('v492-growroom2.js?v=8365-layout-key-beta')&&
+ !read('server1.html').includes('v492-growroom2.js?v=8390-video-care-catchup-beta')&&
  sourceGrowScene.includes('function growLayoutSignature()')&&
  sourceGrowScene.includes('plantPhase:statusSig()')&&
  sourceGrowScene.includes('lastGrowLayout?.key===layoutKey')&&

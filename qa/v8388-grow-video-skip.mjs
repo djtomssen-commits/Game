@@ -23,7 +23,7 @@ assert.ok(!/v8388WatchGrowVideo[\s\S]*?p\.duration\s*=/.test(grow),'No unauthori
 assert.ok(grow.includes("if(!v8388Beta()||!v8388Valid(p.uid))return ''"),'Only Beta server-authored plants');
 assert.ok(css.includes('html.v8388-grow-beta #grow .v8388-grow-skip')&&css.includes('html.v8388-grow-beta #grow .v492-plant .v4114-slot-care{bottom:37px}'),'Beta-only care above video; Server1 CSS unchanged');
 assert.ok(grow.includes("document.documentElement.classList.add('v8388-grow-beta')"),'Original Beta JS enables isolated slot CSS');
-assert.ok(beta.includes('v492-growroom2.js?v=8388b-grow-video-beta'),'Beta original Growroom cache bump');
+assert.ok(beta.includes('v492-growroom2.js?v=8390-video-care-catchup-beta'),'Beta original Growroom cache bump');
 assert.ok(beta.includes('v4114-grow-care-css.css?v=8388b-grow-video-beta'),'Beta original care CSS cache bump');
 assert.equal(server1.includes('8388-grow-video-beta'),false,'Server 1 entry untouched');
 

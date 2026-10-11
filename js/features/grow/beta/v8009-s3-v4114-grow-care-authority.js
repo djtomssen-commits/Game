@@ -71,7 +71,21 @@
   return true;
  }
  function progress(p){const wm=Math.max(.80,Math.min(1.30,Number(window.GL_WEATHER?.bonus?.growMul)||1));return Math.max(0,Math.min(1,((Date.now()-Number(p?.start||0))*wm)/Math.max(1,Number(p?.duration)||1)))}
- function careState(p){shapePlant(p);const x=progress(p);let available=-1,missed=0;for(let i=0;i<4;i++){const end=i===3?1:AT[i+1];if(p.care[i])continue;if(x>=end){missed++;continue}if(x>=AT[i]&&x<end){available=i;break}}return{available,missed,x}}
+ /* V8.390: preserve care skipped specifically by Google-verified videos. */
+ function v8390Catchup(p,i){return String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta'&&
+   p?.v6358ServerPlant===true&&Array.isArray(p?.v8390CareCatchup)&&
+   p.v8390CareCatchup.length===4&&p.v8390CareCatchup[i]===true&&!p.care[i]}
+ function careState(p){
+   shapePlant(p);const x=progress(p);let available=-1,missed=0,catchups=0,catchup=false;
+   for(let i=0;i<4;i++){
+     if(p.care[i])continue;
+     if(v8390Catchup(p,i)){catchups++;if(available<0){available=i;catchup=true}continue}
+     const end=i===3?1:AT[i+1];
+     if(x>=end){missed++;continue}
+     if(available<0&&x>=AT[i]&&x<end)available=i;
+   }
+   return{available,missed,x,catchups,catchup}
+ }
  function persistCare(){
   syncLedger('before-save');
   try{if(typeof persist==='function')persist(false);else localStorage.setItem(KEY,JSON.stringify(s))}catch(e){try{localStorage.setItem(KEY,JSON.stringify(s))}catch(_){} }
@@ -109,13 +123,13 @@
     shapePlant(p);const st=careState(p),done=p.care.filter(Boolean).length;
     let mini=card.querySelector(':scope > .v4114-care-mini');
     if(!mini){mini=document.createElement('span');mini.className='v4114-care-mini';card.prepend(mini)}
-    const miniHtml=[0,1,2,3].map(i=>{const end=i===3?1:AT[i+1],miss=!p.care[i]&&st.x>=end,avail=!p.care[i]&&!miss&&st.available===i;return `<i class="${p.care[i]?'done':miss?'missed':avail?'available':''}"></i>`}).join('');
+    const miniHtml=[0,1,2,3].map(i=>{const end=i===3?1:AT[i+1],held=v8390Catchup(p,i),miss=!p.care[i]&&!held&&st.x>=end,avail=!p.care[i]&&(held||!miss&&st.available===i);return `<i class="${p.care[i]?'done':held?'available':miss?'missed':avail?'available':''}"></i>`}).join('');
     if(mini.innerHTML!==miniHtml)mini.innerHTML=miniHtml;
     const aria=`Pflege ${done} von 4`;if(mini.getAttribute('aria-label')!==aria)mini.setAttribute('aria-label',aria);
     let b=card.querySelector(':scope > .v4114-slot-care');
     if(!b){b=document.createElement('span');b.className='v4114-slot-care';card.appendChild(b)}
     let txt,title,active=st.available>=0;
-    if(active){const [ico,name]=LABELS[st.available];txt=`${ico} ${name} · ${done}/4`;title=`${name} jetzt durchführen`;b.setAttribute('role','button');b.setAttribute('tabindex','0');b.dataset.v4114Care=uid;b.dataset.v4114CareIndex=String(st.available)}
+    if(active){const [ico,name]=LABELS[st.available];txt=st.catchup?`${ico} Pflege nachholen (${st.catchups}) · ${done}/4`:`${ico} ${name} · ${done}/4`;title=st.catchup?`${name} nachholen · ${st.catchups} offen`:`${name} jetzt durchführen`;b.setAttribute('role','button');b.setAttribute('tabindex','0');b.dataset.v4114Care=uid;b.dataset.v4114CareIndex=String(st.available)}
     else{txt=`🌿 Pflege ${done}/4`;title='Aktuell keine Pflegeaktion verfügbar';b.removeAttribute('role');b.removeAttribute('tabindex');delete b.dataset.v4114Care;delete b.dataset.v4114CareIndex}
     b.classList.toggle('done',!active);
     if(b.textContent!==txt)b.textContent=txt;
