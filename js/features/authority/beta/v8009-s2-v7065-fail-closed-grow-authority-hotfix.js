@@ -97,6 +97,8 @@ async function refresh(){
  if(refreshFlight)return refreshFlight;
  const epoch=v8393SessionEpoch;
  const growAtStart=(()=>{try{return s?.grow||null}catch(_){return null}})();
+ const revealAfterHydration=v8393Beta()&&
+   (!D.ready||!v8393SnapshotCurrent()||authorityUid!==requestUid);
  refreshFlight=(async()=>{
   const r=await rpc('v7064_grow_state');
   if(!r?.ok)throw new Error(String(r?.reason||'GROW_STATE_FAILED'));
@@ -114,6 +116,11 @@ async function refresh(){
   apply(r);
   if(v8393Beta())v8393GrowRef=s.grow;
   authorityUid=requestUid;D.enabled=true;D.ready=true;D.lastError='';window.__V7065_GROW_SERVER_MODE__=true;window.__V7064_GROW_SERVER_MODE__=true;
+  /* The first canonical load can have been blocked by the render barrier.
+     Paint once now that readiness is bound to the real server snapshot.
+     Ordinary video/idle refreshes do not receive this extra render. */
+  if(revealAfterHydration&&document.getElementById('grow')?.classList.contains('active'))
+   try{renderGrow?.()}catch(_){}
   return r;
  })();
  try{return await refreshFlight}finally{refreshFlight=null}
