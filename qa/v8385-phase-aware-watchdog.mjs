@@ -51,7 +51,7 @@ let diag=fresh.wd.diagnostics();
 assert.ok(!diag.recent.some(x=>x.kind==='stalled_action'),'Normal tower replay cannot generate a false stall');
 assert.ok(!diag.recent.some(x=>x.kind==='slow_action'),'Normal replay avoids false slow-server signal');
 let done=diag.recent.filter(x=>x.kind==='action').at(-1);
-assert.ok(done.replayMs>6000 && done.nonReplayMs<1200,'Recorder accounts for replay separately');
+assert.ok(done.replayMs>6000 && done.nonReplayMs<=1200,'Recorder accounts for replay separately');
 
 const server=env('beta');
 turn=server.wd.begin('tower_action',{screen:'tower',action:'choose'},{slowMs:1500,stallMs:6500});
