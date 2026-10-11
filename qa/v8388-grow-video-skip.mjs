@@ -23,9 +23,9 @@ assert.ok(!/v8388WatchGrowVideo[\s\S]*?p\.duration\s*=/.test(grow),'No unauthori
 assert.ok(grow.includes("if(!v8388EnabledWorld()||!v8388Valid(p.uid))return ''"),'Only Beta/Server1 canonical server-authored plants');
 assert.ok(css.includes('html.v8388-grow-beta #grow .v8388-grow-skip')&&css.includes('html.v8388-grow-beta #grow .v492-plant .v4114-slot-care{bottom:37px}'),'Shared isolated care/video CSS works in both worlds');
 assert.ok(grow.includes("document.documentElement.classList.add('v8388-grow-beta')"),'Both eligible worlds enable isolated slot CSS');
-assert.ok(beta.includes('v492-growroom2.js?v=8393-relogin-canonical-beta'),'Beta original Growroom cache bump');
+assert.ok(beta.includes('v492-growroom2.js?v=8397-grow-confirmed-beta'),'Beta original Growroom cache bump');
 assert.ok(beta.includes('v4114-grow-care-css.css?v=8388b-grow-video-beta'),'Beta original care CSS cache bump');
-assert.ok(server1.includes('v492-growroom2.js?v=8395-server1-sync'),'Server1 Grow owner promoted');
+assert.ok(server1.includes('v492-growroom2.js?v=8397-grow-confirmed-server1'),'Server1 Grow owner promoted');
 assert.ok(server1.includes('v4114-grow-care-css.css?v=8395-server1-sync'),'Server1 care CSS promoted');
 assert.ok(grow.includes("?':server1':''"),'Server1 signed ad custom_data is world-scoped');
 
