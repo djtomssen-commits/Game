@@ -11,8 +11,8 @@ const watchdog=read('js/features/system/beta/v8009-s7-v7092-runtime-watchdog.js'
 new vm.Script(src,{filename:'v8383-unified-flight-recorder.js'});
 
 assert.equal(beta.split('id="v8383-unified-flight-recorder"').length-1,1,'Single Beta entry');
-assert.equal(beta.split('v8383-unified-flight-recorder.js?v=8386-attribute-report-beta').length-1,1,'Beta cache key');
-assert.equal(server1.split('v8383-unified-flight-recorder.js?v=8395-server1-flight').length-1,1,'Server1 admin flight recorder promoted');
+assert.equal(beta.split('v8383-unified-flight-recorder.js?v=8397-flight-recorder-beta').length-1,1,'Beta cache key');
+assert.equal(server1.split('v8383-unified-flight-recorder.js?v=8397-flight-recorder-server1').length-1,1,'Server1 admin flight recorder promoted');
 assert.ok(tech.includes('window.__GL_FLIGHT_RECORDER__?.network?.({url,ms,status,method,screen:startedScreen,startedAt,failed:!ok&&status===0,expectedReject:expectedRpcReject})'),'Reuse the existing network observation');
 assert.ok(watchdog.includes('window.__GL_FLIGHT_RECORDER__?.watchdog?.({kind,severity,details})'),'Reuse the existing server watchdog');
 assert.equal(src.includes('setInterval('),false,'No extra recurring monitor timer');
@@ -39,7 +39,7 @@ const env={window:fakeWindow,document:fakeDocument,performance:{now:()=>1000},
  console:fakeConsole,requestAnimationFrame:()=>{},setTimeout:()=>{},navigator:{}};
 vm.runInNewContext(src,env,{timeout:2500});
 const monitor=fakeWindow.__GL_FLIGHT_RECORDER__;
-assert.equal(monitor.version,'V8.383');
+assert.equal(monitor.version,'V8.397');
 assert.equal(monitor.snapshot().errors,0);
 
 monitor.network({url:'https://supabase.example/rest/v1/rpc/v6357_spend_attribute?apikey=SECRET',ms:3100,status:503,method:'POST'});
