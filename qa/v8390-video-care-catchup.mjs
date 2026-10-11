@@ -22,10 +22,10 @@ assert.ok(sql.includes('BEGIN;')&&sql.trimEnd().endsWith('COMMIT;'),'Transaction
 assert.ok(!sql.includes('UPDATE public.player_seed_state SET care='),'No mass user data modification');
 assert.equal(beta.split('v492-growroom2.js?v=8393-relogin-canonical-beta').length-1,1);
 assert.equal(beta.split('v4114-grow-care-authority.js?v=8390-video-care-catchup-beta').length-1,1);
-assert.ok(!server1.includes('8390-video-care-catchup-beta'),'Do not activate on Server1 HTML');
+assert.ok(server1.includes('v4114-grow-care-authority.js?v=8395-server1-sync'),'Server1 original care owner promoted');
 assert.ok(grow.includes('Pflege nachholen (')&&care.includes('Pflege nachholen ('),'Visible catchup label');
 assert.ok(grow.includes('careCatchup:')&&grow.includes('cs.catchups'),'Growroom signatures and details include catchup');
-assert.ok(care.includes("window.GROW_RELEASE_CHANNEL||''"),'UI catchup Beta gated');
+assert.ok(care.includes("window.GROW_RELEASE_CHANNEL||''"),'UI catchup channel-gated to Beta and Server1');
 assert.ok(grow.includes("p?.v6358ServerPlant===true"),'Do not accept legacy or forged client plants');
 
 const careMarks=p=>p.care??[false,false,false,false];
@@ -61,8 +61,8 @@ for(const [src,label] of [[grow,'v492'],[care,'v4114']]){
  const ripe=runOwner(src,'beta',1)({...protectedPlant});
  assert.equal(ripe.available,1,label+' protected care remains possible even if harvest-ready');
  const live=runOwner(src,'server1',1)(protectedPlant);
- assert.equal(live.available,-1,label+' Server1 ignores Beta-only flags');
- assert.equal(live.catchups,0,label+' Server1 ignores Beta-only counts');
+ assert.equal(live.available,1,label+' Server1 has same video-only catchup support');
+ assert.equal(live.catchups,2,label+' Server1 counts remaining signed video care flags');
  const forged=betaAt({v6358ServerPlant:false,care:[false,false,false,false],v8390CareCatchup:[true,true,true,true]});
  assert.equal(forged.available,-1,label+' non-server plant may not claim video care');
 }
@@ -79,4 +79,4 @@ flags=grantCareCatchup(.92,1,[false,false,false,false],[false,false,false,false]
 assert.deepEqual(flags,[false,false,false,true],'Older normally missed care is not retroactively restored');
 flags=grantCareCatchup(.18,.48,[true,false,false,false],[false,false,false,false]);
 assert.deepEqual(flags,[false,false,false,false],'Care performed already is not made catchup');
-console.log('V8.390 PASS: verified video-only catchups, no auto-care, persisted flags, harvest boundary, both original UI owners, Server1 isolation');
+console.log('V8.395 PASS: verified video-only catchups, no auto-care, persisted flags, harvest boundary, Beta and Server1');
