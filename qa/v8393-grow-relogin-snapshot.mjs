@@ -11,7 +11,7 @@ assert.ok(owner.includes("GROW_SESSION_CHANGED_DURING_REFRESH"),'Same-session ra
 assert.ok(owner.includes('v8393SnapshotCurrent()'),'Readiness checks actual state identity');
 assert.ok(ui.includes('canonicalGrow?.snapshotCurrent'),'Direct Grow view blocks stale state');
 assert.ok(beta.includes('v7065-fail-closed-grow-authority-hotfix.js?v=8394-login-abort-benign-beta'));
-assert.ok(beta.includes('v492-growroom2.js?v=8393-relogin-canonical-beta'));
+assert.ok(beta.includes('v492-growroom2.js?v=8397-grow-confirmed-beta'));
 assert.ok(server1.includes('v7065-fail-closed-grow-authority-hotfix.js?v=8395-server1-sync'),'Server1 canonical login guard activated');
 assert.ok(beta.includes('8392-top3-medals-beta'),'Hall beta-specific owner');
 assert.ok(server1.includes('v6145-hall-pagination-css.css?v=8395-server1-podium'),'Hall podium promoted to Server1');
