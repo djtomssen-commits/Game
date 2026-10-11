@@ -12,7 +12,7 @@ new vm.Script(src,{filename:'v8383-unified-flight-recorder.js'});
 
 assert.equal(beta.split('id="v8383-unified-flight-recorder"').length-1,1,'Single Beta entry');
 assert.equal(beta.split('v8383-unified-flight-recorder.js?v=8386-attribute-report-beta').length-1,1,'Beta cache key');
-assert.equal(server1.includes('v8383-unified-flight-recorder'),false,'Server1 remains unchanged');
+assert.equal(server1.split('v8383-unified-flight-recorder.js?v=8395-server1-flight').length-1,1,'Server1 admin flight recorder promoted');
 assert.ok(tech.includes('window.__GL_FLIGHT_RECORDER__?.network?.({url,ms,status,method,screen:startedScreen,startedAt,failed:!ok&&status===0,expectedReject:expectedRpcReject})'),'Reuse the existing network observation');
 assert.ok(watchdog.includes('window.__GL_FLIGHT_RECORDER__?.watchdog?.({kind,severity,details})'),'Reuse the existing server watchdog');
 assert.equal(src.includes('setInterval('),false,'No extra recurring monitor timer');
@@ -72,7 +72,7 @@ assert.ok(legacy.includes("if(vCoreShopGold)vCoreShopGold.textContent=s.gold"),'
 assert.ok(legacy.includes("if(!vCoreShopGrid)return"),'Retired shop grid must not throw on missing mount');
 assert.ok(legacy.includes("if(vCoreRefreshShop)vCoreRefreshShop.onclick"),'Retired refresh button must be null-safe');
 assert.equal(beta.includes('v8009-a1-legacy-state-core.js?v=8384-retired-shop-null-guards-beta'),true,'Beta core script cache refreshed');
-assert.equal(server1.includes('v8009-a1-legacy-state-core.js?v=8384-retired-shop-null-guards-beta'),false,'Server1 entry not explicitly switched');
+assert.ok(server1.includes('v8009-a1-legacy-state-core.js?v=8395-server1-sync'),'Server1 safe core owner cache refreshed');
 assert.ok(tech.includes('screen:startedScreen,startedAt'),'Network completion retains request-start context');
 
-console.log('V8.383 PASS: Beta-only, syntax, single transport owner, watchdog integration, incident dedup, export and sensitive-URL redaction');
+console.log('V8.395 PASS: both-world admin recorder, syntax, single transport owner, watchdog, dedup, sensitive-URL redaction');
