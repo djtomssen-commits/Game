@@ -1,0 +1,20 @@
+name: V8.389 AdMob SSV Grow signature QA
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'supabase/functions/admob-rewarded-ssv/index.ts'
+      - 'qa/v8389-admob-ssv-encoded-grow.mjs'
+      - '.github/workflows/v8389-admob-ssv-grow-qa.yml'
+  workflow_dispatch:
+jobs:
+  signed-query-validation:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify signed percent-decoding and fail-closed Google SSV
+        run: node qa/v8389-admob-ssv-encoded-grow.mjs

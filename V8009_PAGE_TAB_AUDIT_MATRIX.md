@@ -301,3 +301,6 @@ V8.287 – Aktive tägliche Verlustwache
 
 ### V8.388 – Growroom Rewarded-Video pro Pflanzeninstanz (11.10.2026)
 - Beta-only: Im originalen V492-Growroom-Plant-Card direkt **unter** der V4114-Slot-Pflege, mit 0/3–3/3 Anzeige. Belohnung ausschließlich nach Native AdMob Rewarded + bereits vorhandener Google-signierter Supabase-SSV (v8388) und erneuter kanonischer Grow-RPC-Bestätigung; je Video 25 % ursprüngliche Wachstumszeit, maximal drei pro `srv_grow_<32hex>`-Pflanze. Zeit/Zähler ausschließlich serverseitig, kein lokaler Skip. Pflege-Owner-CSS vergrößert Slots nach unten. Beta-Script/CSS-Caches aktualisiert, Server1-HTML unverändert, Android-Test noch offen. Neuer statischer QA-Workflow.
+
+### V8.389 – Pflanzen-Video 0/3 nach vollständigem Ad (11.10.2026)
+- Beta-AdMob-Callback 10:10:33 UTC an `admob-rewarded-ssv` mit `custom_data=growlegends_grow25_v1%3Asrv_grow_...` wurde HTTP 403 abgewiesen, keine `v8388_grow_rewarded_events`-Buchung. SSV-Originalfunktion v6 prüfte rohe URI statt bei percent-escaped `custom_data` Googles decoded Query; Script-Korrektur V8.389 beschränkt die zusätzliche vollständige ECDSA-Prüfung auf percent-encoded Grow-SSV, bewahrt sämtliche AdMob-/Server-Autorität. GitHub QA synthetische ECDSA/Tamper-Fälle. Erst nach Deployment + echtem Android-Nachtest gilt Feature als bestätigt.
