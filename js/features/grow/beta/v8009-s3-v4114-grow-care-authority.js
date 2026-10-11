@@ -72,7 +72,7 @@
  }
  function progress(p){const wm=Math.max(.80,Math.min(1.30,Number(window.GL_WEATHER?.bonus?.growMul)||1));return Math.max(0,Math.min(1,((Date.now()-Number(p?.start||0))*wm)/Math.max(1,Number(p?.duration)||1)))}
  /* V8.390: preserve care skipped specifically by Google-verified videos. */
- function v8390Catchup(p,i){return String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta'&&
+ function v8390Catchup(p,i){return ['beta','server1'].includes(String(window.GROW_RELEASE_CHANNEL||'').toLowerCase())&&
    p?.v6358ServerPlant===true&&Array.isArray(p?.v8390CareCatchup)&&
    p.v8390CareCatchup.length===4&&p.v8390CareCatchup[i]===true&&!p.care[i]}
  function careState(p){
