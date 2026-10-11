@@ -316,3 +316,6 @@ V8.287 – Aktive tägliche Verlustwache
 
 ### V8.391 – Grow-Video 15 % je Ad, maximal 45 % (11.10.2026)
 - Auf Nutzerwunsch Reduktion von 25 % auf 15 % der ursprünglichen Wachstumszeit je signiertem Google-Video. Drei Videos pro Pflanze bleiben, V8.390 serverseitiger Catchup-Pflegeschutz bleibt vollständig intakt; nur Original-Reward-RPC-Funktion in neuer V8391-SQL-Migration, kein Player-Daten-UPDATE. V492-Beta-Button/Toast entsprechend auf 15 % und Beta-Cache-Key angepasst. Android-/SSV-Praxisabnahme offen; Server1-Einstieg weiterhin unverändert.
+
+### V8.391 – Supabase-Abnahme (11.10.2026)
+- Migration `v8391_grow_rewarded_15_percent` erfolgreich auf `public.v8388_grow_rewarded_apply_verified` angewendet. Read-only-DB-Audit: `*.15` wahr, `*.25` falsch, `v8390CareCatchup` wahr, Max. 3 Nutzungen wahr. V8.391-QA grün. Es gab bei letzter Prüfung 2 serverseitig signiert verbuchte Grow-Video-Ereignisse; echter Android-Beta-Test des 15-%-Timers und UI-Pflege-Nachholbuttons weiter offen. Server1-Einstieg unverändert.
