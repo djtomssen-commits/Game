@@ -67,7 +67,7 @@
  function left(p){const wm=Math.max(.80,Math.min(1.30,Number(window.GL_WEATHER?.bonus?.growMul)||1)),readyAt=(Number(p.start)||0)+Math.round((Number(p.duration)||0)/wm),ms=Math.max(0,readyAt-Date.now()),h=Math.floor(ms/3600000),m=Math.floor(ms%3600000/60000),sec=Math.floor(ms%60000/1000);return h?`${h}:${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`:`${m}:${String(sec).padStart(2,'0')}`}
  /* V8.390: signed-video-skipped windows can be done manually until harvest.
    Only trusted beta server-plant flags enable catching up. No automatic care. */
- const v8390Catchup=(p,i)=>String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta'&&
+ const v8390Catchup=(p,i)=>['beta','server1'].includes(String(window.GROW_RELEASE_CHANNEL||'').toLowerCase())&&
    p?.v6358ServerPlant===true&&Array.isArray(p?.v8390CareCatchup)&&
    p.v8390CareCatchup.length===4&&p.v8390CareCatchup[i]===true&&!p?.care?.[i];
  function careState(p){
@@ -268,11 +268,11 @@
  const v8388Ad=()=>{try{return window.Capacitor?.Plugins?.GrowLegendsAds||null}catch(_){return null}};
  const v8388Used=p=>Math.max(0,Math.min(3,Math.floor(Number(p?.v8388VideoUses)||0)));
  const v8388Find=id=>(s?.grow?.plants||[]).find(p=>p&&String(p.uid)===String(id))||null;
- const v8388Beta=()=>String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta';
- if(v8388Beta())try{document.documentElement.classList.add('v8388-grow-beta')}catch(_){}
+ const v8388EnabledWorld=()=>['beta','server1'].includes(String(window.GROW_RELEASE_CHANNEL||'').toLowerCase());
+ if(v8388EnabledWorld())try{document.documentElement.classList.add('v8388-grow-beta')}catch(_){}
  const v8388Valid=id=>/^srv_grow_[0-9a-f]{32}$/.test(String(id||''));
  function v8388VideoHtml(p,x){
-  if(!v8388Beta()||!v8388Valid(p.uid))return '';
+  if(!v8388EnabledWorld()||!v8388Valid(p.uid))return '';
   const uses=v8388Used(p),pending=v8388Pending.has(p.uid),ready=x>=1;
   const supported=typeof v8388Ad()?.showRewarded==='function';
   const disabled=uses>=3||pending||ready||!supported;
@@ -283,7 +283,7 @@
  }
  async function v8388WatchGrowVideo(id){
   id=String(id||'');
-  if(!v8388Beta()||!v8388Valid(id)||v8388Pending.has(id))return false;
+  if(!v8388EnabledWorld()||!v8388Valid(id)||v8388Pending.has(id))return false;
   const p=v8388Find(id);
   if(!p||v8388Used(p)>=3||progress(p)>=1)return false;
   const native=v8388Ad();
@@ -296,7 +296,7 @@
   try{
    renderGrow2();
    const result=await native.showRewarded({
-    placement:'grow_time_25',userId:account,customData:'growlegends_grow25_v1:'+id
+    placement:'grow_time_25',userId:account,customData:'growlegends_grow25_v1:'+id+(String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='server1'?':server1':'')
    });
    if(!(String(result?.status||'').toLowerCase()==='rewarded'||result?.rewarded===true||result?.completed===true)){
     toast('Keine Zeit übersprungen','info','Nur vollständig angesehene Videos zählen.');return false;
@@ -360,7 +360,7 @@
     identity:String((typeof v073User!=='undefined'&&v073User?.id)||''),
     plants:(g.plants||[]).map(p=>p?{
      uid:p.uid,seed:p.seed,start:p.start,duration:p.duration,care:p.care,
-     careCatchup:String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta'?p.v8390CareCatchup:null,
+     careCatchup:['beta','server1'].includes(String(window.GROW_RELEASE_CHANNEL||'').toLowerCase())?p.v8390CareCatchup:null,
      mutation:p.mutation,mutationChecked:p.mutationChecked,quality:p.quality,
      boost:p.boost,stats:p.stats,yieldMultiplier:p.yieldMultiplier
     }:null),
