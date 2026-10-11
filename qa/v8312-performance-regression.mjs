@@ -486,7 +486,7 @@ check(beta.includes('v8144-i18n-gameplay.js?v=8364-stable-live-text-beta')&&
    refreshes while another Grow tab is in front. Identical plant, seed and
    progress state must never destroy the whole .v492-grow subtree again. */
 const sourceGrowScene=read('js/features/grow/beta/v8009-s1-v492-growroom2.js');
-check(beta.includes('v492-growroom2.js?v=8390-video-care-catchup-beta')&&
+check(beta.includes('v492-growroom2.js?v=8393-relogin-canonical-beta')&&
  beta.includes('v8315-page-trace.js?v=8376-item-art-reuse-probe-beta')&&
  !read('server1.html').includes('v492-growroom2.js?v=8390-video-care-catchup-beta')&&
  sourceGrowScene.includes('function growLayoutSignature()')&&
@@ -505,8 +505,8 @@ check(beta.includes('v492-growroom2.js?v=8390-video-care-catchup-beta')&&
  check(beta.includes('v8195-vip.js?v=8366-vip-render-noop-beta')&&
    beta.includes('v7137-shift-frame-client.js?v=8366-frame-render-noop-beta')&&
    beta.includes('v8315-page-trace.js?v=8376-item-art-reuse-probe-beta')&&
-   read('server1.html').includes('v8195-vip.js?v=8377-server1-perf-reuse')&&
-   read('server1.html').includes('v7137-shift-frame-client.js?v=8377-server1-perf-reuse')&&
+   read('server1.html').includes('v8195-vip.js?v=8395-server1-sync')&&
+   read('server1.html').includes('v7137-shift-frame-client.js?v=8395-server1-sync')&&
    vipSource.includes('lastVipPanel!==p||lastVipMarkup!==nextMarkup||!p.firstElementChild')&&
    vipSource.includes('betaVipRender()')&&
    vipSource.includes('window.__V8366_VIP_RENDER_QA__')&&
@@ -628,11 +628,15 @@ const promotedPerfSources=[
  "js/features/items/beta/v8009-s4-v6107-global-item-art-authority.js"
 ];
 const perfS1Flag='__GROW_SERVER1_PERFORMANCE_V8376__';
+const promotionAudit=JSON.parse(read('qa/v8395-server1-promotion-asset-audit.json'));
+const promotedSet=new Set(promotionAudit.promotedSharedAssets);
+const protectedSet=new Set(promotionAudit.excludedProtectedAssets);
 check(
  server1PerfEntry.includes('<script>window.'+perfS1Flag+'=true;</script>')&&
  !beta.includes('<script>window.'+perfS1Flag+'=true;</script>')&&
  promotedPerfSources.every(p=>
-   server1PerfEntry.includes(p+'?v=8377-server1-perf-reuse')&&
+   server1PerfEntry.includes(p+(promotedSet.has(p)?'?v=8395-server1-sync':'?v=8377-server1-perf-reuse'))&&
+   (promotedSet.has(p)||protectedSet.has(p))&&
    read(p).includes(perfS1Flag)
  )&&
  !server1PerfEntry.includes('v8144-i18n-gameplay.js?v=8364-stable-live-text-beta')&&
@@ -724,7 +728,7 @@ check(v8382AttrOwner.includes('window.v8382AttributeLatencyDiagnostics')&&v8382A
 check(v8382AttrOwner.includes("trace?stamp:null")&&v8382AttrOwner.includes("trace.status='bestätigt'"),'Attribute diagnostics not tied to real canonical action');
 check(v8382AttrOwner.includes("String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='server1'"),'Attribute instrumentation not Server1-only');
 check(v8382SystemtechOwner.includes('v8382AttributeTimingCard')&&v8382SystemtechOwner.includes('V8.382 ATTRIBUT-EINZELMESSUNG'),'Systemtechnik attribute panel missing');
-check(v8382LiveHtml.includes('v7033-build-authority-bridge.js?v=8382-attr-stage-trace-server1')&&v8382LiveHtml.includes('v4107-systemtechnik.js?v=8382-attribute-timing-server1'),'Server1 attribute trace cache missing');
+check(v8382LiveHtml.includes('v7033-build-authority-bridge.js?v=8395-server1-sync')&&v8382LiveHtml.includes('v4107-systemtechnik.js?v=8395-server1-sync'),'Server1 attribute trace cache missing');
 check(!beta.includes('8382-attr-stage-trace-server1')&&!beta.includes('8382-attribute-timing-server1'),'Beta entry must remain unchanged');
 const largest=[...areas].map(([area,v])=>({area,...v})).sort((a,b)=>b.bytes-a.bytes).slice(0,12);
 const report={version:'V8.312',time:new Date().toISOString(),entryMetrics,
