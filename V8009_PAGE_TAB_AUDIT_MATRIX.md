@@ -304,3 +304,6 @@ V8.287 – Aktive tägliche Verlustwache
 
 ### V8.389 – Pflanzen-Video 0/3 nach vollständigem Ad (11.10.2026)
 - Beta-AdMob-Callback 10:10:33 UTC an `admob-rewarded-ssv` mit `custom_data=growlegends_grow25_v1%3Asrv_grow_...` wurde HTTP 403 abgewiesen, keine `v8388_grow_rewarded_events`-Buchung. SSV-Originalfunktion v6 prüfte rohe URI statt bei percent-escaped `custom_data` Googles decoded Query; Script-Korrektur V8.389 beschränkt die zusätzliche vollständige ECDSA-Prüfung auf percent-encoded Grow-SSV, bewahrt sämtliche AdMob-/Server-Autorität. GitHub QA synthetische ECDSA/Tamper-Fälle. Erst nach Deployment + echtem Android-Nachtest gilt Feature als bestätigt.
+
+### V8.389 Server-Deployment (11.10.2026)
+- Signierter Pflanzen-Video-Callback scheiterte vorher HTTP 403 durch `%3A` in AdMob `custom_data`; signierte URL-codierte Grow-Query prüft jetzt in Edge v7 zusätzlich dieselbe ECDSA-Signatur über den von Google vorgesehenen URI-decodierten Query-Text. Neue QA erfolgreich; `admob-rewarded-ssv` v7 ACTIVE bestätigt. Grow-Reward-Ledger vor neuem Videotest noch 0; Android-Nachtest ausstehend, keine ungesicherten Backfills oder Server1-UI-Änderungen.
