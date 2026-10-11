@@ -254,6 +254,7 @@
  const v8388Used=p=>Math.max(0,Math.min(3,Math.floor(Number(p?.v8388VideoUses)||0)));
  const v8388Find=id=>(s?.grow?.plants||[]).find(p=>p&&String(p.uid)===String(id))||null;
  const v8388Beta=()=>String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta';
+ if(v8388Beta())try{document.documentElement.classList.add('v8388-grow-beta')}catch(_){}
  const v8388Valid=id=>/^srv_grow_[0-9a-f]{32}$/.test(String(id||''));
  function v8388VideoHtml(p,x){
   if(!v8388Beta()||!v8388Valid(p.uid))return '';

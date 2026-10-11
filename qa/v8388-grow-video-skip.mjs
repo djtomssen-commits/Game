@@ -21,9 +21,10 @@ assert.ok(grow.includes("response?.ok&&current&&v8388Used(current)>oldCount"),'R
 assert.ok(!/v8388WatchGrowVideo[\s\S]*?p\.start\s*=/.test(grow),'No unauthorized local time write in ad client');
 assert.ok(!/v8388WatchGrowVideo[\s\S]*?p\.duration\s*=/.test(grow),'No unauthorized local duration write in ad client');
 assert.ok(grow.includes("if(!v8388Beta()||!v8388Valid(p.uid))return ''"),'Only Beta server-authored plants');
-assert.ok(css.includes('.v8388-grow-skip')&&css.includes('.v4114-slot-care{bottom:37px}'),'Care above video layout');
-assert.ok(beta.includes('v492-growroom2.js?v=8388-grow-video-beta'),'Beta original Growroom cache bump');
-assert.ok(beta.includes('v4114-grow-care-css.css?v=8388-grow-video-beta'),'Beta original care CSS cache bump');
+assert.ok(css.includes('html.v8388-grow-beta #grow .v8388-grow-skip')&&css.includes('html.v8388-grow-beta #grow .v492-plant .v4114-slot-care{bottom:37px}'),'Beta-only care above video; Server1 CSS unchanged');
+assert.ok(grow.includes("document.documentElement.classList.add('v8388-grow-beta')"),'Original Beta JS enables isolated slot CSS');
+assert.ok(beta.includes('v492-growroom2.js?v=8388b-grow-video-beta'),'Beta original Growroom cache bump');
+assert.ok(beta.includes('v4114-grow-care-css.css?v=8388b-grow-video-beta'),'Beta original care CSS cache bump');
 assert.equal(server1.includes('8388-grow-video-beta'),false,'Server 1 entry untouched');
 
 const count=(p)=>Math.max(0,Math.min(3,Math.floor(Number(p?.v8388VideoUses)||0)));
