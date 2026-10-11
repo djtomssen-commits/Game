@@ -367,6 +367,7 @@ async function claimServerQuest(){
   if(!b?.ok){if(trace)trace.outcome='Server abgelehnt';toast('Quest nicht abgeschlossen','warn',String(b?.reason||'Serveraktion fehlgeschlagen.'));return false}
   if(b.won===false){if(trace)trace.outcome='Kampf nicht gewonnen';return false}
   if(trace)trace.outcome='Claim bestätigt';
+  try{window.__GL_FLIGHT_RECORDER__?.checkpoint?.('quest','server_claim','confirmed',{xp:Number(b.xp_awarded)||0,gold:Number(b.gold_awarded)||0,run:runId})}catch(_){}
   /* A successful server claim has consumed the active run. Clear the local
      projection immediately so a failed/stale follow-up state fetch cannot
      leave the finished Quest card visible. Any explicit server bundle/state
@@ -412,6 +413,7 @@ async function claimServerQuest(){
      and cannot prove when the GPU visibly composited the reward. */
   if(trace)try{requestAnimationFrame(()=>requestAnimationFrame(()=>mark('popupFrameMs')))}catch(_){}
   const a=fastClaimSync?await postClaimSync:await ack(runId);
+  try{window.__GL_FLIGHT_RECORDER__?.checkpoint?.('quest','receipt_ack',a?.ok?'confirmed':'pending',{run:runId})}catch(_){}
   if(!a?.ok)toast('Belohnung serverseitig gesichert','warn','Der Spielstand wird weiter abgeglichen; es wird nichts doppelt vergeben.');
   return b;
  }finally{mark('doneMs');if(trace&&trace.outcome==='läuft')trace.outcome='abgebrochen';C.busy=false;window.__V7214_QUEST_MUTATION_BUSY__=false}
