@@ -45,7 +45,32 @@
     }catch(e){console.warn('[GL Push] readyAt',e);return null;}
   }
 
+  /* V8.396: account-ready, plant-capture and page-resume can arrive together.
+     Serialize this owner’s grow_ready writes before UPDATE -> INSERT so one WebView
+     never races itself into HTTP 409 against the one-active-job unique index.
+     Retain the newest explicit plant ready time for one follow-up if needed. */
+  let glGrowPushFlight=null,glGrowPushFollowUp=false,glGrowPushFollowUpTime=null;
   async function glSyncGrowPushJob(forcedReadyAt=null){
+    const requested=Number(forcedReadyAt);
+    if(glGrowPushFlight){
+      if(Number.isFinite(requested)&&requested>Date.now()){
+        glGrowPushFollowUp=true;glGrowPushFollowUpTime=requested;
+      }
+      return glGrowPushFlight;
+    }
+    const flight=(async()=>{
+      let result=await glSyncGrowPushJobCore(forcedReadyAt);
+      while(glGrowPushFollowUp){
+        const next=glGrowPushFollowUpTime;
+        glGrowPushFollowUp=false;glGrowPushFollowUpTime=null;
+        result=await glSyncGrowPushJobCore(next);
+      }
+      return result;
+    })();
+    glGrowPushFlight=flight;
+    try{return await flight}finally{if(glGrowPushFlight===flight)glGrowPushFlight=null}
+  }
+  async function glSyncGrowPushJobCore(forcedReadyAt=null){
     if(typeof window.glPushEnabled==='function'&&!window.glPushEnabled())return false;
     try{
       const user=await glPushUser();
