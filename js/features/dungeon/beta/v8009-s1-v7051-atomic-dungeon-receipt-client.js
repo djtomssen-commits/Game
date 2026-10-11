@@ -478,6 +478,8 @@ async function runServerDungeon(){
    try{window.v4162PaintMenuAttentionLocal?.()}catch(_){}
   }
   lastState=null;lastStateAt=0;
+  /* Observed only after the authoritative run RPC returned ok. */
+  try{window.__GL_FLIGHT_RECORDER__?.checkpoint?.('dungeon','run_accepted','confirmed',{dungeon:di+1,replayCount:Array.isArray(b?.replay)?b.replay.length:0})}catch(_){}
 
   wd?.phase?.('replay');
   const battleBtn=document.getElementById('v7051FightBtn');
@@ -494,6 +496,7 @@ async function runServerDungeon(){
   await animateReplay(b);
   wd?.phase?.('receipt');
   const ok=await finalizeReceipt(b,{recovered:false,show:true});
+  try{window.__GL_FLIGHT_RECORDER__?.checkpoint?.('dungeon','receipt_finalized',ok?'confirmed':'pending',{dungeon:di+1,replayCount})}catch(_){}
   wd?.end?.({ok:!!ok,replayCount});
   return ok;
  }catch(e){
