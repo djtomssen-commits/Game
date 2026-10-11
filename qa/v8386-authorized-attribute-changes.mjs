@@ -11,7 +11,7 @@ new vm.Script(bridge,{filename:'v7062.js'});
 new vm.Script(recorder,{filename:'v8383.js'});
 assert.equal(beta.split('v4140-attribute-display-owner.js?v=8386-attribute-provenance-beta').length-1,1);
 assert.equal(beta.split('v7062-server-item-action-bridge.js?v=8386-confirmed-material-beta').length-1,1);
-assert.equal(beta.split('v8383-unified-flight-recorder.js?v=8386-attribute-report-beta').length-1,1);
+assert.equal(beta.split('v8383-unified-flight-recorder.js?v=8397-flight-recorder-beta').length-1,1);
 assert.equal(server1.includes('8386-attribute-provenance-beta'),false);
 assert.equal(server1.includes('8386-confirmed-material-beta'),false);
 assert.equal(server1.includes('8386-attribute-report-beta'),false);
