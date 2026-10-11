@@ -1,0 +1,23 @@
+name: V8.395 Server1 Promotion QA
+on:
+  push:
+    paths:
+      - 'server1.html'
+      - 'beta.html'
+      - 'qa/v8395-server1-promotion-asset-audit.json'
+      - 'qa/v8395-server1-promotion.mjs'
+      - 'js/features/grow/**'
+      - 'js/features/authority/**'
+      - 'supabase/migrations/v8395_server1_grow_rewarded_promotion.sql'
+      - 'supabase/functions/admob-rewarded-ssv/index.ts'
+      - '.github/workflows/v8395-server1-promotion-qa.yml'
+  workflow_dispatch:
+jobs:
+  promote:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node qa/v8395-server1-promotion.mjs
