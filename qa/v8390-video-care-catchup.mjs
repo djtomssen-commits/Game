@@ -44,7 +44,7 @@ function runOwner(script, channel, x){
  return p=>JSON.parse(JSON.stringify(fn(p)));
 }
 for(const [src,label] of [[grow,'v492'],[care,'v4114']]){
- const betaAt=runOwner(src,'beta',.98);
+ const betaAt=runOwner(src,'beta',1);
  const normal=betaAt({uid:'srv_grow_'+('f'.repeat(32)),v6358ServerPlant:true,care:[false,false,false,false]});
  assert.deepEqual(normal.available,-1,label+' ordinary late care remains missed');
  assert.deepEqual(normal.missed,4,label+' ordinary missed count');
