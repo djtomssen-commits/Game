@@ -448,12 +448,6 @@ const V8184_PATTERNS={
   [/^(\d+)\/300 Zeichen$/i,(_,n)=>`${n}/300 karakter`]
  ]
 };
-/* V8.364 Beta: P is declared later in this same IIFE; referencing it now
-   triggers a temporal-dead-zone ReferenceError before the bridge installs.
-   Keep Server1's old script execution unchanged pending separate release. */
-if(String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()!=='beta')
- for(const lang of Object.keys(V8184_PATTERNS))P[lang]?.push(...V8184_PATTERNS[lang]);
-
 const V8185_TEXT={
  en:{
   'Beitritt anfragen':'Request to join','Anfrage gesendet':'Request sent','Anfrage wird gesendet …':'Sending request …','Du bist Mitglied dieser Gilde.':'You are a member of this guild.','Du bist bereits Mitglied einer Gilde.':'You are already a member of a guild.','Du hast bereits eine offene Beitrittsanfrage':'You already have a pending join request','Gilde voll':'Guild full','Gildensperre aktiv':'Guild lock active','Beitrittsanfrage fehlgeschlagen':'Join request failed','Die Gildenleitung kann deine Bewerbung jetzt annehmen.':'The guild leadership can now accept your application.'
@@ -1379,8 +1373,9 @@ const RUNTIME_PATTERNS={
   [/^Kaufen · (\d+) G$/i,(_,n)=>`Satın al · ${n} G`],[/^🔒 Topf (\d+) Raum-Upgrade nötig$/i,(_,n)=>`🔒 Saksı ${n} · oda yükseltmesi gerekli`],[/^🌿 Pflege (\d+)\/4$/i,(_,n)=>`🌿 Bakım ${n}/4`]
  ]
 };
-/* V8.364 Beta: append these only after P exists. */
-if(String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta')
+/* V8.396: P must be initialized before Guild pattern registration,
+   including after V8.395 promotion to Server1. Never access P in its TDZ. */
+if(['beta','server1'].includes(String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()))
  for(const lang of Object.keys(V8184_PATTERNS))P[lang]?.push(...V8184_PATTERNS[lang]);
 for(const lang of Object.keys(RUNTIME_PATTERNS))P[lang]?.push(...RUNTIME_PATTERNS[lang]);
 
