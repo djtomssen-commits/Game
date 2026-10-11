@@ -30,7 +30,15 @@ function sourceArt(mode,side,sel){
   }else{
    /* Exact room asset wins. The old source DOM is only an error fallback.
       This prevents a defeated room image being copied into the next fight. */
-   const {ri,no}=dungeonVisualInfo();const exact=ri===9?`v474_dungeon_assets/d${no}_boss.png`:`v474_dungeon_assets/d${no}_${ri+1}.png`;
+   const {ri,no,raw}=dungeonVisualInfo();
+    /* D1-D9 have no packaged dN_boss.png. Use the canonical map boss art (or
+       the existing last room art as a safe fallback), never request a 404. */
+    const boss=no>=10?`v474_dungeon_assets/d${no}_boss.png`:
+      (String(raw?.bossArt||'').trim()||
+       (no===1?'assets/v7195-base64/0f1a0253845b46d9a03d.jpg':
+        no===2?'assets/v7195-base64/10036d96d08155bdc84a.svg':
+        `v474_dungeon_assets/d${no}_9.png`));
+    const exact=ri===9?boss:`v474_dungeon_assets/d${no}_${ri+1}.png`;
    const direct=q('#enemyFighter .fighter-avatar > .gl-dungeon-enemy-art');let fallbackSrc=String(direct?.currentSrc||direct?.src||direct?.getAttribute?.('src')||'').trim();
    if(!fallbackSrc){const d1=q('#enemyFighter .fighter-avatar > .gl-dungeon-d1-art');let dbg='';try{dbg=d1?getComputedStyle(d1).backgroundImage:''}catch(_){}const dm=String(dbg||'').match(/url\(["']?(.*?)["']?\)/);if(dm?.[1])fallbackSrc=dm[1]}
    return{src:String(exact),fallbackSrc,txt:''};
