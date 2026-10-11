@@ -1,0 +1,28 @@
+name: V8.391 Grow Video 15 Percent QA
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'supabase/migrations/v8391_grow_rewarded_15_percent.sql'
+      - 'js/features/grow/beta/v8009-s1-v492-growroom2.js'
+      - 'qa/v8391-grow-video-15-percent.mjs'
+      - 'qa/v8388-grow-video-skip.mjs'
+      - 'qa/v8390-video-care-catchup.mjs'
+      - 'beta.html'
+      - 'server1.html'
+      - '.github/workflows/v8391-grow-video-15-percent-qa.yml'
+  workflow_dispatch:
+jobs:
+  signed-video-percent:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify 15 percent reward and prior Growroom protections
+        run: |
+          node qa/v8391-grow-video-15-percent.mjs
+          node qa/v8388-grow-video-skip.mjs
+          node qa/v8390-video-care-catchup.mjs

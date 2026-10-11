@@ -276,7 +276,7 @@
   const uses=v8388Used(p),pending=v8388Pending.has(p.uid),ready=x>=1;
   const supported=typeof v8388Ad()?.showRewarded==='function';
   const disabled=uses>=3||pending||ready||!supported;
-  const title=uses>=3?'✓ Video-Bonus 3/3':ready?'✓ Pflanze erntereif':pending?'🎬 Video wird bestätigt …':!supported?'🎬 Video nur in der App':'🎬 Pflanzenzeit −25 %';
+  const title=uses>=3?'✓ Video-Bonus 3/3':ready?'✓ Pflanze erntereif':pending?'🎬 Video wird bestätigt …':!supported?'🎬 Video nur in der App':'🎬 Pflanzenzeit −15 %';
   const caption=uses>=3?'Alle 3 Videos genutzt':ready?'Kein Zeitbonus mehr':pending?'Google bestätigt das Video':uses+'/3 Videos genutzt';
   const props=disabled?'aria-disabled="true"':`role="button" tabindex="0" data-v8388-video="${esc(p.uid)}"`;
   return `<span class="v8388-grow-skip ${disabled?'disabled':''}" ${props} aria-label="${title} · ${caption}"><strong>${title}</strong><small>${caption}</small></span>`;
@@ -309,7 +309,7 @@
     const current=v8388Find(id);
     if(response?.ok&&current&&v8388Used(current)>oldCount){
      verified=true;
-     toast('Pflanzenzeit verkürzt','success','25 % der ursprünglichen Wachstumszeit · '+v8388Used(current)+'/3 Videos.');
+     toast('Pflanzenzeit verkürzt','success','15 % der ursprünglichen Wachstumszeit · '+v8388Used(current)+'/3 Videos.');
      return true;
     }
     if(!current)break;

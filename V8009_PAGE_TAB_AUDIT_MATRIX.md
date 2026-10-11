@@ -313,3 +313,6 @@ V8.287 – Aktive tägliche Verlustwache
 
 ### V8.390 – Deployment-Abnahme / SQL (11.10.2026)
 - GitHub QA nach Grenzfallfix e23b919 SUCCESS. Supabase-Migration `v8390_video_care_catchup` erfolgreich angewendet und beide originalen serverseitigen Funktionen read-only überprüft. Keine Spielerbestandsänderung oder automatische Care-Gutschrift; nur künftige signierte Videos erzeugen bei übersprungenen Pflege-Endfenstern Nachholrechte bis zur Ernte. Beta-Cache erneuert, Server1-HTML unverändert. Reale Android-SSV- und Catchup-Abnahme offen.
+
+### V8.391 – Grow-Video 15 % je Ad, maximal 45 % (11.10.2026)
+- Auf Nutzerwunsch Reduktion von 25 % auf 15 % der ursprünglichen Wachstumszeit je signiertem Google-Video. Drei Videos pro Pflanze bleiben, V8.390 serverseitiger Catchup-Pflegeschutz bleibt vollständig intakt; nur Original-Reward-RPC-Funktion in neuer V8391-SQL-Migration, kein Player-Daten-UPDATE. V492-Beta-Button/Toast entsprechend auf 15 % und Beta-Cache-Key angepasst. Android-/SSV-Praxisabnahme offen; Server1-Einstieg weiterhin unverändert.
