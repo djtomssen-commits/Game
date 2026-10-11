@@ -22,4 +22,6 @@ jobs:
         with:
           node-version: '22'
       - name: Check security, isolation, and real diagnostic grouping
-        run: node qa/v8383-flight-recorder-guard.mjs
+        run: |
+          node qa/v8383-flight-recorder-guard.mjs
+          node qa/v8385-phase-aware-watchdog.mjs

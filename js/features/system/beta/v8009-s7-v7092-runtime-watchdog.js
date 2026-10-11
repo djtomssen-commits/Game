@@ -64,38 +64,67 @@ async function report(kind,severity='warn',details={},opt={}){
 }
 function begin(name,meta={},opt={}){
   const id=++state.seq,start=now();
+  /* V8.385 Beta: a finished combat replay is not a stuck server request.
+     Measure the existing phase calls; do not change combat, RPCs or rewards. */
+  const phaseAware=String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta'&&
+    ['tower_action','tower_fight','dungeon_fight'].includes(String(name||''));
+  const inReplay=r=>phaseAware&&(r.phase==='replay'||r.phase==='door_open');
   const rec={
     id,name:String(name||'action'),meta:safe(meta),screen:String(meta?.screen||currentScreen()),
-    start,startedAt:wall(),phase:'start',phaseAt:start,slow:false,stalled:false,
+    start,startedAt:wall(),phase:'start',phaseAt:start,phaseMs:{},slow:false,stalled:false,
     slowMs:Math.max(500,Number(opt?.slowMs)||1500),
     stallMs:Math.max(1500,Number(opt?.stallMs)||6000)
   };
   state.actions.set(id,rec);
+  const closePhase=t=>{const spent=Math.max(0,t-rec.phaseAt);rec.phaseMs[rec.phase]=(rec.phaseMs[rec.phase]||0)+spent;rec.phaseAt=t};
   const slowTimer=setTimeout(()=>{
-    const r=state.actions.get(id);if(!r)return;r.slow=true;
+    const r=state.actions.get(id);if(!r||inReplay(r))return;
+    r.slow=true;
     void report('slow_action','warn',{
       action:r.name,elapsedMs:Math.round(now()-r.start),phase:r.phase,meta:r.meta
     },{screen:r.screen,incidentKey:r.name});
   },rec.slowMs);
+  let replayGuardTimer=null;
   const stallTimer=setTimeout(()=>{
-    const r=state.actions.get(id);if(!r)return;r.stalled=true;
+    const r=state.actions.get(id);if(!r)return;
+    if(inReplay(r)){
+      /* This is a single deferred watchdog, not another polling loop.
+         A genuinely blocked replay is still reported after 30 seconds. */
+      replayGuardTimer=setTimeout(()=>{
+        const active=state.actions.get(id);if(!active)return;
+        active.stalled=true;
+        void report('stalled_action','error',{
+          action:active.name,elapsedMs:Math.round(now()-active.start),
+          phase:active.phase,meta:active.meta
+        },{screen:active.screen,incidentKey:active.name});
+      },Math.max(1,30000-(now()-r.start)));
+      return;
+    }
+    r.stalled=true;
     void report('stalled_action','error',{
       action:r.name,elapsedMs:Math.round(now()-r.start),phase:r.phase,meta:r.meta
     },{screen:r.screen,incidentKey:r.name});
   },rec.stallMs);
   function finish(ok,extra={}){
     const r=state.actions.get(id);if(!r)return;
-    clearTimeout(slowTimer);clearTimeout(stallTimer);
-    const elapsed=Math.round(now()-r.start);
+    clearTimeout(slowTimer);clearTimeout(stallTimer);if(replayGuardTimer!=null)clearTimeout(replayGuardTimer);
+    const ended=now();closePhase(ended);
+    const elapsed=Math.round(ended-r.start);
+    const replayMs=phaseAware?Math.round((r.phaseMs.replay||0)+(r.phaseMs.door_open||0)):0;
+    const activeMs=Math.max(0,elapsed-replayMs);
     state.actions.delete(id);
-    remember({at:wall(),kind:'action',action:r.name,ok,elapsedMs:elapsed,phase:r.phase,screen:r.screen,extra:safe(extra)});
-    if(elapsed>r.slowMs*1.5)void report('slow_action_complete','warn',{
-      action:r.name,elapsedMs:elapsed,phase:r.phase,ok,extra:safe(extra)
+    remember({at:wall(),kind:'action',action:r.name,ok,elapsedMs:elapsed,
+      phase:r.phase,phaseMs:safe(r.phaseMs),replayMs,nonReplayMs:activeMs,screen:r.screen,extra:safe(extra)});
+    if(activeMs>r.slowMs*1.5)void report('slow_action_complete','warn',{
+      action:r.name,elapsedMs:elapsed,replayMs,nonReplayMs:activeMs,phase:r.phase,ok,extra:safe(extra)
+    },{screen:r.screen,incidentKey:r.name});
+    else if(phaseAware&&replayMs>12000)void report('long_combat_replay','warn',{
+      action:r.name,elapsedMs:elapsed,replayMs,nonReplayMs:activeMs,phase:r.phase,ok
     },{screen:r.screen,incidentKey:r.name});
   }
   return{
     id,
-    phase(p,extra={}){const r=state.actions.get(id);if(!r)return;r.phase=String(p||'');r.phaseAt=now();r.phaseExtra=safe(extra)},
+    phase(p,extra={}){const r=state.actions.get(id);if(!r)return;closePhase(now());r.phase=String(p||'');r.phaseExtra=safe(extra)},
     end(extra={}){finish(true,extra)},
     fail(e){finish(false,{error:String(e?.message||e)})}
   };
