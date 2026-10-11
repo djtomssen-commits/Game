@@ -31,7 +31,18 @@
   if(!isAdmin()||!adminUid()||saveTimer!==null)return;
   saveTimer=setTimeout(function(){saveTimer=null;try{
     var payload={at:Date.now(),owner:adminUid(),build:buildInfo(),groups:groups.slice(0,18),events:events.slice(-26),breadcrumbs:breadcrumbs.slice(-14),checkpoints:checkpoints.slice(-12),loafFrames:loafFrames.slice(-6)};
-    localStorage.setItem(storeKey(),JSON.stringify(payload).slice(0,18000));
+    /* Always store complete JSON. A hard string slice could corrupt a saved
+       incident and make the previous-session report impossible to restore. */
+    var encoded=JSON.stringify(payload);
+    while(encoded.length>18000&&(payload.events.length||payload.groups.length||payload.breadcrumbs.length||payload.checkpoints.length||payload.loafFrames.length)){
+     if(payload.events.length)payload.events.shift();
+     else if(payload.breadcrumbs.length)payload.breadcrumbs.shift();
+     else if(payload.groups.length)payload.groups.pop();
+     else if(payload.checkpoints.length)payload.checkpoints.shift();
+     else payload.loafFrames.shift();
+     encoded=JSON.stringify(payload);
+    }
+    if(encoded.length<=18000)localStorage.setItem(storeKey(),encoded);
   }catch(_){}},550);
  }
  function restorePrior(){
