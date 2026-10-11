@@ -13,8 +13,12 @@ assert.equal(a.version,'V8.395');
 assert.equal(a.promotedSharedAssets.length,108);
 assert.equal(a.excludedProtectedAssets.length,32);
 const escaped=s=>s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
-for(const p of a.promotedSharedAssets)
- assert.ok(server1.includes(p+'?v=8395-server1-sync'),'Promoted source missing: '+p);
+for(const p of a.promotedSharedAssets){
+ const version=p==='js/features/i18n/v8144-i18n-gameplay.js'?'8396-server1-i18n-tdz':
+  p==='js/features/push/beta/v8009-s1-gl-push-scheduling-v2.js'?'8396-server1-push-serialize':
+  '8395-server1-sync';
+ assert.ok(server1.includes(p+'?v='+version),'Promoted source missing: '+p);
+}
 for(const p of a.excludedProtectedAssets){
  const links=[...server1.matchAll(/(?:src|href)="([^"]+)"/g)].map(x=>x[1]);
  assert.ok(links.some(x=>x.split('?')[0]===p&&!x.includes('8395-server1-sync')),'Protected class/combat/item source changed: '+p);
