@@ -118,8 +118,9 @@ Deno.serve(async (req: Request) => {
     const customData = url.searchParams.get("custom_data") || "";
     const adBagCustom = ["growlegends_adbag_v1", "growlegends_adbag_v1:server1", "growlegends_adbag_v1_server1"].includes(customData);
     const quest25Custom = ["growlegends_quest25_v1", "growlegends_quest25_v1:server1"].includes(customData);
-    // V8.388: signed AdMob custom_data carries the exact Beta plant ID.
-    const grow25Match = /^growlegends_grow25_v1:(srv_grow_[0-9a-f]{32})$/.exec(customData);
+    // V8.395: same signed Grow reward, explicitly bound to the target world.
+    // Legacy Beta payload stays exact; Server1 requires its own signed suffix.
+    const grow25Match = /^growlegends_grow25_v1:(srv_grow_[0-9a-f]{32})(:server1)?$/.exec(customData);
     const targetSchema = (customData.endsWith(":server1") || customData.endsWith("_server1")) ? "server1" : "public";
     const transactionId = url.searchParams.get("transaction_id") || "";
     const adUnit = url.searchParams.get("ad_unit") || "";
