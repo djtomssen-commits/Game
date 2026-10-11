@@ -381,6 +381,15 @@
   const auth=!!window.v7081UseAuthority?.('grow');
   const hyd=window.v7070GrowHydrationDiagnostics?.();
   if(auth&&!active)return;
+  /* V8.393: after re-login the same uid can still have a stale READY
+     flag while s.grow was reset to room 1 / no upgrades. Only render a
+     Growroom snapshot bound to the current session's server response. */
+  const canonicalGrow=auth?window.v7065GrowAuthorityDiagnostics?.():null;
+  const accountUid=(()=>{try{return String(v073User?.id||'')}catch(_){return''}})();
+  if(auth&&(!canonicalGrow?.enabled||!canonicalGrow?.ready||
+      !canonicalGrow?.snapshotCurrent||canonicalGrow.authorityUid!==accountUid)){
+    void window.v7070GrowHydrationRefresh?.();return;
+  }
   if(auth&&hyd&&!hyd.hydrated){void window.v7070GrowHydrationRefresh?.();return;}
   const z=ensure();let dirty=false;s.grow.plants.forEach(p=>{if(p&&rollMutation(p))dirty=true});if(dirty)save(false);
   const layoutKey=betaGrowLayout()?growLayoutSignature():null;
