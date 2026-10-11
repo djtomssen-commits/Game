@@ -14,6 +14,10 @@ const v8393SnapshotCurrent=()=>{
  if(!v8393Beta())return true;
  try{return !!v8393GrowRef&&v8393GrowRef===s?.grow}catch(_){return false}
 };
+/* V8.394: an invalidated prior-session RPC is an expected safety rejection,
+   not a Grow-bridge error. Still count it in read-only diagnostics. */
+const v8394ExpectedSessionAbort=e=>v8393Beta()&&
+ String(e?.message||e)==='GROW_SESSION_CHANGED_DURING_REFRESH';
 const db=()=>{try{return (typeof v073Db!=='undefined'&&v073Db)||null}catch(_){return null}};
 const uid=()=>{try{return String((typeof v073User!=='undefined'&&v073User?.id)||'')}catch(_){return ''}};
 const row=d=>Array.isArray(d)?d[0]:d;
@@ -105,8 +109,10 @@ async function refresh(){
   if(uid()!==requestUid)throw new Error('ACCOUNT_CHANGED_DURING_GROW_REFRESH');
   /* Logout or a replaced same-uid shell invalidates any in-flight reply. */
   if(v8393Beta()&&(epoch!==v8393SessionEpoch||
-       (growAtStart&&s?.grow!==growAtStart)))
+       (growAtStart&&s?.grow!==growAtStart))){
+   D.expectedSessionAborts=(D.expectedSessionAborts||0)+1;
    throw new Error('GROW_SESSION_CHANGED_DURING_REFRESH');
+  }
   if(v8393Beta()&&(!r.grow_state||!Array.isArray(r.plants)||
        !Number.isInteger(r.grow_state.room_level)||r.grow_state.room_level<1||
        r.grow_state.room_level>4||
@@ -136,7 +142,21 @@ async function gate(force=false){
  gatePromise=(async()=>{
    D.checks++;
    try{await refresh();return true}
-   catch(e){D.enabled=false;D.ready=!!uid();D.lastError=String(e?.message||e);window.__V7065_GROW_SERVER_MODE__=false;window.__V7064_GROW_SERVER_MODE__=false;return false}
+   catch(error){
+    let e=error;
+    if(v8394ExpectedSessionAbort(e)){
+     /* A previous login was invalidated while the RPC was in flight.
+        Do not mark the NEW session as failed or clobber its ready flags. */
+     if(uid()!==currentUid||!window.v7081UseAuthority?.('grow'))return false;
+     if(D.enabled&&D.ready&&authorityUid===currentUid&&v8393SnapshotCurrent())return true;
+     /* One bounded retry for the current shell; no timer/polling loop. */
+     try{const next=await refresh();return !!next?.ok}
+     catch(retryError){if(v8394ExpectedSessionAbort(retryError))return false;e=retryError}
+    }
+    D.enabled=false;D.ready=!!uid();D.lastError=String(e?.message||e);
+    window.__V7065_GROW_SERVER_MODE__=false;window.__V7064_GROW_SERVER_MODE__=false;
+    return false;
+   }
    finally{gatePromise=null}
  })();
  return gatePromise;
@@ -307,7 +327,11 @@ window.v8194DonateGuildBloom=async bloomId=>{
  if(!bid)return {ok:true,donated:false,reason:'INVALID_BLOOM'};
  return act('v8194_donate_guild_bloom',{p_bloom_id:bid},'Gilden-Gewächshaus','');
 };
-window.v7065GrowAuthorityRefresh=async()=>{try{return await refresh()}catch(e){D.lastError=String(e?.message||e);return null}};
+window.v7065GrowAuthorityRefresh=async()=>{try{return await refresh()}catch(e){
+ /* Expected re-login cancellation must not persist as a false watchdog warning. */
+ if(!v8394ExpectedSessionAbort(e))D.lastError=String(e?.message||e);
+ return null;
+}};
 window.v7065GrowAuthorityDiagnostics=()=>clone({version:VERSION,...D,
  ready:D.ready&&v8393SnapshotCurrent(),
  snapshotCurrent:v8393SnapshotCurrent(),
