@@ -13,8 +13,8 @@ assert.ok(ui.includes('canonicalGrow?.snapshotCurrent'),'Direct Grow view blocks
 assert.ok(beta.includes('v7065-fail-closed-grow-authority-hotfix.js?v=8393-relogin-canonical-beta'));
 assert.ok(beta.includes('v492-growroom2.js?v=8393-relogin-canonical-beta'));
 assert.ok(!server1.includes('8393-relogin-canonical-beta'),'No Server1 activation');
-assert.ok(beta.includes('v8392-top3-medals-beta'),'Hall beta-specific owner');
-assert.ok(!server1.includes('v8392-top3-medals-beta'),'Old hall skin remains on server1');
+assert.ok(beta.includes('8392-top3-medals-beta'),'Hall beta-specific owner');
+assert.ok(!server1.includes('8392-top3-medals-beta'),'Old hall skin remains on server1');
 for(const color of ['#ffd45a','#d0e0eb','#e49a63'])assert.ok(podium.includes(color));
 assert.ok(ui.includes('🎬 Pflanzenzeit −15 %'),'Video duration unchanged');
 
