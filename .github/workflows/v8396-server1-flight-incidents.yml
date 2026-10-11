@@ -1,0 +1,19 @@
+name: V8.396 Server1 Incident QA
+on:
+  push:
+    paths:
+      - 'server1.html'
+      - 'js/features/i18n/v8144-i18n-gameplay.js'
+      - 'js/features/push/beta/v8009-s1-gl-push-scheduling-v2.js'
+      - 'qa/v8396-server1-flight-incidents.mjs'
+      - '.github/workflows/v8396-server1-flight-incidents.yml'
+  workflow_dispatch:
+jobs:
+  server1-incidents:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node qa/v8396-server1-flight-incidents.mjs
