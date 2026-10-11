@@ -81,8 +81,18 @@
    if(['startup_playable','character_render_profile','character_postnav_profile'].includes(row.kind))return;
    var details=row.details||{};
    var detail=scrub(row.kind,80)+' · '+scrub(details.action||details.rpc||details.elapsedMs||details.durationMs||details.message||details.lastError||'',140);
+   /* V8.386: actual unexplained attribute shifts must carry the changed
+      numbers, instead of the previous empty 'attribute_value_changed' label. */
+   if(row.kind==='attribute_value_changed'&&details.changed&&typeof details.changed==='object'){
+    const values=Object.entries(details.changed).slice(0,5).map(([key,val])=>{
+     const from=Number(val?.before?.shown),to=Number(val?.after?.shown);
+     return scrub(key,18)+': '+(Number.isFinite(from)?from:'?')+'→'+(Number.isFinite(to)?to:'?');
+    });
+    detail='Attributänderung ungeklärt · '+values.join(', ');
+   }
    var family=['slow_action','slow_action_complete'].includes(row.kind)?'slow_action':row.kind;
-   fire('WATCHDOG_'+family,row.severity==='error'?'error':'warning',detail,{group:family+'|'+scrub(details.action||details.rpc||'',70)});
+   var group=family==='attribute_value_changed'&&details.changed?Object.keys(details.changed).sort().join(','):scrub(details.action||details.rpc||'',70);
+   fire('WATCHDOG_'+family,row.severity==='error'?'error':'warning',detail,{group:family+'|'+group});
   }catch(_){}
  }
  function summary(){

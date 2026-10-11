@@ -37,15 +37,83 @@
     setBonus:typeof setBonusValue==='function'?(Number(setBonusValue(k))||0):0
    };
   });
-  return{uid:String((typeof v073User!=='undefined'&&v073User?.id)||window.v073User?.id||''),classId:cls,setCount:(()=>{try{return Object.values(s?.equipment||{}).filter(it=>it?.setId===cls).length}catch(_){return 0}})(),rows};
+  return{uid:String((typeof v073User!=='undefined'&&v073User?.id)||window.v073User?.id||''),points:points(),classId:cls,setCount:(()=>{try{return Object.values(s?.equipment||{}).filter(it=>it?.setId===cls).length}catch(_){return 0}})(),rows};
+ }
+ /* V8.386: classify real, server-authoritative changes before warning.
+    A +1 confirmed point and a material applied to a known equipped slot are
+    normal stat changes, not unexplained value flicker. Beta-only logic. */
+ let v8386ExpectedSpend=0,v8386ExpectedMaterial=0,v8386Unexplained=0;
+ function v8386SameEquipment(a,b,exceptSlot=''){
+  const normalized=items=>JSON.stringify((items||[])
+   .filter(x=>x.slot!==exceptSlot)
+   .map(x=>[x.slot,x.id,x.setId,Number(x.value)||0])
+   .sort((x,y)=>String(x[0]).localeCompare(String(y[0]))));
+  return normalized(a)===normalized(b);
+ }
+ function v8386ExpectedReason(before,after,keys){
+  if(String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()!=='beta')return '';
+  if(!before.uid||before.uid!==after.uid||before.classId!==after.classId||before.setCount!==after.setCount)return '';
+  if(keys.length===1&&before.points-after.points===1){
+   const key=keys[0];
+   const ok=DEF.every(([k])=>{
+    const a=before.rows?.[k],b=after.rows?.[k];if(!a||!b)return false;
+    return Number(b.base)-Number(a.base)===(k===key?1:0)
+     &&Number(b.shown)-Number(a.shown)===(k===key?1:0)
+     &&Number(a.classBonus)===Number(b.classBonus)
+     &&Number(a.setBonus)===Number(b.setBonus)
+     &&v8386SameEquipment(a.equipment,b.equipment);
+   });
+   if(ok)return 'spend';
+  }
+  const marker=window.__V8386_MATERIAL_APPLY_CONTEXT__;
+  if(!marker||!marker.slot||Date.now()-Number(marker.at)>2500||Date.now()<Number(marker.at))return '';
+  if(before.points!==after.points)return '';
+  let equipmentDelta=false;
+  const expected=DEF.every(([k])=>{
+   const a=before.rows?.[k],b=after.rows?.[k];if(!a||!b)return false;
+   if(Number(a.base)!==Number(b.base)||Number(a.classBonus)!==Number(b.classBonus)
+      ||Number(a.setBonus)!==Number(b.setBonus)
+      ||!v8386SameEquipment(a.equipment,b.equipment,marker.slot))return false;
+   const old=(a.equipment||[]).find(x=>x.slot===marker.slot);
+   const next=(b.equipment||[]).find(x=>x.slot===marker.slot);
+   if(old&&next&&(old.id!==next.id||old.setId!==next.setId))return false;
+   const difference=(Number(next?.value)||0)-(Number(old?.value)||0);
+   if(Math.abs(difference)>0.00001)equipmentDelta=true;
+   /* totalAttr is rounded; an equipment delta can shift the display by at
+      most one whole unit more/less due to rounding its previous fraction. */
+   return Math.abs((Number(b.shown)-Number(a.shown))-difference)<=1.00001;
+  });
+  if(expected&&equipmentDelta){
+   window.__V8386_MATERIAL_APPLY_CONTEXT__=null;return 'material';
+  }
+  return '';
  }
  function v8178Report(before,after){
   try{
    if(!before||!after||Date.now()-v8178FirstPaintAt<250)return;
    const changed={};
    DEF.forEach(([k])=>{const a=before.rows?.[k],b=after.rows?.[k];if(Number(a?.shown)!==Number(b?.shown))changed[k]={before:a,after:b}});
-   if(!Object.keys(changed).length)return;
-   void window.__GL_RUNTIME_WATCHDOG__?.report?.('attribute_value_changed','warn',{changed,beforeMeta:{uid:before.uid,classId:before.classId,setCount:before.setCount},afterMeta:{uid:after.uid,classId:after.classId,setCount:after.setCount}},{screen:'character',incidentKey:Object.keys(changed).join(',')});
+   const keys=Object.keys(changed);
+   if(!keys.length)return;
+   const expected=v8386ExpectedReason(before,after,keys);
+   if(expected==='spend'){v8386ExpectedSpend++;return}
+   if(expected==='material'){v8386ExpectedMaterial++;return}
+   v8386Unexplained++;
+   /* Report only the pertinent numerical breakdown, not account IDs or
+      item identifiers. The full comparison stays local in memory. */
+   const safeChanges=Object.fromEntries(keys.map(k=>[k,{
+    before:{shown:changed[k].before?.shown,base:changed[k].before?.base,
+     equipmentTotal:changed[k].before?.equipmentTotal,
+     classBonus:changed[k].before?.classBonus,setBonus:changed[k].before?.setBonus},
+    after:{shown:changed[k].after?.shown,base:changed[k].after?.base,
+     equipmentTotal:changed[k].after?.equipmentTotal,
+     classBonus:changed[k].after?.classBonus,setBonus:changed[k].after?.setBonus}
+   }]));
+   void window.__GL_RUNTIME_WATCHDOG__?.report?.('attribute_value_changed','warn',{
+    changed:safeChanges,
+    beforeMeta:{classId:before.classId,setCount:before.setCount},
+    afterMeta:{classId:after.classId,setCount:after.setCount}
+   },{screen:'character',incidentKey:keys.join(',')});
   }catch(_){}
  }
  function paint(){
@@ -81,5 +149,5 @@
  /* v459 owns visible attribute-tab lifecycle; persist repaint remains for actual point changes. */
  window.__v4140RenderWrapped='retired';
  window.__v4140GoWrapped='v459-tab-owner';
- window.v4140AttributeDiagnostics=()=>{const rows=[...document.querySelectorAll('#attrs > [data-v4140-attr]')];return{version:V.short,rowCount:rows.length,keys:rows.map(x=>x.dataset.v4140Attr),duplicates:rows.length-new Set(rows.map(x=>x.dataset.v4140Attr)).size,primary:primary(),points:points(),values:Object.fromEntries(DEF.map(([k])=>[k,value(k)])),calculatorFrozen:true}};
+ window.v4140AttributeDiagnostics=()=>{const rows=[...document.querySelectorAll('#attrs > [data-v4140-attr]')];return{version:V.short,rowCount:rows.length,keys:rows.map(x=>x.dataset.v4140Attr),duplicates:rows.length-new Set(rows.map(x=>x.dataset.v4140Attr)).size,primary:primary(),points:points(),values:Object.fromEntries(DEF.map(([k])=>[k,value(k)])),calculatorFrozen:true,expectedSpendChanges:v8386ExpectedSpend,expectedMaterialChanges:v8386ExpectedMaterial,unexplainedChanges:v8386Unexplained}};
 })();
