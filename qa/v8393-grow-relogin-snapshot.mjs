@@ -12,9 +12,9 @@ assert.ok(owner.includes('v8393SnapshotCurrent()'),'Readiness checks actual stat
 assert.ok(ui.includes('canonicalGrow?.snapshotCurrent'),'Direct Grow view blocks stale state');
 assert.ok(beta.includes('v7065-fail-closed-grow-authority-hotfix.js?v=8394-login-abort-benign-beta'));
 assert.ok(beta.includes('v492-growroom2.js?v=8393-relogin-canonical-beta'));
-assert.ok(!server1.includes('8393-relogin-canonical-beta'),'No Server1 activation');
+assert.ok(server1.includes('v7065-fail-closed-grow-authority-hotfix.js?v=8395-server1-sync'),'Server1 canonical login guard activated');
 assert.ok(beta.includes('8392-top3-medals-beta'),'Hall beta-specific owner');
-assert.ok(!server1.includes('8392-top3-medals-beta'),'Old hall skin remains on server1');
+assert.ok(server1.includes('v6145-hall-pagination-css.css?v=8395-server1-podium'),'Hall podium promoted to Server1');
 for(const color of ['#ffd45a','#d0e0eb','#e49a63'])assert.ok(podium.includes(color));
 assert.ok(ui.includes('🎬 Pflanzenzeit −15 %'),'Video duration unchanged');
 
@@ -83,9 +83,9 @@ t.setRpc(async()=>({ok:true,plants:[],grow_seeds:{},grow_state:{room_level:4,lam
 assert.equal(await t.win.v7065GrowAuthorityRefresh(),null,'Incomplete snapshot rejected');
 assert.equal(t.state.grow.equipment.lamp,5,'No zero from incomplete response');
 
-// No activation on Server1 even though canonical code asset is shared.
+// Server1 now receives exactly the same safe canonical-state login protection.
 const live=setup('server1');
 await live.win.v7065GrowAuthorityRefresh();
 live.state.grow={roomLevel:1,equipment:{lamp:0,pots:0},plants:[]};
-assert.equal(live.win.v7065GrowAuthorityDiagnostics().snapshotCurrent,true,'Server1 original ready semantics unchanged');
-console.log('V8.393 PASS: Growroom snapshot / re-login / stale RPC / missing upgrades / Beta-only Hall');
+assert.equal(live.win.v7065GrowAuthorityDiagnostics().snapshotCurrent,false,'Server1 also detects obsolete shell');
+console.log('V8.395 PASS: Growroom snapshot / re-login / stale RPC / missing upgrades / Beta plus Server1 Hall');
