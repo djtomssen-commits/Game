@@ -15,7 +15,7 @@ assert.ok(src.includes("30000-(now()-r.start)"),'True replay hang retains a 30 s
 function env(channel){
  let ms=0,nextId=0;
  const pending=new Map();
- const fakeDate=class extends Date{static now(){return ms}};
+ const fakeDate=class extends Date{static now(){return 1800000000000+ms}};
  const element={classList:{contains:()=>false}};
  const document={
   querySelector:()=>null,querySelectorAll:()=>[],getElementById:()=>null,
