@@ -1,0 +1,24 @@
+name: V8.393 Grow Re-Login Snapshot QA
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'js/features/authority/beta/v8009-s2-v7065-fail-closed-grow-authority-hotfix.js'
+      - 'js/features/grow/beta/v8009-s1-v492-growroom2.js'
+      - 'css/features/hall/beta/v8009-s1-v6145-hall-pagination-css.css'
+      - 'qa/v8393-grow-relogin-snapshot.mjs'
+      - 'beta.html'
+      - 'server1.html'
+      - '.github/workflows/v8393-grow-relogin-snapshot-qa.yml'
+  workflow_dispatch:
+jobs:
+  canonical-grow:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Simulate same-uid login shell, late RPC, upgrades and hall channel separation
+        run: node qa/v8393-grow-relogin-snapshot.mjs
