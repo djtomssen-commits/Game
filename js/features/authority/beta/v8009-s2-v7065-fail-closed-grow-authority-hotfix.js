@@ -106,8 +106,10 @@ async function refresh(){
        (growAtStart&&s?.grow!==growAtStart)))
    throw new Error('GROW_SESSION_CHANGED_DURING_REFRESH');
   if(v8393Beta()&&(!r.grow_state||!Array.isArray(r.plants)||
-       ![r.grow_state.room_level,r.grow_state.lamp_level,r.grow_state.pots_level]
-         .every(n=>Number.isInteger(Number(n))&&Number(n)>=0)))
+       !Number.isInteger(r.grow_state.room_level)||r.grow_state.room_level<1||
+       r.grow_state.room_level>4||
+       ![r.grow_state.lamp_level,r.grow_state.pots_level]
+         .every(n=>Number.isInteger(n)&&n>=0&&n<=5)))
    throw new Error('INCOMPLETE_CANONICAL_GROW_SNAPSHOT');
   apply(r);
   if(v8393Beta())v8393GrowRef=s.grow;
