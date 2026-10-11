@@ -309,6 +309,8 @@
     const current=v8388Find(id);
     if(response?.ok&&current&&v8388Used(current)>oldCount){
      verified=true;
+     /* Only a newly observed canonical server-use counter is confirmation. */
+     try{window.__GL_FLIGHT_RECORDER__?.checkpoint?.('grow','rewarded_video','confirmed',{video:v8388Used(current),maxVideos:3,skipPercent:15})}catch(_){}
      toast('Pflanzenzeit verkürzt','success','15 % der ursprünglichen Wachstumszeit · '+v8388Used(current)+'/3 Videos.');
      return true;
     }
