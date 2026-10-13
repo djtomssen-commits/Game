@@ -1,0 +1,21 @@
+name: V8.398 Beta Single Plant Harvest QA
+on:
+  push:
+    paths:
+      - 'beta.html'
+      - 'qa/v8398-single-plant-growroom.mjs'
+      - 'js/features/grow/beta/v8009-s1-v492-growroom2.js'
+      - 'js/features/authority/beta/v8009-s2-v7065-fail-closed-grow-authority-hotfix.js'
+      - 'v8009-extracted-v4114-grow-care-css.css'
+      - 'supabase/migrations/v8398_beta_single_plant_harvest.sql'
+      - '.github/workflows/v8398-single-plant-growroom.yml'
+  workflow_dispatch:
+jobs:
+  single-plant:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node qa/v8398-single-plant-growroom.mjs
