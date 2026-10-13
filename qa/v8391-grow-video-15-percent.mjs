@@ -32,7 +32,7 @@ assert.ok(!migration.includes('UPDATE public.player_seed_state SET care='),'No p
 assert.ok(grow.includes('🎬 Pflanzenzeit −15 %'),'Beta button copy');
 assert.ok(grow.includes('15 % der ursprünglichen Wachstumszeit'),'Reward popup copy');
 assert.ok(!grow.includes('🎬 Pflanzenzeit −25 %'),'No obsolete plant label');
-assert.equal(beta.split('v492-growroom2.js?v=8397-grow-confirmed-beta').length-1,1);
+assert.equal(beta.split('v492-growroom2.js?v=8398-single-plant-beta').length-1,1);
 assert.equal(server1.includes('8391-grow-video-15-percent-beta'),false,'Server1 entry unchanged');
 assert.ok(qaVideo.includes('v492-growroom2.js?v=8397-grow-confirmed-beta'),'V8.388 feature tests kept');
 assert.ok(qaCare.includes('v492-growroom2.js?v=8397-grow-confirmed-beta'),'V8.390 care tests kept');
