@@ -212,7 +212,7 @@ async function act(name,args,label,success){
  });
 }
 function selectedSeed(){ensure();return String(s?.grow?.v492?.selectedSeed||s?.grow?.selectedSeed||'moss')}
-function sensitiveTarget(t){return t?.closest?.('[data-v492-buy],[data-v492-plant],[data-v492-care],[data-v492-harvest],[data-v492-activate],[data-v492-week],[data-v492-upgrade],[data-v492-room],[data-v6130-cross],[data-v6160-claim],[data-v6160-reroll],[data-v6130-craft],[data-v6170-upgrade]')||null}
+function sensitiveTarget(t){return t?.closest?.('[data-v8398-harvest-uid],[data-v492-buy],[data-v492-plant],[data-v492-care],[data-v492-harvest],[data-v492-activate],[data-v492-week],[data-v492-upgrade],[data-v492-room],[data-v6130-cross],[data-v6160-claim],[data-v6160-reroll],[data-v6130-craft],[data-v6170-upgrade]')||null}
 async function runGrowUpgradeButton(btn,kind,label,success){
  if(!btn||btn.dataset.v7065UpgradeBusy==='1')return null;
  const k=String(kind||'').toLowerCase();
@@ -240,6 +240,19 @@ async function runGrowUpgradeButton(btn,kind,label,success){
  }
 }
 
+/* V8.398: only the selected canonical plant UID can be harvested on Beta.
+   The existing no-arg RPC deliberately remains for Server1/old UI. */
+function v8398HarvestOne(button){
+ if(String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()!=='beta')return;
+ if(!button||button.dataset.v8398HarvestBusy==='1')return;
+ const plantUid=String(button.dataset.v8398HarvestUid||'');
+ if(!plantUid||plantUid.length>128){toast('Ungültige Pflanze','warn','Bitte den Growroom neu öffnen.');return}
+ button.dataset.v8398HarvestBusy='1';
+ button.setAttribute('aria-disabled','true');
+ void act('v6358_harvest_grow',{p_plant_uid:plantUid},'Einzelernte','✂️ Pflanze geerntet').finally(()=>{
+  if(button.isConnected){delete button.dataset.v8398HarvestBusy;button.removeAttribute('aria-disabled')}
+ });
+}
 /* Fail closed: once a logged-in account uses the V7.091 client, never fall back
    to historical client-side Grow writes while the authority bridge is connecting. */
 window.addEventListener('click',ev=>{
@@ -248,15 +261,16 @@ window.addEventListener('click',ev=>{
  const hit=sensitiveTarget(t);if(!hit)return;
  /* V7.109: core Grow controls are valid only inside the active Growroom.
     This prevents recycled data-v492 attributes from firing harvest/care in Dungeon. */
- const coreGrow=hit.matches?.('[data-v492-buy],[data-v492-plant],[data-v492-care],[data-v492-harvest],[data-v492-activate],[data-v492-week],[data-v492-upgrade],[data-v492-room]');
+ const coreGrow=hit.matches?.('[data-v8398-harvest-uid],[data-v492-buy],[data-v492-plant],[data-v492-care],[data-v492-harvest],[data-v492-activate],[data-v492-week],[data-v492-upgrade],[data-v492-room]');
  if(coreGrow){
    /* V7.128: the seed inventory modal is mounted under <body>, not inside #grow.
       Popup seed purchases are still Grow actions and must be captured by the
       server-authoritative owner. Never allow them to fall through to legacy buySeed(). */
    const popupSeedBuy=hit.matches?.('[data-v492-buy]')&&!!hit.closest?.('#v495SeedInventory');
+   const popupPlantCare=String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta'&&hit.matches?.('[data-v492-care]')&&!!hit.closest?.('#v8398GrowPlantDetail');
    const growScreen=document.querySelector('#grow');
    const growActive=!!growScreen?.classList.contains('active');
-   if(popupSeedBuy){
+   if(popupSeedBuy||popupPlantCare){
      if(!growActive){stop(ev);return;}
    }else{
      const root=hit.closest?.('#grow');
@@ -269,6 +283,7 @@ window.addEventListener('click',ev=>{
  const buy=t.closest('[data-v492-buy]');if(buy){void act('v6358_buy_seed',{p_seed:String(buy.dataset.v492Buy||'')},'Samenkauf','🌰 Server-Samen gekauft');return}
  const plant=t.closest('[data-v492-plant]');if(plant){void act('v6358_plant_seed',{p_seed:selectedSeed(),p_slot:Number(plant.dataset.v492Plant)},'Pflanzen','🌱 Pflanze serverseitig gesetzt');return}
  const care=t.closest('[data-v492-care]');if(care){void act('v6358_care_plant',{p_plant_uid:String(care.dataset.v492Care||''),p_care_index:Number(care.dataset.v492CareIndex)},'Pflege','🌿 Pflege serverseitig gespeichert');return}
+ const single=t.closest('[data-v8398-harvest-uid]');if(single){v8398HarvestOne(single);return}
  if(t.closest('[data-v492-harvest]')){void act('v6358_harvest_grow',{},'Ernte','✂️ Server-Ernte abgeschlossen');return}
  const bloom=t.closest('[data-v492-activate]');if(bloom){const i=Number(bloom.dataset.v492Activate),b=s?.grow?.v492?.bag?.[i];if(b?.id)void act('v6358_activate_grow_bloom',{p_bloom_id:String(b.id)},'Grow-Buff','🌿 Grow-Buff serverseitig aktiviert');return}
  if(t.closest('[data-v492-week]')){void act('v6358_claim_grow_week',{},'Wochenbeitrag','🏰 Wochenbeitrag serverseitig abgeholt');return}
@@ -281,6 +296,13 @@ window.addEventListener('click',ev=>{
  const setup=t.closest('[data-v6170-upgrade]');if(setup){void act('v7064_upgrade_classset',{p_item_id:String(setup.dataset.v6170Upgrade||''),p_request_id:req('v7065_setup')},'Klassenset-Aufwertung','⬆️ Klassenset serverseitig aufgewertet');return}
 },true);
 
+window.addEventListener('keydown',ev=>{
+ if(!['Enter',' '].includes(ev.key)||!window.v7081UseAuthority?.('grow'))return;
+ const hit=ev.target instanceof Element?ev.target.closest('[data-v8398-harvest-uid]'):null;
+ if(!hit||String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()!=='beta')return;
+ stop(ev);
+ if(document.querySelector('#grow')?.classList.contains('active')&&hit.closest('#grow'))v8398HarvestOne(hit);
+},true);
 /* Keep retrying until Supabase auth exists; the old V7.064 one-shot gate could
    miss account-ready on slower Android starts. */
 const poll=setInterval(async()=>{
