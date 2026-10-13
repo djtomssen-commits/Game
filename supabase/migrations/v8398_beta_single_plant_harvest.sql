@@ -411,8 +411,7 @@ begin
     'combat',cp
   );
 end;
-$function$
-
+$function$;
 
 CREATE OR REPLACE FUNCTION public.v6358_harvest_grow()
  RETURNS jsonb
