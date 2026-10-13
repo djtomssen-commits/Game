@@ -1,6 +1,6 @@
 # V8.009 – Page / Tab Audit Matrix
 
-Stand: 2026-10-10
+Stand: 2026-10-13
 
 Legende:
 - [ ] offen
@@ -319,3 +319,10 @@ V8.287 – Aktive tägliche Verlustwache
 
 ### V8.391 – Supabase-Abnahme (11.10.2026)
 - Migration `v8391_grow_rewarded_15_percent` erfolgreich auf `public.v8388_grow_rewarded_apply_verified` angewendet. Read-only-DB-Audit: `*.15` wahr, `*.25` falsch, `v8390CareCatchup` wahr, Max. 3 Nutzungen wahr. V8.391-QA grün. Es gab bei letzter Prüfung 2 serverseitig signiert verbuchte Grow-Video-Ereignisse; echter Android-Beta-Test des 15-%-Timers und UI-Pflege-Nachholbuttons weiter offen. Server1-Einstieg unverändert.
+
+### 13.10.2026 – V8.398 BETA: Pflanzendetails-Popup, Einzelernte je Slot
+- **Growroom/Plant-Subtab:** Die auf dem Android-Foto zuvor unter den Töpfen stehenden `Pflanzendetails` öffnen ab V8.398 auf Beta durch Tippen auf die Pflanze als eigenes Modal (gleicher Original-`detailHtml(p)` mit Erntequalität, Gold/EXP/Fragmenten, Pflege und Perfect Grow); Inline-Detailbereich für Beta ausgeblendet. Schließen via X, Hintergrund, Escape, Seitenwechsel oder serverbestätigte Ernte dieser Pflanze.
+- **Growroom/Ernte:** Unter dem bisherigen Pflege-Button erscheint bei erntereifer Pflanze als erste weitere Aktion `✂️ Ernten` in genau diesem Slot. Bereits reife Pflanzen erhalten keinen gesperrten Video-Button statt der Ernte; wachsende Pflanzen behalten ihren signierten 15%-Video-Bonus. Beta-Authority sendet ausschließlich `public.v6358_harvest_grow(p_plant_uid)`, gezielt anhand serverbestätigter Pflanzen-UID; alle anderen Töpfe bleiben erhalten. Doppel-Taps sind geschützt, Keyboard-Bedienung vorhanden, Popup-Pflege bleibt serverautoritativ.
+- **Datenbank:** `supabase/migrations/v8398_beta_single_plant_harvest.sql` auf Supabase Beta erfolgreich angewendet. Bestehender `public.v6358_harvest_grow()` delegiert weiterhin kompatibel an dieselbe vollständige kanonische Erntefunktion (Sammelerntmodus bei Null-UID). Kein `server1`-RPC, keine Balance-/Spielerbestände verändert.
+- **Quellen & Cache:** Geändert `js/features/grow/beta/v8009-s1-v492-growroom2.js`, `js/features/authority/beta/v8009-s2-v7065-fail-closed-grow-authority-hotfix.js`, `v8009-extracted-v4114-grow-care-css.css`; neue V8.398-Versionen ausschließlich in `beta.html`, **keine Server1-Promotion**.
+- **QA:** `qa/v8398-single-plant-growroom.mjs`, GitHub Actions **38393686125 SUCCESS**, einschlägige ältere Cacheprüfungen an Beta-V8.398 angepasst; V8.397 Flight/Dungeon QA **38393800113 SUCCESS**. Realer Beta-Android-Mehrpflanzen-Einzelernte-/Popup-/Pflege-Nachtest **OFFEN**; erst nach Bestätigung Server1-Freigabe diskutieren.
