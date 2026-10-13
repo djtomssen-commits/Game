@@ -14,7 +14,9 @@ assert.equal(a.promotedSharedAssets.length,108);
 assert.equal(a.excludedProtectedAssets.length,32);
 const escaped=s=>s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
 for(const p of a.promotedSharedAssets){
- const version=p==='js/features/grow/beta/v8009-s1-v492-growroom2.js'?'8397-grow-confirmed-server1':
+ const version=p==='js/features/grow/beta/v8009-s1-v492-growroom2.js'?'8399-single-plant-server1':
+  p==='v8009-extracted-v4114-grow-care-css.css'?'8399-single-plant-server1':
+  p==='js/features/authority/beta/v8009-s2-v7065-fail-closed-grow-authority-hotfix.js'?'8399-single-harvest-auth-server1':
   p==='js/features/quest/beta/v7045-atomic-quest-receipt-client.js'?'8397-quest-confirmed-server1':
   p==='js/features/dungeon/beta/v8009-s1-v7051-atomic-dungeon-receipt-client.js'?'8397-dungeon-confirmed-server1':
   p==='js/features/system/beta/v8009-s7-v7092-runtime-watchdog.js'?'8397-replay-aware-server1':
