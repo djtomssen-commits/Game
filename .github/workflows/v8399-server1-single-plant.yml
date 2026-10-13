@@ -1,0 +1,22 @@
+name: V8.399 Server1 Single Plant Harvest QA
+on:
+  push:
+    paths:
+      - 'beta.html'
+      - 'server1.html'
+      - 'qa/v8399-server1-single-plant.mjs'
+      - 'js/features/grow/beta/v8009-s1-v492-growroom2.js'
+      - 'js/features/authority/beta/v8009-s2-v7065-fail-closed-grow-authority-hotfix.js'
+      - 'v8009-extracted-v4114-grow-care-css.css'
+      - 'supabase/migrations/v8399_server1_single_plant_harvest.sql'
+      - '.github/workflows/v8399-server1-single-plant.yml'
+  workflow_dispatch:
+jobs:
+  server1-single-plant:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node qa/v8399-server1-single-plant.mjs
