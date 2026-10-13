@@ -8,7 +8,7 @@ const css=read('v8009-extracted-v4114-grow-care-css.css');
 const beta=read('beta.html'),server1=read('server1.html');
 new vm.Script(grow,{filename:'v492-growroom2.js'});
 assert.ok(grow.includes('function v8388VideoHtml(p,x)'),'Video renderer is part of original Growroom owner');
-assert.ok(grow.includes('\${careAction}\${singleHarvest}\${v8398BetaPlantUi()&&x>=1?'':v8388VideoHtml(p,x)}'),'Video sits directly below canonical care slot');
+assert.ok(grow.includes("${careAction}${singleHarvest}${v8398BetaPlantUi()&&x>=1?'':v8388VideoHtml(p,x)}"),'Video remains below care while growing; harvest replaces it only when ready');
 assert.ok(grow.includes("document.addEventListener('keydown'"),'Video control supports keyboard input');
 assert.ok(grow.includes("t.closest('[data-v8388-video]')"),'Capture delegated click before plant card selection');
 assert.ok(grow.includes("e.stopImmediatePropagation();void v8388WatchGrowVideo"),'Prevent nested plant click side effects');
