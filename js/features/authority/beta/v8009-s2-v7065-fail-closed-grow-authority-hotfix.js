@@ -240,10 +240,10 @@ async function runGrowUpgradeButton(btn,kind,label,success){
  }
 }
 
-/* V8.398: only the selected canonical plant UID can be harvested on Beta.
-   The existing no-arg RPC deliberately remains for Server1/old UI. */
+/* V8.399: only the selected canonical plant UID can be harvested on Beta and Server1.
+   The existing no-arg RPC remains for compatibility with old clients. */
 function v8398HarvestOne(button){
- if(String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()!=='beta')return;
+ if(!['beta','server1'].includes(String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()))return;
  if(!button||button.dataset.v8398HarvestBusy==='1')return;
  const plantUid=String(button.dataset.v8398HarvestUid||'');
  if(!plantUid||plantUid.length>128){toast('Ungültige Pflanze','warn','Bitte den Growroom neu öffnen.');return}
@@ -267,7 +267,7 @@ window.addEventListener('click',ev=>{
       Popup seed purchases are still Grow actions and must be captured by the
       server-authoritative owner. Never allow them to fall through to legacy buySeed(). */
    const popupSeedBuy=hit.matches?.('[data-v492-buy]')&&!!hit.closest?.('#v495SeedInventory');
-   const popupPlantCare=String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()==='beta'&&hit.matches?.('[data-v492-care]')&&!!hit.closest?.('#v8398GrowPlantDetail');
+   const popupPlantCare=['beta','server1'].includes(String(window.GROW_RELEASE_CHANNEL||'').toLowerCase())&&hit.matches?.('[data-v492-care]')&&!!hit.closest?.('#v8398GrowPlantDetail');
    const growScreen=document.querySelector('#grow');
    const growActive=!!growScreen?.classList.contains('active');
    if(popupSeedBuy||popupPlantCare){
@@ -299,7 +299,7 @@ window.addEventListener('click',ev=>{
 window.addEventListener('keydown',ev=>{
  if(!['Enter',' '].includes(ev.key)||!window.v7081UseAuthority?.('grow'))return;
  const hit=ev.target instanceof Element?ev.target.closest('[data-v8398-harvest-uid]'):null;
- if(!hit||String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()!=='beta')return;
+ if(!hit||!['beta','server1'].includes(String(window.GROW_RELEASE_CHANNEL||'').toLowerCase()))return;
  stop(ev);
  if(document.querySelector('#grow')?.classList.contains('active')&&hit.closest('#grow'))v8398HarvestOne(hit);
 },true);
