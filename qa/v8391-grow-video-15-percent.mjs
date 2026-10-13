@@ -34,8 +34,8 @@ assert.ok(grow.includes('15 % der ursprünglichen Wachstumszeit'),'Reward popup 
 assert.ok(!grow.includes('🎬 Pflanzenzeit −25 %'),'No obsolete plant label');
 assert.equal(beta.split('v492-growroom2.js?v=8398-single-plant-beta').length-1,1);
 assert.equal(server1.includes('8391-grow-video-15-percent-beta'),false,'Server1 entry unchanged');
-assert.ok(qaVideo.includes('v492-growroom2.js?v=8397-grow-confirmed-beta'),'V8.388 feature tests kept');
-assert.ok(qaCare.includes('v492-growroom2.js?v=8397-grow-confirmed-beta'),'V8.390 care tests kept');
+assert.ok(qaVideo.includes('v492-growroom2.js?v=8398-single-plant-beta'),'V8.388 feature tests kept');
+assert.ok(qaCare.includes('v492-growroom2.js?v=8398-single-plant-beta'),'V8.390 care tests kept');
 
 function calculate(originalMs,alreadyElapsedMs,used){
  let remaining=originalMs-alreadyElapsedMs,skipped=0;
