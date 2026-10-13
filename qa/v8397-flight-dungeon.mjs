@@ -34,7 +34,7 @@ for(const [html,channel] of [[beta,'beta'],[server1,'server1']]){
   ['v7092-runtime-watchdog.js','8397-replay-aware'],
   ['v8009-d1-combat-renderer.js','8397-d1-d9-boss-art'],
   ['v7051-atomic-dungeon-receipt-client.js','8397-dungeon-confirmed'],
-  ['v492-growroom2.js',channel==='beta'?'8398-single-plant':'8397-grow-confirmed'],
+  ['v492-growroom2.js','8399-single-plant'],
   ['v7045-atomic-quest-receipt-client.js','8397-quest-confirmed']
  ])assert.ok(html.includes(owner+'?v='+rev+'-'+channel),'Updated '+channel+' cache missing '+owner);
 }
