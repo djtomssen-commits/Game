@@ -1,0 +1,52 @@
+import assert from 'node:assert/strict';
+import vm from 'node:vm';
+import {readFileSync} from 'node:fs';
+const read=path=>readFileSync(path,'utf8');
+const beta=read('beta.html'),server1=read('server1.html');
+const grow=read('js/features/grow/beta/v8009-s1-v492-growroom2.js');
+const bridge=read('js/features/authority/beta/v8009-s2-v7065-fail-closed-grow-authority-hotfix.js');
+const careCss=read('v8009-extracted-v4114-grow-care-css.css');
+const betaSql=read('supabase/migrations/v8398_beta_single_plant_harvest.sql');
+const serverSql=read('supabase/migrations/v8399_server1_single_plant_harvest.sql');
+for(const [label,source] of [['growroom',grow],['authority',bridge]])new vm.Script(source,{filename:label});
+const includes=(actual,part,message)=>assert.ok(actual.includes(part),message);
+for(const [html,world] of [[beta,'beta'],[server1,'server1']]){
+ includes(html,'v8009-s1-v492-growroom2.js?v=8399-single-plant-'+world,world+' original Growroom is on V8.399');
+ includes(html,'v8009-extracted-v4114-grow-care-css.css?v=8399-single-plant-'+world,world+' style is on V8.399');
+ includes(html,'v8009-s2-v7065-fail-closed-grow-authority-hotfix.js?v=8399-single-harvest-auth-'+world,world+' authority owner is on V8.399');
+}
+includes(grow,"const v8398PlantUiEnabled=()=>['beta','server1'].includes(", 'Single-plant UI is enabled on precisely two released worlds');
+includes(grow,"if(v8398PlantUiEnabled())document.documentElement.classList.add('v8398-grow-ui')",'Shared CSS channel marker enabled');
+includes(grow,'const singleHarvest=v8398PlantUiEnabled()&&x>=1','Only ripe plants get an Ernten control');
+includes(grow,'${careAction}${singleHarvest}','Ernten is located below care');
+includes(grow,"v8398PlantUiEnabled()&&x>=1?'':v8388VideoHtml(p,x)",'Ripe plants do not waste a slot on time-skip videos');
+includes(grow,'function v8398OpenPlantModal(p)','Detail modal has one canonical owner');
+includes(grow,'body.innerHTML=detailHtml(p)','Modal uses the existing actual plant details');
+includes(grow,'if(v8398PlantUiEnabled()){v8398OpenPlantModal(p);return;}','Tapping plant opens modal in both worlds');
+includes(grow,'if(!p){v8398ClosePlantModal();return}','Harvest closes stale details');
+includes(careCss,'html.v8398-grow-ui #grow .v492-detail-panel{display:none!important}','Old detail panel is visually removed on both worlds');
+includes(careCss,'html.v8398-grow-ui #grow .v492-plant .v8398-slot-harvest','Ernten gets specific slot positioning');
+includes(careCss,'.v8398-grow-detail-overlay.show','Grow detail modal is rendered as overlay');
+includes(bridge,"['beta','server1'].includes(String(window.GROW_RELEASE_CHANNEL||'').toLowerCase())",'Authority is enabled for both worlds');
+includes(bridge,"act('v6358_harvest_grow',{p_plant_uid:plantUid}",'Exactly selected UID is submitted to server');
+includes(bridge,"button.dataset.v8398HarvestBusy='1'",'Double taps are suppressed');
+includes(bridge,'popupPlantCare','Care inside modal does not fall through to legacy local mutation');
+includes(bridge,"if(popupSeedBuy||popupPlantCare)",'Popup actions remain inside authenticated authority gate');
+for(const [sql,schema] of [[betaSql,'public'],[serverSql,'server1']]){
+ includes(sql,'CREATE OR REPLACE FUNCTION '+schema+'.v6358_harvest_grow(p_plant_uid text)','Per-plant canonical overload exists on '+schema);
+ includes(sql,"if p_plant_uid is not null and coalesce(p->>'uid','')<>p_plant_uid then idx:=idx+1;continue; end if;",'Other plant IDs are skipped in '+schema);
+ includes(sql,'CREATE OR REPLACE FUNCTION '+schema+'.v6358_harvest_grow()','Old bulk signature is retained on '+schema);
+ includes(sql,'SELECT '+schema+'.v6358_harvest_grow(NULL::text)','Old bulk signature delegates to original owner on '+schema);
+ includes(sql,'where user_id=u for update','Authoritative row-lock for '+schema);
+ includes(sql,"REVOKE ALL ON FUNCTION "+schema+".v6358_harvest_grow(text) FROM PUBLIC, anon",'Anonymous per-plant harvest is blocked on '+schema);
+ includes(sql,"GRANT EXECUTE ON FUNCTION "+schema+".v6358_harvest_grow(text) TO authenticated, service_role",'Authenticated authorization on '+schema);
+ includes(sql,schema+'.player_grow_harvests','World-scoped harvest ledger used');
+ includes(sql,schema+'.player_seed_state','World-scoped plant state used');
+ const other=schema==='public'?'server1':'public';
+ assert.ok(!sql.includes(other+'.player_seed_state'),'No cross-world seed state in '+schema);
+ assert.ok(!sql.includes(other+'.player_grow_harvests'),'No cross-world harvest ledger in '+schema);
+ assert.equal((sql.match(/CREATE OR REPLACE FUNCTION/g)||[]).length,2,'Exactly 2 original function signatures deployed on '+schema);
+}
+assert.ok(serverSql.includes("SET search_path TO 'server1', 'public', 'pg_temp'"),'Existing Server1 database function search path preserved');
+assert.ok(!/v8399-single/.test(read('js/features/account/server1-release-channel.js')),'Server routing owner untouched');
+console.log('V8.399 PASS: Server1 and Beta ready-plant single harvest, canonical ledgers, compatibility, authority, modal/CSS and cache parity; manual multi-plant test remains required');
